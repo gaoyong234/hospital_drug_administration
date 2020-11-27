@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hospital_purchase.dao.PaymentMapper">
+  <resultMap id="BaseResultMap" type="com.hospital_purchase.pojo.Payment">
+    <id column="so_id" jdbcType="INTEGER" property="soId" />
+    <result column="drug_id" jdbcType="INTEGER" property="drugId" />
+    <result column="payment_number" jdbcType="VARCHAR" property="paymentNumber" />
+    <result column="payment_name" jdbcType="VARCHAR" property="paymentName" />
+    <result column="payment_time" jdbcType="TIMESTAMP" property="paymentTime" />
+    <result column="establish_time" jdbcType="TIMESTAMP" property="establishTime" />
+    <result column="payment_linkman" jdbcType="VARCHAR" property="paymentLinkman" />
+    <result column="payment_phone" jdbcType="VARCHAR" property="paymentPhone" />
+    <result column="payment_state" jdbcType="INTEGER" property="paymentState" />
+    <result column="present_time" jdbcType="TIMESTAMP" property="presentTime" />
+    <result column="present_remarks" jdbcType="VARCHAR" property="presentRemarks" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    so_id, drug_id, payment_number, payment_name, payment_time, establish_time, payment_linkman, 
+    payment_phone, payment_state, present_time, present_remarks, gmt_create, gmt_modified
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from payment
+    where so_id = #{soId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from payment
+    where so_id = #{soId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hospital_purchase.pojo.Payment">
+    insert into payment (so_id, drug_id, payment_number, 
+      payment_name, payment_time, establish_time, 
+      payment_linkman, payment_phone, payment_state, 
+      present_time, present_remarks, gmt_create, 
+      gmt_modified)
+    values (#{soId,jdbcType=INTEGER}, #{drugId,jdbcType=INTEGER}, #{paymentNumber,jdbcType=VARCHAR}, 
+      #{paymentName,jdbcType=VARCHAR}, #{paymentTime,jdbcType=TIMESTAMP}, #{establishTime,jdbcType=TIMESTAMP}, 
+      #{paymentLinkman,jdbcType=VARCHAR}, #{paymentPhone,jdbcType=VARCHAR}, #{paymentState,jdbcType=INTEGER}, 
+      #{presentTime,jdbcType=TIMESTAMP}, #{presentRemarks,jdbcType=VARCHAR}, #{gmtCreate,jdbcType=TIMESTAMP}, 
+      #{gmtModified,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hospital_purchase.pojo.Payment">
+    insert into payment
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="soId != null">
+        so_id,
+      </if>
+      <if test="drugId != null">
+        drug_id,
+      </if>
+      <if test="paymentNumber != null">
+        payment_number,
+      </if>
+      <if test="paymentName != null">
+        payment_name,
+      </if>
+      <if test="paymentTime != null">
+        payment_time,
+      </if>
+      <if test="establishTime != null">
+        establish_time,
+      </if>
+      <if test="paymentLinkman != null">
+        payment_linkman,
+      </if>
+      <if test="paymentPhone != null">
+        payment_phone,
+      </if>
+      <if test="paymentState != null">
+        payment_state,
+      </if>
+      <if test="presentTime != null">
+        present_time,
+      </if>
+      <if test="presentRemarks != null">
+        present_remarks,
+      </if>
+      <if test="gmtCreate != null">
+        gmt_create,
+      </if>
+      <if test="gmtModified != null">
+        gmt_modified,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="soId != null">
+        #{soId,jdbcType=INTEGER},
+      </if>
+      <if test="drugId != null">
+        #{drugId,jdbcType=INTEGER},
+      </if>
+      <if test="paymentNumber != null">
+        #{paymentNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentName != null">
+        #{paymentName,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentTime != null">
+        #{paymentTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="establishTime != null">
+        #{establishTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="paymentLinkman != null">
+        #{paymentLinkman,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentPhone != null">
+        #{paymentPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentState != null">
+        #{paymentState,jdbcType=INTEGER},
+      </if>
+      <if test="presentTime != null">
+        #{presentTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="presentRemarks != null">
+        #{presentRemarks,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtCreate != null">
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null">
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hospital_purchase.pojo.Payment">
+    update payment
+    <set>
+      <if test="drugId != null">
+        drug_id = #{drugId,jdbcType=INTEGER},
+      </if>
+      <if test="paymentNumber != null">
+        payment_number = #{paymentNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentName != null">
+        payment_name = #{paymentName,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentTime != null">
+        payment_time = #{paymentTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="establishTime != null">
+        establish_time = #{establishTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="paymentLinkman != null">
+        payment_linkman = #{paymentLinkman,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentPhone != null">
+        payment_phone = #{paymentPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentState != null">
+        payment_state = #{paymentState,jdbcType=INTEGER},
+      </if>
+      <if test="presentTime != null">
+        present_time = #{presentTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="presentRemarks != null">
+        present_remarks = #{presentRemarks,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtCreate != null">
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null">
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where so_id = #{soId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hospital_purchase.pojo.Payment">
+    update payment
+    set drug_id = #{drugId,jdbcType=INTEGER},
+      payment_number = #{paymentNumber,jdbcType=VARCHAR},
+      payment_name = #{paymentName,jdbcType=VARCHAR},
+      payment_time = #{paymentTime,jdbcType=TIMESTAMP},
+      establish_time = #{establishTime,jdbcType=TIMESTAMP},
+      payment_linkman = #{paymentLinkman,jdbcType=VARCHAR},
+      payment_phone = #{paymentPhone,jdbcType=VARCHAR},
+      payment_state = #{paymentState,jdbcType=INTEGER},
+      present_time = #{presentTime,jdbcType=TIMESTAMP},
+      present_remarks = #{presentRemarks,jdbcType=VARCHAR},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
+    where so_id = #{soId,jdbcType=INTEGER}
+  </update>
+</mapper>

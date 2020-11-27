@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hospital_purchase.dao.DrugItemsMapper">
+  <resultMap id="BaseResultMap" type="com.hospital_purchase.pojo.DrugItems">
+    <id column="di_id" jdbcType="INTEGER" property="diId" />
+    <result column="common_name" jdbcType="VARCHAR" property="commonName" />
+    <result column="dosage_form" jdbcType="VARCHAR" property="dosageForm" />
+    <result column="speciflcation" jdbcType="VARCHAR" property="speciflcation" />
+    <result column="unit_id" jdbcType="INTEGER" property="unitId" />
+    <result column=" coefficient" jdbcType="INTEGER" property="coefficient" />
+    <result column=" create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="modified_time" jdbcType="TIMESTAMP" property="modifiedTime" />
+    <result column="production_name" jdbcType="VARCHAR" property="productionName" />
+    <result column=" commodity_name" jdbcType="VARCHAR" property="commodityName" />
+    <result column=" serial_number" jdbcType="VARCHAR" property="serialNumber" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    di_id, common_name, dosage_form, speciflcation, unit_id, " coefficient", " create_time", 
+    modified_time, production_name, " commodity_name", " serial_number"
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from drug_items
+    where di_id = #{diId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from drug_items
+    where di_id = #{diId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hospital_purchase.pojo.DrugItems">
+    insert into drug_items (di_id, common_name, dosage_form, 
+      speciflcation, unit_id, " coefficient", 
+      " create_time", modified_time, production_name, 
+      " commodity_name", " serial_number")
+    values (#{diId,jdbcType=INTEGER}, #{commonName,jdbcType=VARCHAR}, #{dosageForm,jdbcType=VARCHAR}, 
+      #{speciflcation,jdbcType=VARCHAR}, #{unitId,jdbcType=INTEGER}, #{coefficient,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{modifiedTime,jdbcType=TIMESTAMP}, #{productionName,jdbcType=VARCHAR}, 
+      #{commodityName,jdbcType=VARCHAR}, #{serialNumber,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hospital_purchase.pojo.DrugItems">
+    insert into drug_items
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="diId != null">
+        di_id,
+      </if>
+      <if test="commonName != null">
+        common_name,
+      </if>
+      <if test="dosageForm != null">
+        dosage_form,
+      </if>
+      <if test="speciflcation != null">
+        speciflcation,
+      </if>
+      <if test="unitId != null">
+        unit_id,
+      </if>
+      <if test="coefficient != null">
+        " coefficient",
+      </if>
+      <if test="createTime != null">
+        " create_time",
+      </if>
+      <if test="modifiedTime != null">
+        modified_time,
+      </if>
+      <if test="productionName != null">
+        production_name,
+      </if>
+      <if test="commodityName != null">
+        " commodity_name",
+      </if>
+      <if test="serialNumber != null">
+        " serial_number",
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="diId != null">
+        #{diId,jdbcType=INTEGER},
+      </if>
+      <if test="commonName != null">
+        #{commonName,jdbcType=VARCHAR},
+      </if>
+      <if test="dosageForm != null">
+        #{dosageForm,jdbcType=VARCHAR},
+      </if>
+      <if test="speciflcation != null">
+        #{speciflcation,jdbcType=VARCHAR},
+      </if>
+      <if test="unitId != null">
+        #{unitId,jdbcType=INTEGER},
+      </if>
+      <if test="coefficient != null">
+        #{coefficient,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifiedTime != null">
+        #{modifiedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="productionName != null">
+        #{productionName,jdbcType=VARCHAR},
+      </if>
+      <if test="commodityName != null">
+        #{commodityName,jdbcType=VARCHAR},
+      </if>
+      <if test="serialNumber != null">
+        #{serialNumber,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hospital_purchase.pojo.DrugItems">
+    update drug_items
+    <set>
+      <if test="commonName != null">
+        common_name = #{commonName,jdbcType=VARCHAR},
+      </if>
+      <if test="dosageForm != null">
+        dosage_form = #{dosageForm,jdbcType=VARCHAR},
+      </if>
+      <if test="speciflcation != null">
+        speciflcation = #{speciflcation,jdbcType=VARCHAR},
+      </if>
+      <if test="unitId != null">
+        unit_id = #{unitId,jdbcType=INTEGER},
+      </if>
+      <if test="coefficient != null">
+        " coefficient" = #{coefficient,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        " create_time" = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifiedTime != null">
+        modified_time = #{modifiedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="productionName != null">
+        production_name = #{productionName,jdbcType=VARCHAR},
+      </if>
+      <if test="commodityName != null">
+        " commodity_name" = #{commodityName,jdbcType=VARCHAR},
+      </if>
+      <if test="serialNumber != null">
+        " serial_number" = #{serialNumber,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where di_id = #{diId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hospital_purchase.pojo.DrugItems">
+    update drug_items
+    set common_name = #{commonName,jdbcType=VARCHAR},
+      dosage_form = #{dosageForm,jdbcType=VARCHAR},
+      speciflcation = #{speciflcation,jdbcType=VARCHAR},
+      unit_id = #{unitId,jdbcType=INTEGER},
+      " coefficient" = #{coefficient,jdbcType=INTEGER},
+      " create_time" = #{createTime,jdbcType=TIMESTAMP},
+      modified_time = #{modifiedTime,jdbcType=TIMESTAMP},
+      production_name = #{productionName,jdbcType=VARCHAR},
+      " commodity_name" = #{commodityName,jdbcType=VARCHAR},
+      " serial_number" = #{serialNumber,jdbcType=VARCHAR}
+    where di_id = #{diId,jdbcType=INTEGER}
+  </update>
+</mapper>

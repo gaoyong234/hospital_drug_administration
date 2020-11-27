@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hospital_purchase.dao.DictionariesMapper">
+  <resultMap id="BaseResultMap" type="com.hospital_purchase.pojo.Dictionaries">
+    <id column="di_id" jdbcType="INTEGER" property="diId" />
+    <result column=" dictionaries_name" jdbcType="VARCHAR" property="dictionariesName" />
+    <result column="dictionaries_id" jdbcType="INTEGER" property="dictionariesId" />
+    <result column=" create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column=" modified_time" jdbcType="TIMESTAMP" property="modifiedTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    di_id, " dictionaries_name", dictionaries_id, " create_time", " modified_time"
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from dictionaries
+    where di_id = #{diId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from dictionaries
+    where di_id = #{diId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hospital_purchase.pojo.Dictionaries">
+    insert into dictionaries (di_id, " dictionaries_name", dictionaries_id, 
+      " create_time", " modified_time")
+    values (#{diId,jdbcType=INTEGER}, #{dictionariesName,jdbcType=VARCHAR}, #{dictionariesId,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{modifiedTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hospital_purchase.pojo.Dictionaries">
+    insert into dictionaries
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="diId != null">
+        di_id,
+      </if>
+      <if test="dictionariesName != null">
+        " dictionaries_name",
+      </if>
+      <if test="dictionariesId != null">
+        dictionaries_id,
+      </if>
+      <if test="createTime != null">
+        " create_time",
+      </if>
+      <if test="modifiedTime != null">
+        " modified_time",
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="diId != null">
+        #{diId,jdbcType=INTEGER},
+      </if>
+      <if test="dictionariesName != null">
+        #{dictionariesName,jdbcType=VARCHAR},
+      </if>
+      <if test="dictionariesId != null">
+        #{dictionariesId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifiedTime != null">
+        #{modifiedTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hospital_purchase.pojo.Dictionaries">
+    update dictionaries
+    <set>
+      <if test="dictionariesName != null">
+        " dictionaries_name" = #{dictionariesName,jdbcType=VARCHAR},
+      </if>
+      <if test="dictionariesId != null">
+        dictionaries_id = #{dictionariesId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        " create_time" = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifiedTime != null">
+        " modified_time" = #{modifiedTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where di_id = #{diId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hospital_purchase.pojo.Dictionaries">
+    update dictionaries
+    set " dictionaries_name" = #{dictionariesName,jdbcType=VARCHAR},
+      dictionaries_id = #{dictionariesId,jdbcType=INTEGER},
+      " create_time" = #{createTime,jdbcType=TIMESTAMP},
+      " modified_time" = #{modifiedTime,jdbcType=TIMESTAMP}
+    where di_id = #{diId,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hospital_purchase.dao.PurchaseOrdersMapper">
+  <resultMap id="BaseResultMap" type="com.hospital_purchase.pojo.PurchaseOrders">
+    <id column="po_id" jdbcType="INTEGER" property="poId" />
+    <result column="audit_state" jdbcType="INTEGER" property="auditState" />
+    <result column="audit_opinion" jdbcType="VARCHAR" property="auditOpinion" />
+    <result column="hospital_id" jdbcType="INTEGER" property="hospitalId" />
+    <result column="purchase_name" jdbcType="VARCHAR" property="purchaseName" />
+    <result column="fund_time" jdbcType="TIMESTAMP" property="fundTime" />
+    <result column=" purchase_state" jdbcType="INTEGER" property="purchaseState" />
+    <result column="modified_time" jdbcType="TIMESTAMP" property="modifiedTime" />
+    <result column="submit_time" jdbcType="TIMESTAMP" property="submitTime" />
+    <result column="linkman_name" jdbcType="VARCHAR" property="linkmanName" />
+    <result column=" linkman_phone" jdbcType="VARCHAR" property="linkmanPhone" />
+    <result column=" user_id" jdbcType="INTEGER" property="userId" />
+    <result column=" audit_opinion" jdbcType="VARCHAR" property="auditOpinion" />
+    <result column=" audit_time" jdbcType="TIMESTAMP" property="auditTime" />
+    <result column="purchase_number" jdbcType="VARCHAR" property="purchaseNumber" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    po_id, audit_state, audit_opinion, hospital_id, purchase_name, fund_time, " purchase_state", 
+    modified_time, submit_time, linkman_name, " linkman_phone", " user_id", " audit_opinion", 
+    " audit_time", purchase_number
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from purchase_orders
+    where po_id = #{poId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from purchase_orders
+    where po_id = #{poId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hospital_purchase.pojo.PurchaseOrders">
+    insert into purchase_orders (po_id, audit_state, audit_opinion, 
+      hospital_id, purchase_name, fund_time, 
+      " purchase_state", modified_time, submit_time, 
+      linkman_name, " linkman_phone", " user_id", 
+      " audit_opinion", " audit_time", purchase_number
+      )
+    values (#{poId,jdbcType=INTEGER}, #{auditState,jdbcType=INTEGER}, #{auditOpinion,jdbcType=VARCHAR}, 
+      #{hospitalId,jdbcType=INTEGER}, #{purchaseName,jdbcType=VARCHAR}, #{fundTime,jdbcType=TIMESTAMP}, 
+      #{purchaseState,jdbcType=INTEGER}, #{modifiedTime,jdbcType=TIMESTAMP}, #{submitTime,jdbcType=TIMESTAMP}, 
+      #{linkmanName,jdbcType=VARCHAR}, #{linkmanPhone,jdbcType=VARCHAR}, #{userId,jdbcType=INTEGER}, 
+      #{auditOpinion,jdbcType=VARCHAR}, #{auditTime,jdbcType=TIMESTAMP}, #{purchaseNumber,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hospital_purchase.pojo.PurchaseOrders">
+    insert into purchase_orders
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="poId != null">
+        po_id,
+      </if>
+      <if test="auditState != null">
+        audit_state,
+      </if>
+      <if test="auditOpinion != null">
+        audit_opinion,
+      </if>
+      <if test="hospitalId != null">
+        hospital_id,
+      </if>
+      <if test="purchaseName != null">
+        purchase_name,
+      </if>
+      <if test="fundTime != null">
+        fund_time,
+      </if>
+      <if test="purchaseState != null">
+        " purchase_state",
+      </if>
+      <if test="modifiedTime != null">
+        modified_time,
+      </if>
+      <if test="submitTime != null">
+        submit_time,
+      </if>
+      <if test="linkmanName != null">
+        linkman_name,
+      </if>
+      <if test="linkmanPhone != null">
+        " linkman_phone",
+      </if>
+      <if test="userId != null">
+        " user_id",
+      </if>
+      <if test="auditOpinion != null">
+        " audit_opinion",
+      </if>
+      <if test="auditTime != null">
+        " audit_time",
+      </if>
+      <if test="purchaseNumber != null">
+        purchase_number,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="poId != null">
+        #{poId,jdbcType=INTEGER},
+      </if>
+      <if test="auditState != null">
+        #{auditState,jdbcType=INTEGER},
+      </if>
+      <if test="auditOpinion != null">
+        #{auditOpinion,jdbcType=VARCHAR},
+      </if>
+      <if test="hospitalId != null">
+        #{hospitalId,jdbcType=INTEGER},
+      </if>
+      <if test="purchaseName != null">
+        #{purchaseName,jdbcType=VARCHAR},
+      </if>
+      <if test="fundTime != null">
+        #{fundTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="purchaseState != null">
+        #{purchaseState,jdbcType=INTEGER},
+      </if>
+      <if test="modifiedTime != null">
+        #{modifiedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="submitTime != null">
+        #{submitTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="linkmanName != null">
+        #{linkmanName,jdbcType=VARCHAR},
+      </if>
+      <if test="linkmanPhone != null">
+        #{linkmanPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="auditOpinion != null">
+        #{auditOpinion,jdbcType=VARCHAR},
+      </if>
+      <if test="auditTime != null">
+        #{auditTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="purchaseNumber != null">
+        #{purchaseNumber,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hospital_purchase.pojo.PurchaseOrders">
+    update purchase_orders
+    <set>
+      <if test="auditState != null">
+        audit_state = #{auditState,jdbcType=INTEGER},
+      </if>
+      <if test="auditOpinion != null">
+        audit_opinion = #{auditOpinion,jdbcType=VARCHAR},
+      </if>
+      <if test="hospitalId != null">
+        hospital_id = #{hospitalId,jdbcType=INTEGER},
+      </if>
+      <if test="purchaseName != null">
+        purchase_name = #{purchaseName,jdbcType=VARCHAR},
+      </if>
+      <if test="fundTime != null">
+        fund_time = #{fundTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="purchaseState != null">
+        " purchase_state" = #{purchaseState,jdbcType=INTEGER},
+      </if>
+      <if test="modifiedTime != null">
+        modified_time = #{modifiedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="submitTime != null">
+        submit_time = #{submitTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="linkmanName != null">
+        linkman_name = #{linkmanName,jdbcType=VARCHAR},
+      </if>
+      <if test="linkmanPhone != null">
+        " linkman_phone" = #{linkmanPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        " user_id" = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="auditOpinion != null">
+        " audit_opinion" = #{auditOpinion,jdbcType=VARCHAR},
+      </if>
+      <if test="auditTime != null">
+        " audit_time" = #{auditTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="purchaseNumber != null">
+        purchase_number = #{purchaseNumber,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where po_id = #{poId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hospital_purchase.pojo.PurchaseOrders">
+    update purchase_orders
+    set audit_state = #{auditState,jdbcType=INTEGER},
+      audit_opinion = #{auditOpinion,jdbcType=VARCHAR},
+      hospital_id = #{hospitalId,jdbcType=INTEGER},
+      purchase_name = #{purchaseName,jdbcType=VARCHAR},
+      fund_time = #{fundTime,jdbcType=TIMESTAMP},
+      " purchase_state" = #{purchaseState,jdbcType=INTEGER},
+      modified_time = #{modifiedTime,jdbcType=TIMESTAMP},
+      submit_time = #{submitTime,jdbcType=TIMESTAMP},
+      linkman_name = #{linkmanName,jdbcType=VARCHAR},
+      " linkman_phone" = #{linkmanPhone,jdbcType=VARCHAR},
+      " user_id" = #{userId,jdbcType=INTEGER},
+      " audit_opinion" = #{auditOpinion,jdbcType=VARCHAR},
+      " audit_time" = #{auditTime,jdbcType=TIMESTAMP},
+      purchase_number = #{purchaseNumber,jdbcType=VARCHAR}
+    where po_id = #{poId,jdbcType=INTEGER}
+  </update>
+</mapper>

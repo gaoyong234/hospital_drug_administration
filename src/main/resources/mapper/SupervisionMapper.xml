@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hospital_purchase.dao.SupervisionMapper">
+  <resultMap id="BaseResultMap" type="com.hospital_purchase.pojo.Supervision">
+    <id column="ss_id" jdbcType="INTEGER" property="ssId" />
+    <result column="supervision_name" jdbcType="VARCHAR" property="supervisionName" />
+    <result column="contact_address" jdbcType="VARCHAR" property="contactAddress" />
+    <result column="supervision_postal_code" jdbcType="VARCHAR" property="supervisionPostalCode" />
+    <result column="supervision_linkman" jdbcType="VARCHAR" property="supervisionLinkman" />
+    <result column="supervision_phone" jdbcType="VARCHAR" property="supervisionPhone" />
+    <result column="supervision_fax" jdbcType="VARCHAR" property="supervisionFax" />
+    <result column="supervision_email" jdbcType="VARCHAR" property="supervisionEmail" />
+    <result column="supervision_url" jdbcType="VARCHAR" property="supervisionUrl" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ss_id, supervision_name, contact_address, supervision_postal_code, supervision_linkman, 
+    supervision_phone, supervision_fax, supervision_email, supervision_url, gmt_create, 
+    gmt_modified
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from supervision
+    where ss_id = #{ssId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from supervision
+    where ss_id = #{ssId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hospital_purchase.pojo.Supervision">
+    insert into supervision (ss_id, supervision_name, contact_address, 
+      supervision_postal_code, supervision_linkman, 
+      supervision_phone, supervision_fax, supervision_email, 
+      supervision_url, gmt_create, gmt_modified
+      )
+    values (#{ssId,jdbcType=INTEGER}, #{supervisionName,jdbcType=VARCHAR}, #{contactAddress,jdbcType=VARCHAR}, 
+      #{supervisionPostalCode,jdbcType=VARCHAR}, #{supervisionLinkman,jdbcType=VARCHAR}, 
+      #{supervisionPhone,jdbcType=VARCHAR}, #{supervisionFax,jdbcType=VARCHAR}, #{supervisionEmail,jdbcType=VARCHAR}, 
+      #{supervisionUrl,jdbcType=VARCHAR}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hospital_purchase.pojo.Supervision">
+    insert into supervision
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="ssId != null">
+        ss_id,
+      </if>
+      <if test="supervisionName != null">
+        supervision_name,
+      </if>
+      <if test="contactAddress != null">
+        contact_address,
+      </if>
+      <if test="supervisionPostalCode != null">
+        supervision_postal_code,
+      </if>
+      <if test="supervisionLinkman != null">
+        supervision_linkman,
+      </if>
+      <if test="supervisionPhone != null">
+        supervision_phone,
+      </if>
+      <if test="supervisionFax != null">
+        supervision_fax,
+      </if>
+      <if test="supervisionEmail != null">
+        supervision_email,
+      </if>
+      <if test="supervisionUrl != null">
+        supervision_url,
+      </if>
+      <if test="gmtCreate != null">
+        gmt_create,
+      </if>
+      <if test="gmtModified != null">
+        gmt_modified,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="ssId != null">
+        #{ssId,jdbcType=INTEGER},
+      </if>
+      <if test="supervisionName != null">
+        #{supervisionName,jdbcType=VARCHAR},
+      </if>
+      <if test="contactAddress != null">
+        #{contactAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="supervisionPostalCode != null">
+        #{supervisionPostalCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supervisionLinkman != null">
+        #{supervisionLinkman,jdbcType=VARCHAR},
+      </if>
+      <if test="supervisionPhone != null">
+        #{supervisionPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="supervisionFax != null">
+        #{supervisionFax,jdbcType=VARCHAR},
+      </if>
+      <if test="supervisionEmail != null">
+        #{supervisionEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="supervisionUrl != null">
+        #{supervisionUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtCreate != null">
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null">
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hospital_purchase.pojo.Supervision">
+    update supervision
+    <set>
+      <if test="supervisionName != null">
+        supervision_name = #{supervisionName,jdbcType=VARCHAR},
+      </if>
+      <if test="contactAddress != null">
+        contact_address = #{contactAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="supervisionPostalCode != null">
+        supervision_postal_code = #{supervisionPostalCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supervisionLinkman != null">
+        supervision_linkman = #{supervisionLinkman,jdbcType=VARCHAR},
+      </if>
+      <if test="supervisionPhone != null">
+        supervision_phone = #{supervisionPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="supervisionFax != null">
+        supervision_fax = #{supervisionFax,jdbcType=VARCHAR},
+      </if>
+      <if test="supervisionEmail != null">
+        supervision_email = #{supervisionEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="supervisionUrl != null">
+        supervision_url = #{supervisionUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtCreate != null">
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null">
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ss_id = #{ssId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hospital_purchase.pojo.Supervision">
+    update supervision
+    set supervision_name = #{supervisionName,jdbcType=VARCHAR},
+      contact_address = #{contactAddress,jdbcType=VARCHAR},
+      supervision_postal_code = #{supervisionPostalCode,jdbcType=VARCHAR},
+      supervision_linkman = #{supervisionLinkman,jdbcType=VARCHAR},
+      supervision_phone = #{supervisionPhone,jdbcType=VARCHAR},
+      supervision_fax = #{supervisionFax,jdbcType=VARCHAR},
+      supervision_email = #{supervisionEmail,jdbcType=VARCHAR},
+      supervision_url = #{supervisionUrl,jdbcType=VARCHAR},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
+    where ss_id = #{ssId,jdbcType=INTEGER}
+  </update>
+</mapper>

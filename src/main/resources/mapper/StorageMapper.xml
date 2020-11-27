@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hospital_purchase.dao.StorageMapper">
+  <resultMap id="BaseResultMap" type="com.hospital_purchase.pojo.Storage">
+    <id column="st_id" jdbcType="INTEGER" property="stId" />
+    <result column=" purchase_order_id" jdbcType="INTEGER" property="purchaseOrderId" />
+    <result column=" drug_id" jdbcType="INTEGER" property="drugId" />
+    <result column=" storage_volume" jdbcType="INTEGER" property="storageVolume" />
+    <result column=" invoice" jdbcType="VARCHAR" property="invoice" />
+    <result column=" drug_batch_number" jdbcType="VARCHAR" property="drugBatchNumber" />
+    <result column=" effective_time" jdbcType="TIMESTAMP" property="effectiveTime" />
+    <result column=" storage_time" jdbcType="TIMESTAMP" property="storageTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="modified_time" jdbcType="TIMESTAMP" property="modifiedTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    st_id, " purchase_order_id", " drug_id", " storage_volume", " invoice", " drug_batch_number", 
+    " effective_time", " storage_time", create_time, modified_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from storage
+    where st_id = #{stId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from storage
+    where st_id = #{stId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hospital_purchase.pojo.Storage">
+    insert into storage (st_id, " purchase_order_id", " drug_id", 
+      " storage_volume", " invoice", " drug_batch_number", 
+      " effective_time", " storage_time", create_time, 
+      modified_time)
+    values (#{stId,jdbcType=INTEGER}, #{purchaseOrderId,jdbcType=INTEGER}, #{drugId,jdbcType=INTEGER}, 
+      #{storageVolume,jdbcType=INTEGER}, #{invoice,jdbcType=VARCHAR}, #{drugBatchNumber,jdbcType=VARCHAR}, 
+      #{effectiveTime,jdbcType=TIMESTAMP}, #{storageTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{modifiedTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hospital_purchase.pojo.Storage">
+    insert into storage
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="stId != null">
+        st_id,
+      </if>
+      <if test="purchaseOrderId != null">
+        " purchase_order_id",
+      </if>
+      <if test="drugId != null">
+        " drug_id",
+      </if>
+      <if test="storageVolume != null">
+        " storage_volume",
+      </if>
+      <if test="invoice != null">
+        " invoice",
+      </if>
+      <if test="drugBatchNumber != null">
+        " drug_batch_number",
+      </if>
+      <if test="effectiveTime != null">
+        " effective_time",
+      </if>
+      <if test="storageTime != null">
+        " storage_time",
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="modifiedTime != null">
+        modified_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="stId != null">
+        #{stId,jdbcType=INTEGER},
+      </if>
+      <if test="purchaseOrderId != null">
+        #{purchaseOrderId,jdbcType=INTEGER},
+      </if>
+      <if test="drugId != null">
+        #{drugId,jdbcType=INTEGER},
+      </if>
+      <if test="storageVolume != null">
+        #{storageVolume,jdbcType=INTEGER},
+      </if>
+      <if test="invoice != null">
+        #{invoice,jdbcType=VARCHAR},
+      </if>
+      <if test="drugBatchNumber != null">
+        #{drugBatchNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="effectiveTime != null">
+        #{effectiveTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="storageTime != null">
+        #{storageTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifiedTime != null">
+        #{modifiedTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hospital_purchase.pojo.Storage">
+    update storage
+    <set>
+      <if test="purchaseOrderId != null">
+        " purchase_order_id" = #{purchaseOrderId,jdbcType=INTEGER},
+      </if>
+      <if test="drugId != null">
+        " drug_id" = #{drugId,jdbcType=INTEGER},
+      </if>
+      <if test="storageVolume != null">
+        " storage_volume" = #{storageVolume,jdbcType=INTEGER},
+      </if>
+      <if test="invoice != null">
+        " invoice" = #{invoice,jdbcType=VARCHAR},
+      </if>
+      <if test="drugBatchNumber != null">
+        " drug_batch_number" = #{drugBatchNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="effectiveTime != null">
+        " effective_time" = #{effectiveTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="storageTime != null">
+        " storage_time" = #{storageTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifiedTime != null">
+        modified_time = #{modifiedTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where st_id = #{stId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hospital_purchase.pojo.Storage">
+    update storage
+    set " purchase_order_id" = #{purchaseOrderId,jdbcType=INTEGER},
+      " drug_id" = #{drugId,jdbcType=INTEGER},
+      " storage_volume" = #{storageVolume,jdbcType=INTEGER},
+      " invoice" = #{invoice,jdbcType=VARCHAR},
+      " drug_batch_number" = #{drugBatchNumber,jdbcType=VARCHAR},
+      " effective_time" = #{effectiveTime,jdbcType=TIMESTAMP},
+      " storage_time" = #{storageTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      modified_time = #{modifiedTime,jdbcType=TIMESTAMP}
+    where st_id = #{stId,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hospital_purchase.dao.SupplierMapper">
+  <resultMap id="BaseResultMap" type="com.hospital_purchase.pojo.Supplier">
+    <id column="sp_id" jdbcType="INTEGER" property="spId" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="supplier_site" jdbcType="VARCHAR" property="supplierSite" />
+    <result column="supplier_linkman" jdbcType="VARCHAR" property="supplierLinkman" />
+    <result column="supplier_phone" jdbcType="VARCHAR" property="supplierPhone" />
+    <result column="enterprise_category" jdbcType="INTEGER" property="enterpriseCategory" />
+    <result column="licence" jdbcType="VARCHAR" property="licence" />
+    <result column="licence_time" jdbcType="TIMESTAMP" property="licenceTime" />
+    <result column="enterprise_linkman" jdbcType="VARCHAR" property="enterpriseLinkman" />
+    <result column="enterprise_phone" jdbcType="INTEGER" property="enterprisePhone" />
+    <result column="manage_scope" jdbcType="VARCHAR" property="manageScope" />
+    <result column="registered_address" jdbcType="VARCHAR" property="registeredAddress" />
+    <result column="relation_site" jdbcType="VARCHAR" property="relationSite" />
+    <result column="postal_code" jdbcType="INTEGER" property="postalCode" />
+    <result column="total_assets" jdbcType="REAL" property="totalAssets" />
+    <result column="sobey_fax" jdbcType="VARCHAR" property="sobeyFax" />
+    <result column="legal_person_name" jdbcType="VARCHAR" property="legalPersonName" />
+    <result column="legal_person_number" jdbcType="INTEGER" property="legalPersonNumber" />
+    <result column="enterprise_register_capital" jdbcType="REAL" property="enterpriseRegisterCapital" />
+    <result column="last_year_money" jdbcType="REAL" property="lastYearMoney" />
+    <result column="email_address" jdbcType="VARCHAR" property="emailAddress" />
+    <result column="enterprise_url" jdbcType="VARCHAR" property="enterpriseUrl" />
+    <result column="enterprise_code" jdbcType="INTEGER" property="enterpriseCode" />
+    <result column="enterprise_code_time" jdbcType="TIMESTAMP" property="enterpriseCodeTime" />
+    <result column="business_license" jdbcType="VARCHAR" property="businessLicense" />
+    <result column="business_license_time" jdbcType="TIMESTAMP" property="businessLicenseTime" />
+    <result column="is_letter_of_credit" jdbcType="INTEGER" property="isLetterOfCredit" />
+    <result column="letter_credit_number" jdbcType="INTEGER" property="letterCreditNumber" />
+    <result column="letter_credit_time" jdbcType="TIMESTAMP" property="letterCreditTime" />
+    <result column="fixed_assets" jdbcType="REAL" property="fixedAssets" />
+    <result column="company_profile" jdbcType="VARCHAR" property="companyProfile" />
+    <result column="company_remarks" jdbcType="VARCHAR" property="companyRemarks" />
+    <result column="creation_time" jdbcType="TIMESTAMP" property="creationTime" />
+    <result column="modification_time" jdbcType="TIMESTAMP" property="modificationTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    sp_id, supplier_name, supplier_site, supplier_linkman, supplier_phone, enterprise_category, 
+    licence, licence_time, enterprise_linkman, enterprise_phone, manage_scope, registered_address, 
+    relation_site, postal_code, total_assets, sobey_fax, legal_person_name, legal_person_number, 
+    enterprise_register_capital, last_year_money, email_address, enterprise_url, enterprise_code, 
+    enterprise_code_time, business_license, business_license_time, is_letter_of_credit, 
+    letter_credit_number, letter_credit_time, fixed_assets, company_profile, company_remarks, 
+    creation_time, modification_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from supplier
+    where sp_id = #{spId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from supplier
+    where sp_id = #{spId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hospital_purchase.pojo.Supplier">
+    insert into supplier (sp_id, supplier_name, supplier_site, 
+      supplier_linkman, supplier_phone, enterprise_category, 
+      licence, licence_time, enterprise_linkman, 
+      enterprise_phone, manage_scope, registered_address, 
+      relation_site, postal_code, total_assets, 
+      sobey_fax, legal_person_name, legal_person_number, 
+      enterprise_register_capital, last_year_money, email_address, 
+      enterprise_url, enterprise_code, enterprise_code_time, 
+      business_license, business_license_time, 
+      is_letter_of_credit, letter_credit_number, letter_credit_time, 
+      fixed_assets, company_profile, company_remarks, 
+      creation_time, modification_time)
+    values (#{spId,jdbcType=INTEGER}, #{supplierName,jdbcType=VARCHAR}, #{supplierSite,jdbcType=VARCHAR}, 
+      #{supplierLinkman,jdbcType=VARCHAR}, #{supplierPhone,jdbcType=VARCHAR}, #{enterpriseCategory,jdbcType=INTEGER}, 
+      #{licence,jdbcType=VARCHAR}, #{licenceTime,jdbcType=TIMESTAMP}, #{enterpriseLinkman,jdbcType=VARCHAR}, 
+      #{enterprisePhone,jdbcType=INTEGER}, #{manageScope,jdbcType=VARCHAR}, #{registeredAddress,jdbcType=VARCHAR}, 
+      #{relationSite,jdbcType=VARCHAR}, #{postalCode,jdbcType=INTEGER}, #{totalAssets,jdbcType=REAL}, 
+      #{sobeyFax,jdbcType=VARCHAR}, #{legalPersonName,jdbcType=VARCHAR}, #{legalPersonNumber,jdbcType=INTEGER}, 
+      #{enterpriseRegisterCapital,jdbcType=REAL}, #{lastYearMoney,jdbcType=REAL}, #{emailAddress,jdbcType=VARCHAR}, 
+      #{enterpriseUrl,jdbcType=VARCHAR}, #{enterpriseCode,jdbcType=INTEGER}, #{enterpriseCodeTime,jdbcType=TIMESTAMP}, 
+      #{businessLicense,jdbcType=VARCHAR}, #{businessLicenseTime,jdbcType=TIMESTAMP}, 
+      #{isLetterOfCredit,jdbcType=INTEGER}, #{letterCreditNumber,jdbcType=INTEGER}, #{letterCreditTime,jdbcType=TIMESTAMP}, 
+      #{fixedAssets,jdbcType=REAL}, #{companyProfile,jdbcType=VARCHAR}, #{companyRemarks,jdbcType=VARCHAR}, 
+      #{creationTime,jdbcType=TIMESTAMP}, #{modificationTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hospital_purchase.pojo.Supplier">
+    insert into supplier
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="spId != null">
+        sp_id,
+      </if>
+      <if test="supplierName != null">
+        supplier_name,
+      </if>
+      <if test="supplierSite != null">
+        supplier_site,
+      </if>
+      <if test="supplierLinkman != null">
+        supplier_linkman,
+      </if>
+      <if test="supplierPhone != null">
+        supplier_phone,
+      </if>
+      <if test="enterpriseCategory != null">
+        enterprise_category,
+      </if>
+      <if test="licence != null">
+        licence,
+      </if>
+      <if test="licenceTime != null">
+        licence_time,
+      </if>
+      <if test="enterpriseLinkman != null">
+        enterprise_linkman,
+      </if>
+      <if test="enterprisePhone != null">
+        enterprise_phone,
+      </if>
+      <if test="manageScope != null">
+        manage_scope,
+      </if>
+      <if test="registeredAddress != null">
+        registered_address,
+      </if>
+      <if test="relationSite != null">
+        relation_site,
+      </if>
+      <if test="postalCode != null">
+        postal_code,
+      </if>
+      <if test="totalAssets != null">
+        total_assets,
+      </if>
+      <if test="sobeyFax != null">
+        sobey_fax,
+      </if>
+      <if test="legalPersonName != null">
+        legal_person_name,
+      </if>
+      <if test="legalPersonNumber != null">
+        legal_person_number,
+      </if>
+      <if test="enterpriseRegisterCapital != null">
+        enterprise_register_capital,
+      </if>
+      <if test="lastYearMoney != null">
+        last_year_money,
+      </if>
+      <if test="emailAddress != null">
+        email_address,
+      </if>
+      <if test="enterpriseUrl != null">
+        enterprise_url,
+      </if>
+      <if test="enterpriseCode != null">
+        enterprise_code,
+      </if>
+      <if test="enterpriseCodeTime != null">
+        enterprise_code_time,
+      </if>
+      <if test="businessLicense != null">
+        business_license,
+      </if>
+      <if test="businessLicenseTime != null">
+        business_license_time,
+      </if>
+      <if test="isLetterOfCredit != null">
+        is_letter_of_credit,
+      </if>
+      <if test="letterCreditNumber != null">
+        letter_credit_number,
+      </if>
+      <if test="letterCreditTime != null">
+        letter_credit_time,
+      </if>
+      <if test="fixedAssets != null">
+        fixed_assets,
+      </if>
+      <if test="companyProfile != null">
+        company_profile,
+      </if>
+      <if test="companyRemarks != null">
+        company_remarks,
+      </if>
+      <if test="creationTime != null">
+        creation_time,
+      </if>
+      <if test="modificationTime != null">
+        modification_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="spId != null">
+        #{spId,jdbcType=INTEGER},
+      </if>
+      <if test="supplierName != null">
+        #{supplierName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierSite != null">
+        #{supplierSite,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierLinkman != null">
+        #{supplierLinkman,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierPhone != null">
+        #{supplierPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="enterpriseCategory != null">
+        #{enterpriseCategory,jdbcType=INTEGER},
+      </if>
+      <if test="licence != null">
+        #{licence,jdbcType=VARCHAR},
+      </if>
+      <if test="licenceTime != null">
+        #{licenceTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enterpriseLinkman != null">
+        #{enterpriseLinkman,jdbcType=VARCHAR},
+      </if>
+      <if test="enterprisePhone != null">
+        #{enterprisePhone,jdbcType=INTEGER},
+      </if>
+      <if test="manageScope != null">
+        #{manageScope,jdbcType=VARCHAR},
+      </if>
+      <if test="registeredAddress != null">
+        #{registeredAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="relationSite != null">
+        #{relationSite,jdbcType=VARCHAR},
+      </if>
+      <if test="postalCode != null">
+        #{postalCode,jdbcType=INTEGER},
+      </if>
+      <if test="totalAssets != null">
+        #{totalAssets,jdbcType=REAL},
+      </if>
+      <if test="sobeyFax != null">
+        #{sobeyFax,jdbcType=VARCHAR},
+      </if>
+      <if test="legalPersonName != null">
+        #{legalPersonName,jdbcType=VARCHAR},
+      </if>
+      <if test="legalPersonNumber != null">
+        #{legalPersonNumber,jdbcType=INTEGER},
+      </if>
+      <if test="enterpriseRegisterCapital != null">
+        #{enterpriseRegisterCapital,jdbcType=REAL},
+      </if>
+      <if test="lastYearMoney != null">
+        #{lastYearMoney,jdbcType=REAL},
+      </if>
+      <if test="emailAddress != null">
+        #{emailAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="enterpriseUrl != null">
+        #{enterpriseUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="enterpriseCode != null">
+        #{enterpriseCode,jdbcType=INTEGER},
+      </if>
+      <if test="enterpriseCodeTime != null">
+        #{enterpriseCodeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="businessLicense != null">
+        #{businessLicense,jdbcType=VARCHAR},
+      </if>
+      <if test="businessLicenseTime != null">
+        #{businessLicenseTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isLetterOfCredit != null">
+        #{isLetterOfCredit,jdbcType=INTEGER},
+      </if>
+      <if test="letterCreditNumber != null">
+        #{letterCreditNumber,jdbcType=INTEGER},
+      </if>
+      <if test="letterCreditTime != null">
+        #{letterCreditTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fixedAssets != null">
+        #{fixedAssets,jdbcType=REAL},
+      </if>
+      <if test="companyProfile != null">
+        #{companyProfile,jdbcType=VARCHAR},
+      </if>
+      <if test="companyRemarks != null">
+        #{companyRemarks,jdbcType=VARCHAR},
+      </if>
+      <if test="creationTime != null">
+        #{creationTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modificationTime != null">
+        #{modificationTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hospital_purchase.pojo.Supplier">
+    update supplier
+    <set>
+      <if test="supplierName != null">
+        supplier_name = #{supplierName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierSite != null">
+        supplier_site = #{supplierSite,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierLinkman != null">
+        supplier_linkman = #{supplierLinkman,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierPhone != null">
+        supplier_phone = #{supplierPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="enterpriseCategory != null">
+        enterprise_category = #{enterpriseCategory,jdbcType=INTEGER},
+      </if>
+      <if test="licence != null">
+        licence = #{licence,jdbcType=VARCHAR},
+      </if>
+      <if test="licenceTime != null">
+        licence_time = #{licenceTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enterpriseLinkman != null">
+        enterprise_linkman = #{enterpriseLinkman,jdbcType=VARCHAR},
+      </if>
+      <if test="enterprisePhone != null">
+        enterprise_phone = #{enterprisePhone,jdbcType=INTEGER},
+      </if>
+      <if test="manageScope != null">
+        manage_scope = #{manageScope,jdbcType=VARCHAR},
+      </if>
+      <if test="registeredAddress != null">
+        registered_address = #{registeredAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="relationSite != null">
+        relation_site = #{relationSite,jdbcType=VARCHAR},
+      </if>
+      <if test="postalCode != null">
+        postal_code = #{postalCode,jdbcType=INTEGER},
+      </if>
+      <if test="totalAssets != null">
+        total_assets = #{totalAssets,jdbcType=REAL},
+      </if>
+      <if test="sobeyFax != null">
+        sobey_fax = #{sobeyFax,jdbcType=VARCHAR},
+      </if>
+      <if test="legalPersonName != null">
+        legal_person_name = #{legalPersonName,jdbcType=VARCHAR},
+      </if>
+      <if test="legalPersonNumber != null">
+        legal_person_number = #{legalPersonNumber,jdbcType=INTEGER},
+      </if>
+      <if test="enterpriseRegisterCapital != null">
+        enterprise_register_capital = #{enterpriseRegisterCapital,jdbcType=REAL},
+      </if>
+      <if test="lastYearMoney != null">
+        last_year_money = #{lastYearMoney,jdbcType=REAL},
+      </if>
+      <if test="emailAddress != null">
+        email_address = #{emailAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="enterpriseUrl != null">
+        enterprise_url = #{enterpriseUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="enterpriseCode != null">
+        enterprise_code = #{enterpriseCode,jdbcType=INTEGER},
+      </if>
+      <if test="enterpriseCodeTime != null">
+        enterprise_code_time = #{enterpriseCodeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="businessLicense != null">
+        business_license = #{businessLicense,jdbcType=VARCHAR},
+      </if>
+      <if test="businessLicenseTime != null">
+        business_license_time = #{businessLicenseTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isLetterOfCredit != null">
+        is_letter_of_credit = #{isLetterOfCredit,jdbcType=INTEGER},
+      </if>
+      <if test="letterCreditNumber != null">
+        letter_credit_number = #{letterCreditNumber,jdbcType=INTEGER},
+      </if>
+      <if test="letterCreditTime != null">
+        letter_credit_time = #{letterCreditTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fixedAssets != null">
+        fixed_assets = #{fixedAssets,jdbcType=REAL},
+      </if>
+      <if test="companyProfile != null">
+        company_profile = #{companyProfile,jdbcType=VARCHAR},
+      </if>
+      <if test="companyRemarks != null">
+        company_remarks = #{companyRemarks,jdbcType=VARCHAR},
+      </if>
+      <if test="creationTime != null">
+        creation_time = #{creationTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modificationTime != null">
+        modification_time = #{modificationTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where sp_id = #{spId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hospital_purchase.pojo.Supplier">
+    update supplier
+    set supplier_name = #{supplierName,jdbcType=VARCHAR},
+      supplier_site = #{supplierSite,jdbcType=VARCHAR},
+      supplier_linkman = #{supplierLinkman,jdbcType=VARCHAR},
+      supplier_phone = #{supplierPhone,jdbcType=VARCHAR},
+      enterprise_category = #{enterpriseCategory,jdbcType=INTEGER},
+      licence = #{licence,jdbcType=VARCHAR},
+      licence_time = #{licenceTime,jdbcType=TIMESTAMP},
+      enterprise_linkman = #{enterpriseLinkman,jdbcType=VARCHAR},
+      enterprise_phone = #{enterprisePhone,jdbcType=INTEGER},
+      manage_scope = #{manageScope,jdbcType=VARCHAR},
+      registered_address = #{registeredAddress,jdbcType=VARCHAR},
+      relation_site = #{relationSite,jdbcType=VARCHAR},
+      postal_code = #{postalCode,jdbcType=INTEGER},
+      total_assets = #{totalAssets,jdbcType=REAL},
+      sobey_fax = #{sobeyFax,jdbcType=VARCHAR},
+      legal_person_name = #{legalPersonName,jdbcType=VARCHAR},
+      legal_person_number = #{legalPersonNumber,jdbcType=INTEGER},
+      enterprise_register_capital = #{enterpriseRegisterCapital,jdbcType=REAL},
+      last_year_money = #{lastYearMoney,jdbcType=REAL},
+      email_address = #{emailAddress,jdbcType=VARCHAR},
+      enterprise_url = #{enterpriseUrl,jdbcType=VARCHAR},
+      enterprise_code = #{enterpriseCode,jdbcType=INTEGER},
+      enterprise_code_time = #{enterpriseCodeTime,jdbcType=TIMESTAMP},
+      business_license = #{businessLicense,jdbcType=VARCHAR},
+      business_license_time = #{businessLicenseTime,jdbcType=TIMESTAMP},
+      is_letter_of_credit = #{isLetterOfCredit,jdbcType=INTEGER},
+      letter_credit_number = #{letterCreditNumber,jdbcType=INTEGER},
+      letter_credit_time = #{letterCreditTime,jdbcType=TIMESTAMP},
+      fixed_assets = #{fixedAssets,jdbcType=REAL},
+      company_profile = #{companyProfile,jdbcType=VARCHAR},
+      company_remarks = #{companyRemarks,jdbcType=VARCHAR},
+      creation_time = #{creationTime,jdbcType=TIMESTAMP},
+      modification_time = #{modificationTime,jdbcType=TIMESTAMP}
+    where sp_id = #{spId,jdbcType=INTEGER}
+  </update>
+</mapper>

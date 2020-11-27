@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hospital_purchase.dao.SupplierDrugMapper">
+  <resultMap id="BaseResultMap" type="com.hospital_purchase.pojo.SupplierDrug">
+    <id column="sd_id" jdbcType="INTEGER" property="sdId" />
+    <result column="supplier_id" jdbcType="INTEGER" property="supplierId" />
+    <result column="drug_id" jdbcType="INTEGER" property="drugId" />
+    <result column="supplier_drug_state" jdbcType="INTEGER" property="supplierDrugState" />
+    <result column="supplier_drug_opinion" jdbcType="VARCHAR" property="supplierDrugOpinion" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    sd_id, supplier_id, drug_id, supplier_drug_state, supplier_drug_opinion, gmt_create, 
+    gmt_modified
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from supplier_drug
+    where sd_id = #{sdId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from supplier_drug
+    where sd_id = #{sdId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hospital_purchase.pojo.SupplierDrug">
+    insert into supplier_drug (sd_id, supplier_id, drug_id, 
+      supplier_drug_state, supplier_drug_opinion, 
+      gmt_create, gmt_modified)
+    values (#{sdId,jdbcType=INTEGER}, #{supplierId,jdbcType=INTEGER}, #{drugId,jdbcType=INTEGER}, 
+      #{supplierDrugState,jdbcType=INTEGER}, #{supplierDrugOpinion,jdbcType=VARCHAR}, 
+      #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hospital_purchase.pojo.SupplierDrug">
+    insert into supplier_drug
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="sdId != null">
+        sd_id,
+      </if>
+      <if test="supplierId != null">
+        supplier_id,
+      </if>
+      <if test="drugId != null">
+        drug_id,
+      </if>
+      <if test="supplierDrugState != null">
+        supplier_drug_state,
+      </if>
+      <if test="supplierDrugOpinion != null">
+        supplier_drug_opinion,
+      </if>
+      <if test="gmtCreate != null">
+        gmt_create,
+      </if>
+      <if test="gmtModified != null">
+        gmt_modified,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="sdId != null">
+        #{sdId,jdbcType=INTEGER},
+      </if>
+      <if test="supplierId != null">
+        #{supplierId,jdbcType=INTEGER},
+      </if>
+      <if test="drugId != null">
+        #{drugId,jdbcType=INTEGER},
+      </if>
+      <if test="supplierDrugState != null">
+        #{supplierDrugState,jdbcType=INTEGER},
+      </if>
+      <if test="supplierDrugOpinion != null">
+        #{supplierDrugOpinion,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtCreate != null">
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null">
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hospital_purchase.pojo.SupplierDrug">
+    update supplier_drug
+    <set>
+      <if test="supplierId != null">
+        supplier_id = #{supplierId,jdbcType=INTEGER},
+      </if>
+      <if test="drugId != null">
+        drug_id = #{drugId,jdbcType=INTEGER},
+      </if>
+      <if test="supplierDrugState != null">
+        supplier_drug_state = #{supplierDrugState,jdbcType=INTEGER},
+      </if>
+      <if test="supplierDrugOpinion != null">
+        supplier_drug_opinion = #{supplierDrugOpinion,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtCreate != null">
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null">
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where sd_id = #{sdId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hospital_purchase.pojo.SupplierDrug">
+    update supplier_drug
+    set supplier_id = #{supplierId,jdbcType=INTEGER},
+      drug_id = #{drugId,jdbcType=INTEGER},
+      supplier_drug_state = #{supplierDrugState,jdbcType=INTEGER},
+      supplier_drug_opinion = #{supplierDrugOpinion,jdbcType=VARCHAR},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
+    where sd_id = #{sdId,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hospital_purchase.dao.PaymentDrugMapper">
+  <resultMap id="BaseResultMap" type="com.hospital_purchase.pojo.PaymentDrug">
+    <id column="pd_id" jdbcType="INTEGER" property="pdId" />
+    <result column="purchase_id" jdbcType="INTEGER" property="purchaseId" />
+    <result column="drug_id" jdbcType="INTEGER" property="drugId" />
+    <result column="settiement_orders_id" jdbcType="INTEGER" property="settiementOrdersId" />
+    <result column="payment_quantity" jdbcType="INTEGER" property="paymentQuantity" />
+    <result column="payment_money" jdbcType="REAL" property="paymentMoney" />
+    <result column="payment_state" jdbcType="INTEGER" property="paymentState" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pd_id, purchase_id, drug_id, settiement_orders_id, payment_quantity, payment_money, 
+    payment_state, gmt_create, gmt_modified
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from payment_drug
+    where pd_id = #{pdId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from payment_drug
+    where pd_id = #{pdId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hospital_purchase.pojo.PaymentDrug">
+    insert into payment_drug (pd_id, purchase_id, drug_id, 
+      settiement_orders_id, payment_quantity, payment_money, 
+      payment_state, gmt_create, gmt_modified
+      )
+    values (#{pdId,jdbcType=INTEGER}, #{purchaseId,jdbcType=INTEGER}, #{drugId,jdbcType=INTEGER}, 
+      #{settiementOrdersId,jdbcType=INTEGER}, #{paymentQuantity,jdbcType=INTEGER}, #{paymentMoney,jdbcType=REAL}, 
+      #{paymentState,jdbcType=INTEGER}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hospital_purchase.pojo.PaymentDrug">
+    insert into payment_drug
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="pdId != null">
+        pd_id,
+      </if>
+      <if test="purchaseId != null">
+        purchase_id,
+      </if>
+      <if test="drugId != null">
+        drug_id,
+      </if>
+      <if test="settiementOrdersId != null">
+        settiement_orders_id,
+      </if>
+      <if test="paymentQuantity != null">
+        payment_quantity,
+      </if>
+      <if test="paymentMoney != null">
+        payment_money,
+      </if>
+      <if test="paymentState != null">
+        payment_state,
+      </if>
+      <if test="gmtCreate != null">
+        gmt_create,
+      </if>
+      <if test="gmtModified != null">
+        gmt_modified,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="pdId != null">
+        #{pdId,jdbcType=INTEGER},
+      </if>
+      <if test="purchaseId != null">
+        #{purchaseId,jdbcType=INTEGER},
+      </if>
+      <if test="drugId != null">
+        #{drugId,jdbcType=INTEGER},
+      </if>
+      <if test="settiementOrdersId != null">
+        #{settiementOrdersId,jdbcType=INTEGER},
+      </if>
+      <if test="paymentQuantity != null">
+        #{paymentQuantity,jdbcType=INTEGER},
+      </if>
+      <if test="paymentMoney != null">
+        #{paymentMoney,jdbcType=REAL},
+      </if>
+      <if test="paymentState != null">
+        #{paymentState,jdbcType=INTEGER},
+      </if>
+      <if test="gmtCreate != null">
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null">
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hospital_purchase.pojo.PaymentDrug">
+    update payment_drug
+    <set>
+      <if test="purchaseId != null">
+        purchase_id = #{purchaseId,jdbcType=INTEGER},
+      </if>
+      <if test="drugId != null">
+        drug_id = #{drugId,jdbcType=INTEGER},
+      </if>
+      <if test="settiementOrdersId != null">
+        settiement_orders_id = #{settiementOrdersId,jdbcType=INTEGER},
+      </if>
+      <if test="paymentQuantity != null">
+        payment_quantity = #{paymentQuantity,jdbcType=INTEGER},
+      </if>
+      <if test="paymentMoney != null">
+        payment_money = #{paymentMoney,jdbcType=REAL},
+      </if>
+      <if test="paymentState != null">
+        payment_state = #{paymentState,jdbcType=INTEGER},
+      </if>
+      <if test="gmtCreate != null">
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null">
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where pd_id = #{pdId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hospital_purchase.pojo.PaymentDrug">
+    update payment_drug
+    set purchase_id = #{purchaseId,jdbcType=INTEGER},
+      drug_id = #{drugId,jdbcType=INTEGER},
+      settiement_orders_id = #{settiementOrdersId,jdbcType=INTEGER},
+      payment_quantity = #{paymentQuantity,jdbcType=INTEGER},
+      payment_money = #{paymentMoney,jdbcType=REAL},
+      payment_state = #{paymentState,jdbcType=INTEGER},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
+    where pd_id = #{pdId,jdbcType=INTEGER}
+  </update>
+</mapper>

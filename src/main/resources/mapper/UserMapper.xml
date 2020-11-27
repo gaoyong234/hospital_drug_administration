@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hospital_purchase.dao.UserMapper">
+  <resultMap id="BaseResultMap" type="com.hospital_purchase.pojo.User">
+    <id column="us_id" jdbcType="INTEGER" property="usId" />
+    <result column="user_account" jdbcType="INTEGER" property="userAccount" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="user_category" jdbcType="INTEGER" property="userCategory" />
+    <result column="user_password" jdbcType="VARCHAR" property="userPassword" />
+    <result column="user_state" jdbcType="INTEGER" property="userState" />
+    <result column="user_unit" jdbcType="VARCHAR" property="userUnit" />
+    <result column="contact_address" jdbcType="VARCHAR" property="contactAddress" />
+    <result column="user_postal_code" jdbcType="INTEGER" property="userPostalCode" />
+    <result column="user_linkman" jdbcType="VARCHAR" property="userLinkman" />
+    <result column="user_phone" jdbcType="INTEGER" property="userPhone" />
+    <result column="user_email" jdbcType="VARCHAR" property="userEmail" />
+    <result column="creation_time" jdbcType="TIMESTAMP" property="creationTime" />
+    <result column="modification_time" jdbcType="TIMESTAMP" property="modificationTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    us_id, user_account, user_name, user_category, user_password, user_state, user_unit, 
+    contact_address, user_postal_code, user_linkman, user_phone, user_email, creation_time, 
+    modification_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from user
+    where us_id = #{usId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from user
+    where us_id = #{usId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hospital_purchase.pojo.User">
+    insert into user (us_id, user_account, user_name, 
+      user_category, user_password, user_state, 
+      user_unit, contact_address, user_postal_code, 
+      user_linkman, user_phone, user_email, 
+      creation_time, modification_time)
+    values (#{usId,jdbcType=INTEGER}, #{userAccount,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, 
+      #{userCategory,jdbcType=INTEGER}, #{userPassword,jdbcType=VARCHAR}, #{userState,jdbcType=INTEGER}, 
+      #{userUnit,jdbcType=VARCHAR}, #{contactAddress,jdbcType=VARCHAR}, #{userPostalCode,jdbcType=INTEGER}, 
+      #{userLinkman,jdbcType=VARCHAR}, #{userPhone,jdbcType=INTEGER}, #{userEmail,jdbcType=VARCHAR}, 
+      #{creationTime,jdbcType=TIMESTAMP}, #{modificationTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hospital_purchase.pojo.User">
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="usId != null">
+        us_id,
+      </if>
+      <if test="userAccount != null">
+        user_account,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="userCategory != null">
+        user_category,
+      </if>
+      <if test="userPassword != null">
+        user_password,
+      </if>
+      <if test="userState != null">
+        user_state,
+      </if>
+      <if test="userUnit != null">
+        user_unit,
+      </if>
+      <if test="contactAddress != null">
+        contact_address,
+      </if>
+      <if test="userPostalCode != null">
+        user_postal_code,
+      </if>
+      <if test="userLinkman != null">
+        user_linkman,
+      </if>
+      <if test="userPhone != null">
+        user_phone,
+      </if>
+      <if test="userEmail != null">
+        user_email,
+      </if>
+      <if test="creationTime != null">
+        creation_time,
+      </if>
+      <if test="modificationTime != null">
+        modification_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="usId != null">
+        #{usId,jdbcType=INTEGER},
+      </if>
+      <if test="userAccount != null">
+        #{userAccount,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userCategory != null">
+        #{userCategory,jdbcType=INTEGER},
+      </if>
+      <if test="userPassword != null">
+        #{userPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="userState != null">
+        #{userState,jdbcType=INTEGER},
+      </if>
+      <if test="userUnit != null">
+        #{userUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="contactAddress != null">
+        #{contactAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="userPostalCode != null">
+        #{userPostalCode,jdbcType=INTEGER},
+      </if>
+      <if test="userLinkman != null">
+        #{userLinkman,jdbcType=VARCHAR},
+      </if>
+      <if test="userPhone != null">
+        #{userPhone,jdbcType=INTEGER},
+      </if>
+      <if test="userEmail != null">
+        #{userEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="creationTime != null">
+        #{creationTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modificationTime != null">
+        #{modificationTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hospital_purchase.pojo.User">
+    update user
+    <set>
+      <if test="userAccount != null">
+        user_account = #{userAccount,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userCategory != null">
+        user_category = #{userCategory,jdbcType=INTEGER},
+      </if>
+      <if test="userPassword != null">
+        user_password = #{userPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="userState != null">
+        user_state = #{userState,jdbcType=INTEGER},
+      </if>
+      <if test="userUnit != null">
+        user_unit = #{userUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="contactAddress != null">
+        contact_address = #{contactAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="userPostalCode != null">
+        user_postal_code = #{userPostalCode,jdbcType=INTEGER},
+      </if>
+      <if test="userLinkman != null">
+        user_linkman = #{userLinkman,jdbcType=VARCHAR},
+      </if>
+      <if test="userPhone != null">
+        user_phone = #{userPhone,jdbcType=INTEGER},
+      </if>
+      <if test="userEmail != null">
+        user_email = #{userEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="creationTime != null">
+        creation_time = #{creationTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modificationTime != null">
+        modification_time = #{modificationTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where us_id = #{usId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hospital_purchase.pojo.User">
+    update user
+    set user_account = #{userAccount,jdbcType=INTEGER},
+      user_name = #{userName,jdbcType=VARCHAR},
+      user_category = #{userCategory,jdbcType=INTEGER},
+      user_password = #{userPassword,jdbcType=VARCHAR},
+      user_state = #{userState,jdbcType=INTEGER},
+      user_unit = #{userUnit,jdbcType=VARCHAR},
+      contact_address = #{contactAddress,jdbcType=VARCHAR},
+      user_postal_code = #{userPostalCode,jdbcType=INTEGER},
+      user_linkman = #{userLinkman,jdbcType=VARCHAR},
+      user_phone = #{userPhone,jdbcType=INTEGER},
+      user_email = #{userEmail,jdbcType=VARCHAR},
+      creation_time = #{creationTime,jdbcType=TIMESTAMP},
+      modification_time = #{modificationTime,jdbcType=TIMESTAMP}
+    where us_id = #{usId,jdbcType=INTEGER}
+  </update>
+</mapper>

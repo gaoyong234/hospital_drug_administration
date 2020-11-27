@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hospital_purchase.dao.PurchaseDrugMapper">
+  <resultMap id="BaseResultMap" type="com.hospital_purchase.pojo.PurchaseDrug">
+    <id column="pd_id" jdbcType="INTEGER" property="pdId" />
+    <result column=" purchase_id" jdbcType="INTEGER" property="purchaseId" />
+    <result column=" drug_id" jdbcType="INTEGER" property="drugId" />
+    <result column="supplier_id" jdbcType="INTEGER" property="supplierId" />
+    <result column=" bid_price" jdbcType="DECIMAL" property="bidPrice" />
+    <result column=" deal_price" jdbcType="DECIMAL" property="dealPrice" />
+    <result column="purchase_quantity" jdbcType="INTEGER" property="purchaseQuantity" />
+    <result column=" purchase_total_amount" jdbcType="DECIMAL" property="purchaseTotalAmount" />
+    <result column=" purchase_state" jdbcType="INTEGER" property="purchaseState" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="modified_time" jdbcType="TIMESTAMP" property="modifiedTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pd_id, " purchase_id", " drug_id", supplier_id, " bid_price", " deal_price", purchase_quantity, 
+    " purchase_total_amount", " purchase_state", create_time, modified_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from purchase_drug
+    where pd_id = #{pdId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from purchase_drug
+    where pd_id = #{pdId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hospital_purchase.pojo.PurchaseDrug">
+    insert into purchase_drug (pd_id, " purchase_id", " drug_id", 
+      supplier_id, " bid_price", " deal_price", 
+      purchase_quantity, " purchase_total_amount", 
+      " purchase_state", create_time, modified_time
+      )
+    values (#{pdId,jdbcType=INTEGER}, #{purchaseId,jdbcType=INTEGER}, #{drugId,jdbcType=INTEGER}, 
+      #{supplierId,jdbcType=INTEGER}, #{bidPrice,jdbcType=DECIMAL}, #{dealPrice,jdbcType=DECIMAL}, 
+      #{purchaseQuantity,jdbcType=INTEGER}, #{purchaseTotalAmount,jdbcType=DECIMAL}, 
+      #{purchaseState,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{modifiedTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hospital_purchase.pojo.PurchaseDrug">
+    insert into purchase_drug
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="pdId != null">
+        pd_id,
+      </if>
+      <if test="purchaseId != null">
+        " purchase_id",
+      </if>
+      <if test="drugId != null">
+        " drug_id",
+      </if>
+      <if test="supplierId != null">
+        supplier_id,
+      </if>
+      <if test="bidPrice != null">
+        " bid_price",
+      </if>
+      <if test="dealPrice != null">
+        " deal_price",
+      </if>
+      <if test="purchaseQuantity != null">
+        purchase_quantity,
+      </if>
+      <if test="purchaseTotalAmount != null">
+        " purchase_total_amount",
+      </if>
+      <if test="purchaseState != null">
+        " purchase_state",
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="modifiedTime != null">
+        modified_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="pdId != null">
+        #{pdId,jdbcType=INTEGER},
+      </if>
+      <if test="purchaseId != null">
+        #{purchaseId,jdbcType=INTEGER},
+      </if>
+      <if test="drugId != null">
+        #{drugId,jdbcType=INTEGER},
+      </if>
+      <if test="supplierId != null">
+        #{supplierId,jdbcType=INTEGER},
+      </if>
+      <if test="bidPrice != null">
+        #{bidPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="dealPrice != null">
+        #{dealPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="purchaseQuantity != null">
+        #{purchaseQuantity,jdbcType=INTEGER},
+      </if>
+      <if test="purchaseTotalAmount != null">
+        #{purchaseTotalAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="purchaseState != null">
+        #{purchaseState,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifiedTime != null">
+        #{modifiedTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hospital_purchase.pojo.PurchaseDrug">
+    update purchase_drug
+    <set>
+      <if test="purchaseId != null">
+        " purchase_id" = #{purchaseId,jdbcType=INTEGER},
+      </if>
+      <if test="drugId != null">
+        " drug_id" = #{drugId,jdbcType=INTEGER},
+      </if>
+      <if test="supplierId != null">
+        supplier_id = #{supplierId,jdbcType=INTEGER},
+      </if>
+      <if test="bidPrice != null">
+        " bid_price" = #{bidPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="dealPrice != null">
+        " deal_price" = #{dealPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="purchaseQuantity != null">
+        purchase_quantity = #{purchaseQuantity,jdbcType=INTEGER},
+      </if>
+      <if test="purchaseTotalAmount != null">
+        " purchase_total_amount" = #{purchaseTotalAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="purchaseState != null">
+        " purchase_state" = #{purchaseState,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifiedTime != null">
+        modified_time = #{modifiedTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where pd_id = #{pdId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hospital_purchase.pojo.PurchaseDrug">
+    update purchase_drug
+    set " purchase_id" = #{purchaseId,jdbcType=INTEGER},
+      " drug_id" = #{drugId,jdbcType=INTEGER},
+      supplier_id = #{supplierId,jdbcType=INTEGER},
+      " bid_price" = #{bidPrice,jdbcType=DECIMAL},
+      " deal_price" = #{dealPrice,jdbcType=DECIMAL},
+      purchase_quantity = #{purchaseQuantity,jdbcType=INTEGER},
+      " purchase_total_amount" = #{purchaseTotalAmount,jdbcType=DECIMAL},
+      " purchase_state" = #{purchaseState,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      modified_time = #{modifiedTime,jdbcType=TIMESTAMP}
+    where pd_id = #{pdId,jdbcType=INTEGER}
+  </update>
+</mapper>

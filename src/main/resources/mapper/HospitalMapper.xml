@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hospital_purchase.dao.HospitalMapper">
+  <resultMap id="BaseResultMap" type="com.hospital_purchase.pojo.Hospital">
+    <id column="hp_id" jdbcType="INTEGER" property="hpId" />
+    <result column="hospital_name" jdbcType="VARCHAR" property="hospitalName" />
+    <result column="mailing_address" jdbcType="VARCHAR" property="mailingAddress" />
+    <result column="postal_code" jdbcType="INTEGER" property="postalCode" />
+    <result column="affiliating_area" jdbcType="VARCHAR" property="affiliatingArea" />
+    <result column="hospital_rank" jdbcType="INTEGER" property="hospitalRank" />
+    <result column="number_bed" jdbcType="INTEGER" property="numberBed" />
+    <result column="is_profit" jdbcType="INTEGER" property="isProfit" />
+    <result column="dean_phone" jdbcType="INTEGER" property="deanPhone" />
+    <result column="dean_fax" jdbcType="VARCHAR" property="deanFax" />
+    <result column="medicament_phone" jdbcType="INTEGER" property="medicamentPhone" />
+    <result column="hospital_type" jdbcType="INTEGER" property="hospitalType" />
+    <result column="last_drug_money" jdbcType="REAL" property="lastDrugMoney" />
+    <result column="last_business_money" jdbcType="REAL" property="lastBusinessMoney" />
+    <result column="creation_time" jdbcType="TIMESTAMP" property="creationTime" />
+    <result column="modification_time" jdbcType="TIMESTAMP" property="modificationTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    hp_id, hospital_name, mailing_address, postal_code, affiliating_area, hospital_rank, 
+    number_bed, is_profit, dean_phone, dean_fax, medicament_phone, hospital_type, last_drug_money, 
+    last_business_money, creation_time, modification_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from hospital
+    where hp_id = #{hpId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from hospital
+    where hp_id = #{hpId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hospital_purchase.pojo.Hospital">
+    insert into hospital (hp_id, hospital_name, mailing_address, 
+      postal_code, affiliating_area, hospital_rank, 
+      number_bed, is_profit, dean_phone, 
+      dean_fax, medicament_phone, hospital_type, 
+      last_drug_money, last_business_money, creation_time, 
+      modification_time)
+    values (#{hpId,jdbcType=INTEGER}, #{hospitalName,jdbcType=VARCHAR}, #{mailingAddress,jdbcType=VARCHAR}, 
+      #{postalCode,jdbcType=INTEGER}, #{affiliatingArea,jdbcType=VARCHAR}, #{hospitalRank,jdbcType=INTEGER}, 
+      #{numberBed,jdbcType=INTEGER}, #{isProfit,jdbcType=INTEGER}, #{deanPhone,jdbcType=INTEGER}, 
+      #{deanFax,jdbcType=VARCHAR}, #{medicamentPhone,jdbcType=INTEGER}, #{hospitalType,jdbcType=INTEGER}, 
+      #{lastDrugMoney,jdbcType=REAL}, #{lastBusinessMoney,jdbcType=REAL}, #{creationTime,jdbcType=TIMESTAMP}, 
+      #{modificationTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hospital_purchase.pojo.Hospital">
+    insert into hospital
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="hpId != null">
+        hp_id,
+      </if>
+      <if test="hospitalName != null">
+        hospital_name,
+      </if>
+      <if test="mailingAddress != null">
+        mailing_address,
+      </if>
+      <if test="postalCode != null">
+        postal_code,
+      </if>
+      <if test="affiliatingArea != null">
+        affiliating_area,
+      </if>
+      <if test="hospitalRank != null">
+        hospital_rank,
+      </if>
+      <if test="numberBed != null">
+        number_bed,
+      </if>
+      <if test="isProfit != null">
+        is_profit,
+      </if>
+      <if test="deanPhone != null">
+        dean_phone,
+      </if>
+      <if test="deanFax != null">
+        dean_fax,
+      </if>
+      <if test="medicamentPhone != null">
+        medicament_phone,
+      </if>
+      <if test="hospitalType != null">
+        hospital_type,
+      </if>
+      <if test="lastDrugMoney != null">
+        last_drug_money,
+      </if>
+      <if test="lastBusinessMoney != null">
+        last_business_money,
+      </if>
+      <if test="creationTime != null">
+        creation_time,
+      </if>
+      <if test="modificationTime != null">
+        modification_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="hpId != null">
+        #{hpId,jdbcType=INTEGER},
+      </if>
+      <if test="hospitalName != null">
+        #{hospitalName,jdbcType=VARCHAR},
+      </if>
+      <if test="mailingAddress != null">
+        #{mailingAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="postalCode != null">
+        #{postalCode,jdbcType=INTEGER},
+      </if>
+      <if test="affiliatingArea != null">
+        #{affiliatingArea,jdbcType=VARCHAR},
+      </if>
+      <if test="hospitalRank != null">
+        #{hospitalRank,jdbcType=INTEGER},
+      </if>
+      <if test="numberBed != null">
+        #{numberBed,jdbcType=INTEGER},
+      </if>
+      <if test="isProfit != null">
+        #{isProfit,jdbcType=INTEGER},
+      </if>
+      <if test="deanPhone != null">
+        #{deanPhone,jdbcType=INTEGER},
+      </if>
+      <if test="deanFax != null">
+        #{deanFax,jdbcType=VARCHAR},
+      </if>
+      <if test="medicamentPhone != null">
+        #{medicamentPhone,jdbcType=INTEGER},
+      </if>
+      <if test="hospitalType != null">
+        #{hospitalType,jdbcType=INTEGER},
+      </if>
+      <if test="lastDrugMoney != null">
+        #{lastDrugMoney,jdbcType=REAL},
+      </if>
+      <if test="lastBusinessMoney != null">
+        #{lastBusinessMoney,jdbcType=REAL},
+      </if>
+      <if test="creationTime != null">
+        #{creationTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modificationTime != null">
+        #{modificationTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hospital_purchase.pojo.Hospital">
+    update hospital
+    <set>
+      <if test="hospitalName != null">
+        hospital_name = #{hospitalName,jdbcType=VARCHAR},
+      </if>
+      <if test="mailingAddress != null">
+        mailing_address = #{mailingAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="postalCode != null">
+        postal_code = #{postalCode,jdbcType=INTEGER},
+      </if>
+      <if test="affiliatingArea != null">
+        affiliating_area = #{affiliatingArea,jdbcType=VARCHAR},
+      </if>
+      <if test="hospitalRank != null">
+        hospital_rank = #{hospitalRank,jdbcType=INTEGER},
+      </if>
+      <if test="numberBed != null">
+        number_bed = #{numberBed,jdbcType=INTEGER},
+      </if>
+      <if test="isProfit != null">
+        is_profit = #{isProfit,jdbcType=INTEGER},
+      </if>
+      <if test="deanPhone != null">
+        dean_phone = #{deanPhone,jdbcType=INTEGER},
+      </if>
+      <if test="deanFax != null">
+        dean_fax = #{deanFax,jdbcType=VARCHAR},
+      </if>
+      <if test="medicamentPhone != null">
+        medicament_phone = #{medicamentPhone,jdbcType=INTEGER},
+      </if>
+      <if test="hospitalType != null">
+        hospital_type = #{hospitalType,jdbcType=INTEGER},
+      </if>
+      <if test="lastDrugMoney != null">
+        last_drug_money = #{lastDrugMoney,jdbcType=REAL},
+      </if>
+      <if test="lastBusinessMoney != null">
+        last_business_money = #{lastBusinessMoney,jdbcType=REAL},
+      </if>
+      <if test="creationTime != null">
+        creation_time = #{creationTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modificationTime != null">
+        modification_time = #{modificationTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where hp_id = #{hpId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hospital_purchase.pojo.Hospital">
+    update hospital
+    set hospital_name = #{hospitalName,jdbcType=VARCHAR},
+      mailing_address = #{mailingAddress,jdbcType=VARCHAR},
+      postal_code = #{postalCode,jdbcType=INTEGER},
+      affiliating_area = #{affiliatingArea,jdbcType=VARCHAR},
+      hospital_rank = #{hospitalRank,jdbcType=INTEGER},
+      number_bed = #{numberBed,jdbcType=INTEGER},
+      is_profit = #{isProfit,jdbcType=INTEGER},
+      dean_phone = #{deanPhone,jdbcType=INTEGER},
+      dean_fax = #{deanFax,jdbcType=VARCHAR},
+      medicament_phone = #{medicamentPhone,jdbcType=INTEGER},
+      hospital_type = #{hospitalType,jdbcType=INTEGER},
+      last_drug_money = #{lastDrugMoney,jdbcType=REAL},
+      last_business_money = #{lastBusinessMoney,jdbcType=REAL},
+      creation_time = #{creationTime,jdbcType=TIMESTAMP},
+      modification_time = #{modificationTime,jdbcType=TIMESTAMP}
+    where hp_id = #{hpId,jdbcType=INTEGER}
+  </update>
+</mapper>

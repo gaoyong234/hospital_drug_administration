@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hospital_purchase.dao.PurchaseDrugDorrelationMapper">
+  <resultMap id="BaseResultMap" type="com.hospital_purchase.pojo.PurchaseDrugDorrelation">
+    <id column="dc_id" jdbcType="INTEGER" property="dcId" />
+    <result column="hospital_id" jdbcType="INTEGER" property="hospitalId" />
+    <result column="drug_message_id" jdbcType="INTEGER" property="drugMessageId" />
+    <result column="drug_supplier_id" jdbcType="INTEGER" property="drugSupplierId" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    dc_id, hospital_id, drug_message_id, drug_supplier_id, gmt_create, gmt_modified
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from purchase_drug_correlation
+    where dc_id = #{dcId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from purchase_drug_correlation
+    where dc_id = #{dcId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hospital_purchase.pojo.PurchaseDrugDorrelation">
+    insert into purchase_drug_correlation (dc_id, hospital_id, drug_message_id, 
+      drug_supplier_id, gmt_create, gmt_modified
+      )
+    values (#{dcId,jdbcType=INTEGER}, #{hospitalId,jdbcType=INTEGER}, #{drugMessageId,jdbcType=INTEGER}, 
+      #{drugSupplierId,jdbcType=INTEGER}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hospital_purchase.pojo.PurchaseDrugDorrelation">
+    insert into purchase_drug_correlation
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="dcId != null">
+        dc_id,
+      </if>
+      <if test="hospitalId != null">
+        hospital_id,
+      </if>
+      <if test="drugMessageId != null">
+        drug_message_id,
+      </if>
+      <if test="drugSupplierId != null">
+        drug_supplier_id,
+      </if>
+      <if test="gmtCreate != null">
+        gmt_create,
+      </if>
+      <if test="gmtModified != null">
+        gmt_modified,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="dcId != null">
+        #{dcId,jdbcType=INTEGER},
+      </if>
+      <if test="hospitalId != null">
+        #{hospitalId,jdbcType=INTEGER},
+      </if>
+      <if test="drugMessageId != null">
+        #{drugMessageId,jdbcType=INTEGER},
+      </if>
+      <if test="drugSupplierId != null">
+        #{drugSupplierId,jdbcType=INTEGER},
+      </if>
+      <if test="gmtCreate != null">
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null">
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hospital_purchase.pojo.PurchaseDrugDorrelation">
+    update purchase_drug_correlation
+    <set>
+      <if test="hospitalId != null">
+        hospital_id = #{hospitalId,jdbcType=INTEGER},
+      </if>
+      <if test="drugMessageId != null">
+        drug_message_id = #{drugMessageId,jdbcType=INTEGER},
+      </if>
+      <if test="drugSupplierId != null">
+        drug_supplier_id = #{drugSupplierId,jdbcType=INTEGER},
+      </if>
+      <if test="gmtCreate != null">
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null">
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where dc_id = #{dcId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hospital_purchase.pojo.PurchaseDrugDorrelation">
+    update purchase_drug_correlation
+    set hospital_id = #{hospitalId,jdbcType=INTEGER},
+      drug_message_id = #{drugMessageId,jdbcType=INTEGER},
+      drug_supplier_id = #{drugSupplierId,jdbcType=INTEGER},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
+    where dc_id = #{dcId,jdbcType=INTEGER}
+  </update>
+</mapper>

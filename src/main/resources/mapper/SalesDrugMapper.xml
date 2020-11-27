@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hospital_purchase.dao.SalesDrugMapper">
+  <resultMap id="BaseResultMap" type="com.hospital_purchase.pojo.SalesDrug">
+    <id column="dr_id" jdbcType="INTEGER" property="drId" />
+    <result column="purchase_drug_id" jdbcType="INTEGER" property="purchaseDrugId" />
+    <result column="drug_name_id" jdbcType="INTEGER" property="drugNameId" />
+    <result column="sales_return_id" jdbcType="INTEGER" property="salesReturnId" />
+    <result column="sales_return_quantity" jdbcType="INTEGER" property="salesReturnQuantity" />
+    <result column="sales_return_money" jdbcType="DECIMAL" property="salesReturnMoney" />
+    <result column="sales_return_cause" jdbcType="VARCHAR" property="salesReturnCause" />
+    <result column="sales_return_state" jdbcType="INTEGER" property="salesReturnState" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    dr_id, purchase_drug_id, drug_name_id, sales_return_id, sales_return_quantity, sales_return_money, 
+    sales_return_cause, sales_return_state
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from sales_drug
+    where dr_id = #{drId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sales_drug
+    where dr_id = #{drId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hospital_purchase.pojo.SalesDrug">
+    insert into sales_drug (dr_id, purchase_drug_id, drug_name_id, 
+      sales_return_id, sales_return_quantity, sales_return_money, 
+      sales_return_cause, sales_return_state)
+    values (#{drId,jdbcType=INTEGER}, #{purchaseDrugId,jdbcType=INTEGER}, #{drugNameId,jdbcType=INTEGER}, 
+      #{salesReturnId,jdbcType=INTEGER}, #{salesReturnQuantity,jdbcType=INTEGER}, #{salesReturnMoney,jdbcType=DECIMAL}, 
+      #{salesReturnCause,jdbcType=VARCHAR}, #{salesReturnState,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hospital_purchase.pojo.SalesDrug">
+    insert into sales_drug
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="drId != null">
+        dr_id,
+      </if>
+      <if test="purchaseDrugId != null">
+        purchase_drug_id,
+      </if>
+      <if test="drugNameId != null">
+        drug_name_id,
+      </if>
+      <if test="salesReturnId != null">
+        sales_return_id,
+      </if>
+      <if test="salesReturnQuantity != null">
+        sales_return_quantity,
+      </if>
+      <if test="salesReturnMoney != null">
+        sales_return_money,
+      </if>
+      <if test="salesReturnCause != null">
+        sales_return_cause,
+      </if>
+      <if test="salesReturnState != null">
+        sales_return_state,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="drId != null">
+        #{drId,jdbcType=INTEGER},
+      </if>
+      <if test="purchaseDrugId != null">
+        #{purchaseDrugId,jdbcType=INTEGER},
+      </if>
+      <if test="drugNameId != null">
+        #{drugNameId,jdbcType=INTEGER},
+      </if>
+      <if test="salesReturnId != null">
+        #{salesReturnId,jdbcType=INTEGER},
+      </if>
+      <if test="salesReturnQuantity != null">
+        #{salesReturnQuantity,jdbcType=INTEGER},
+      </if>
+      <if test="salesReturnMoney != null">
+        #{salesReturnMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="salesReturnCause != null">
+        #{salesReturnCause,jdbcType=VARCHAR},
+      </if>
+      <if test="salesReturnState != null">
+        #{salesReturnState,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hospital_purchase.pojo.SalesDrug">
+    update sales_drug
+    <set>
+      <if test="purchaseDrugId != null">
+        purchase_drug_id = #{purchaseDrugId,jdbcType=INTEGER},
+      </if>
+      <if test="drugNameId != null">
+        drug_name_id = #{drugNameId,jdbcType=INTEGER},
+      </if>
+      <if test="salesReturnId != null">
+        sales_return_id = #{salesReturnId,jdbcType=INTEGER},
+      </if>
+      <if test="salesReturnQuantity != null">
+        sales_return_quantity = #{salesReturnQuantity,jdbcType=INTEGER},
+      </if>
+      <if test="salesReturnMoney != null">
+        sales_return_money = #{salesReturnMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="salesReturnCause != null">
+        sales_return_cause = #{salesReturnCause,jdbcType=VARCHAR},
+      </if>
+      <if test="salesReturnState != null">
+        sales_return_state = #{salesReturnState,jdbcType=INTEGER},
+      </if>
+    </set>
+    where dr_id = #{drId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hospital_purchase.pojo.SalesDrug">
+    update sales_drug
+    set purchase_drug_id = #{purchaseDrugId,jdbcType=INTEGER},
+      drug_name_id = #{drugNameId,jdbcType=INTEGER},
+      sales_return_id = #{salesReturnId,jdbcType=INTEGER},
+      sales_return_quantity = #{salesReturnQuantity,jdbcType=INTEGER},
+      sales_return_money = #{salesReturnMoney,jdbcType=DECIMAL},
+      sales_return_cause = #{salesReturnCause,jdbcType=VARCHAR},
+      sales_return_state = #{salesReturnState,jdbcType=INTEGER}
+    where dr_id = #{drId,jdbcType=INTEGER}
+  </update>
+</mapper>
