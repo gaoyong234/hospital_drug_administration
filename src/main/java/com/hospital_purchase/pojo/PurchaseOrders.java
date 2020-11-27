@@ -27,8 +27,6 @@ public class PurchaseOrders {
 
     private Integer userId;
 
-    private String auditOpinion;
-
     private Date auditTime;
 
     private String purchaseNumber;
@@ -47,14 +45,6 @@ public class PurchaseOrders {
 
     public void setAuditState(Integer auditState) {
         this.auditState = auditState;
-    }
-
-    public String getAuditOpinion() {
-        return auditOpinion;
-    }
-
-    public void setAuditOpinion(String auditOpinion) {
-        this.auditOpinion = auditOpinion == null ? null : auditOpinion.trim();
     }
 
     public Integer getHospitalId() {
