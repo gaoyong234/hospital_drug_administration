@@ -97,10 +97,11 @@
             </div>
             <ul class="sidebar-menu">
                 <li class="header">菜单</li>
+                <!--药品品目维护-->
                 <li class="treeview"  ng-if="true"><!-- ng-if="isInArray(rolenames,'KEZHANG')||isInArray(rolenames,'KESHICAOZUO')" -->
                     <a href="#">
                         <i class="fa fa-folder"></i>
-                        <span>药品目录</span>
+                        <span>药品品目维护</span>
                         <span class="pull-right-container">
 				       			<i class="fa fa-angle-left pull-right"></i>
 				   		 	</span>
@@ -108,32 +109,59 @@
                     <ul class="treeview-menu">
                         <li id="admin-login">
                             <a href="registrationOfCasesAjax.html" target="iframe">
-                                <i class="fa fa-circle-o"></i> 药品目录维护
+                                <i class="fa fa-circle-o"></i> 药品品目查询
+                            </a>
+                        </li>
+                        <li id="admin-login">
+                            <a href="registrationOfCasesAjax.html" target="iframe">
+                                <i class="fa fa-circle-o"></i> 药品品目添加
                             </a>
                         </li>
                         <li id="admin-login">
                             <a href="daily_audit.html" target="iframe">
-                                <i class="fa fa-circle-o"></i> 药品目录查询
+                                <i class="fa fa-circle-o"></i> 药品品目修改
                             </a>
                         </li>
                         <li id="admin-login">
                             <a href="special_audit.html" target="iframe">
-                                <i class="fa fa-circle-o"></i> 采购目录维护
-                            </a>
-                        </li>
-                        <li id="admin-login">
-                            <a href="approval.html" target="iframe">
-                                <i class="fa fa-circle-o"></i> 供货目录维护
-                            </a>
-                        </li>
-                        <li id="admin-login" ng-if="true" ><!-- ng-if="isInArray(rolenames,'KEZHANG')" -->
-                            <a href="registrationOfCases02.html" target="iframe">
-                                <i class="fa fa-circle-o"></i> 供货目录控制
+                                <i class="fa fa-circle-o"></i> 药品品目删除
                             </a>
                         </li>
                     </ul>
                 </li>
-                <!-- 菜单 -->
+                <!--药品信息维护-->
+                <li class="treeview"  ng-if="true"><!-- ng-if="isInArray(rolenames,'KEZHANG')||isInArray(rolenames,'KESHICAOZUO')" -->
+                    <a href="#">
+                        <i class="fa fa-folder"></i>
+                        <span>药品信息维护</span>
+                        <span class="pull-right-container">
+				       			<i class="fa fa-angle-left pull-right"></i>
+				   		 	</span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li id="admin-login">
+                            <a href="registrationOfCasesAjax.html" target="iframe">
+                                <i class="fa fa-circle-o"></i> 药品信息查询
+                            </a>
+                        </li>
+                        <li id="admin-login">
+                            <a href="registrationOfCasesAjax.html" target="iframe">
+                                <i class="fa fa-circle-o"></i> 药品信息添加
+                            </a>
+                        </li>
+                        <li id="admin-login">
+                            <a href="daily_audit.html" target="iframe">
+                                <i class="fa fa-circle-o"></i> 药品信息修改
+                            </a>
+                        </li>
+                        <li id="admin-login">
+                            <a href="special_audit.html" target="iframe">
+                                <i class="fa fa-circle-o"></i> 药品信息删除
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- 采购单管理 -->
                 <li class="treeview" ng-if="true"><!-- ng-if="isInArray(rolenames,'KEZHANG')||isInArray(rolenames,'KESHICAOZUO')" -->
                     <a href="#">
                         <i class="fa fa-folder"></i>
@@ -175,6 +203,61 @@
                         </li>
                     </ul>
                 </li>
+                <!--供货管理-->
+                <li class="treeview" ng-if="true" ><!-- ng-if="isInArray(rolenames,'KEZHANG')" -->
+                    <a href="#">
+                        <i class="fa fa-folder"></i>
+                        <span>供货管理</span>
+                        <span class="pull-right-container">
+				       			<i class="fa fa-angle-left pull-right"></i>
+				   		 	</span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li id="admin-login">
+                            <a href="audit_ncm_form.html" target="iframe">
+                                <i class="fa fa-circle-o"></i> 供货审核
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!--交易查询统计-->
+                <li class="treeview" ng-if="true" ><!-- ng-if="isInArray(rolenames,'KEZHANG')||isInArray(rolenames,'KESHICAOZUO')" -->
+                    <a href="#">
+                        <i class="fa fa-folder"></i>
+                        <span>查寻统计</span>
+                        <span class="pull-right-container">
+				       			<i class="fa fa-angle-left pull-right"></i>
+				   		 	</span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li id="admin-login">
+                            <a href="notification_case_management.html" target="iframe">
+                                <i class="fa fa-circle-o"></i> 按采购单查询
+                            </a>
+                        </li>
+                        <li id="admin-login">
+                            <a href="notification_case_management.html" target="iframe">
+                                <i class="fa fa-circle-o"></i> 按供货商统计交易情况
+                            </a>
+                        </li>
+                        <li id="admin-login">
+                            <a href="notification_case_management.html" target="iframe">
+                                <i class="fa fa-circle-o"></i> 按医院统计交易情况
+                            </a>
+                        </li>
+                        <li id="admin-login">
+                            <a href="notification_case_management.html" target="iframe">
+                                <i class="fa fa-circle-o"></i> 按药品统计交易情况
+                            </a>
+                        </li>
+                        <li id="admin-login">
+                            <a href="notification_case_management.html" target="iframe">
+                                <i class="fa fa-circle-o"></i> 交易明细查询
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!--结算单管理-->
                 <li class="treeview" ng-if="true" ><!-- ng-if="isInArray(rolenames,'KEZHANG')" -->
                     <a href="#">
                         <i class="fa fa-folder"></i>
@@ -206,6 +289,7 @@
                         </li>
                     </ul>
                 </li>
+                <!--退货单管理-->
                 <li class="treeview" ng-if="true" ><!-- ng-if="isInArray(rolenames,'KEZHANG')||isInArray(rolenames,'KESHICAOZUO')" -->
                     <a href="#">
                         <i class="fa fa-folder"></i>
@@ -237,37 +321,7 @@
                         </li>
                     </ul>
                 </li>
-                <li class="treeview" ng-if="true" ><!-- ng-if="isInArray(rolenames,'KEZHANG')||isInArray(rolenames,'KESHICAOZUO')" -->
-                    <a href="#">
-                        <i class="fa fa-folder"></i>
-                        <span>查寻统计</span>
-                        <span class="pull-right-container">
-				       			<i class="fa fa-angle-left pull-right"></i>
-				   		 	</span>
-                    </a>
-                    <ul class="treeview-menu">
-                        <li id="admin-login">
-                            <a href="notification_case_management.html" target="iframe">
-                                <i class="fa fa-circle-o"></i> 按药品统计交易情况
-                            </a>
-                        </li>
-                        <li id="admin-login">
-                            <a href="notification_case_management.html" target="iframe">
-                                <i class="fa fa-circle-o"></i> 按医院统计交易情况
-                            </a>
-                        </li>
-                        <li id="admin-login">
-                            <a href="notification_case_management.html" target="iframe">
-                                <i class="fa fa-circle-o"></i> 按供货商统计交易情况
-                            </a>
-                        </li>
-                        <li id="admin-login">
-                            <a href="notification_case_management.html" target="iframe">
-                                <i class="fa fa-circle-o"></i> 交易明细查询
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+                <!--系统管理-->
                 <li class="treeview" ng-if="true" ><!-- ng-if="isInArray(rolenames,'KEZHANG')||isInArray(rolenames,'KESHICAOZUO')" -->
                     <a href="#">
                         <i class="fa fa-folder"></i>
