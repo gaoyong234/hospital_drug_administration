@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <!-- 页面meta -->
@@ -108,7 +108,7 @@
                     </a>
                     <ul class="treeview-menu">
                         <li id="admin-login">
-                            <a href="registrationOfCasesAjax.html" target="iframe">
+                            <a th:href="@{/durgItemsInquire}" target="iframe">
                                 <i class="fa fa-circle-o"></i> 药品品目查询
                             </a>
                         </li>

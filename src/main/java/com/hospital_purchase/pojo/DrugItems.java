@@ -25,6 +25,10 @@ public class DrugItems {
 
     private String serialNumber;
 
+    private Integer drugCategory;
+
+    private Integer drugState;
+
     public Integer getDiId() {
         return diId;
     }
@@ -111,5 +115,21 @@ public class DrugItems {
 
     public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber == null ? null : serialNumber.trim();
+    }
+
+    public Integer getDrugCategory() {
+        return drugCategory;
+    }
+
+    public void setDrugCategory(Integer drugCategory) {
+        this.drugCategory = drugCategory;
+    }
+
+    public Integer getDrugState() {
+        return drugState;
+    }
+
+    public void setDrugState(Integer drugState) {
+        this.drugState = drugState;
     }
 }
