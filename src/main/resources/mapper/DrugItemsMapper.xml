@@ -7,16 +7,16 @@
     <result column="dosage_form" jdbcType="VARCHAR" property="dosageForm" />
     <result column="speciflcation" jdbcType="VARCHAR" property="speciflcation" />
     <result column="unit_id" jdbcType="INTEGER" property="unitId" />
-    <result column=" coefficient" jdbcType="INTEGER" property="coefficient" />
-    <result column=" create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="coefficient" jdbcType="INTEGER" property="coefficient" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="modified_time" jdbcType="TIMESTAMP" property="modifiedTime" />
     <result column="production_name" jdbcType="VARCHAR" property="productionName" />
-    <result column=" commodity_name" jdbcType="VARCHAR" property="commodityName" />
-    <result column=" serial_number" jdbcType="VARCHAR" property="serialNumber" />
+    <result column="commodity_name" jdbcType="VARCHAR" property="commodityName" />
+    <result column="serial_number" jdbcType="VARCHAR" property="serialNumber" />
   </resultMap>
   <sql id="Base_Column_List">
-    di_id, common_name, dosage_form, speciflcation, unit_id, " coefficient", " create_time", 
-    modified_time, production_name, " commodity_name", " serial_number"
+    di_id, common_name, dosage_form, speciflcation, unit_id, coefficient, create_time, 
+    modified_time, production_name, commodity_name, serial_number
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 'true' as QUERYID,
@@ -30,9 +30,9 @@
   </delete>
   <insert id="insert" parameterType="com.hospital_purchase.pojo.DrugItems">
     insert into drug_items (di_id, common_name, dosage_form, 
-      speciflcation, unit_id, " coefficient", 
-      " create_time", modified_time, production_name, 
-      " commodity_name", " serial_number")
+      speciflcation, unit_id, coefficient, 
+      create_time, modified_time, production_name, 
+      commodity_name, serial_number)
     values (#{diId,jdbcType=INTEGER}, #{commonName,jdbcType=VARCHAR}, #{dosageForm,jdbcType=VARCHAR}, 
       #{speciflcation,jdbcType=VARCHAR}, #{unitId,jdbcType=INTEGER}, #{coefficient,jdbcType=INTEGER}, 
       #{createTime,jdbcType=TIMESTAMP}, #{modifiedTime,jdbcType=TIMESTAMP}, #{productionName,jdbcType=VARCHAR}, 
@@ -57,10 +57,10 @@
         unit_id,
       </if>
       <if test="coefficient != null">
-        " coefficient",
+        coefficient,
       </if>
       <if test="createTime != null">
-        " create_time",
+        create_time,
       </if>
       <if test="modifiedTime != null">
         modified_time,
@@ -69,10 +69,10 @@
         production_name,
       </if>
       <if test="commodityName != null">
-        " commodity_name",
+        commodity_name,
       </if>
       <if test="serialNumber != null">
-        " serial_number",
+        serial_number,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -127,10 +127,10 @@
         unit_id = #{unitId,jdbcType=INTEGER},
       </if>
       <if test="coefficient != null">
-        " coefficient" = #{coefficient,jdbcType=INTEGER},
+        coefficient = #{coefficient,jdbcType=INTEGER},
       </if>
       <if test="createTime != null">
-        " create_time" = #{createTime,jdbcType=TIMESTAMP},
+        create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
       <if test="modifiedTime != null">
         modified_time = #{modifiedTime,jdbcType=TIMESTAMP},
@@ -139,10 +139,10 @@
         production_name = #{productionName,jdbcType=VARCHAR},
       </if>
       <if test="commodityName != null">
-        " commodity_name" = #{commodityName,jdbcType=VARCHAR},
+        commodity_name = #{commodityName,jdbcType=VARCHAR},
       </if>
       <if test="serialNumber != null">
-        " serial_number" = #{serialNumber,jdbcType=VARCHAR},
+        serial_number = #{serialNumber,jdbcType=VARCHAR},
       </if>
     </set>
     where di_id = #{diId,jdbcType=INTEGER}
@@ -153,12 +153,12 @@
       dosage_form = #{dosageForm,jdbcType=VARCHAR},
       speciflcation = #{speciflcation,jdbcType=VARCHAR},
       unit_id = #{unitId,jdbcType=INTEGER},
-      " coefficient" = #{coefficient,jdbcType=INTEGER},
-      " create_time" = #{createTime,jdbcType=TIMESTAMP},
+      coefficient = #{coefficient,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
       modified_time = #{modifiedTime,jdbcType=TIMESTAMP},
       production_name = #{productionName,jdbcType=VARCHAR},
-      " commodity_name" = #{commodityName,jdbcType=VARCHAR},
-      " serial_number" = #{serialNumber,jdbcType=VARCHAR}
+      commodity_name = #{commodityName,jdbcType=VARCHAR},
+      serial_number = #{serialNumber,jdbcType=VARCHAR}
     where di_id = #{diId,jdbcType=INTEGER}
   </update>
 </mapper>

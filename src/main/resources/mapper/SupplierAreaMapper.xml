@@ -3,11 +3,11 @@
 <mapper namespace="com.hospital_purchase.dao.SupplierAreaMapper">
   <resultMap id="BaseResultMap" type="com.hospital_purchase.pojo.SupplierArea">
     <id column="sa_id" jdbcType="INTEGER" property="saId" />
-    <result column=" supplier_id" jdbcType="INTEGER" property="supplierId" />
+    <result column="supplier_id" jdbcType="INTEGER" property="supplierId" />
     <result column="area_id" jdbcType="INTEGER" property="areaId" />
   </resultMap>
   <sql id="Base_Column_List">
-    sa_id, " supplier_id", area_id
+    sa_id, supplier_id, area_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 'true' as QUERYID,
@@ -20,7 +20,7 @@
     where sa_id = #{saId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.hospital_purchase.pojo.SupplierArea">
-    insert into supplier_area (sa_id, " supplier_id", area_id
+    insert into supplier_area (sa_id, supplier_id, area_id
       )
     values (#{saId,jdbcType=INTEGER}, #{supplierId,jdbcType=INTEGER}, #{areaId,jdbcType=INTEGER}
       )
@@ -32,7 +32,7 @@
         sa_id,
       </if>
       <if test="supplierId != null">
-        " supplier_id",
+        supplier_id,
       </if>
       <if test="areaId != null">
         area_id,
@@ -54,7 +54,7 @@
     update supplier_area
     <set>
       <if test="supplierId != null">
-        " supplier_id" = #{supplierId,jdbcType=INTEGER},
+        supplier_id = #{supplierId,jdbcType=INTEGER},
       </if>
       <if test="areaId != null">
         area_id = #{areaId,jdbcType=INTEGER},
@@ -64,7 +64,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.hospital_purchase.pojo.SupplierArea">
     update supplier_area
-    set " supplier_id" = #{supplierId,jdbcType=INTEGER},
+    set supplier_id = #{supplierId,jdbcType=INTEGER},
       area_id = #{areaId,jdbcType=INTEGER}
     where sa_id = #{saId,jdbcType=INTEGER}
   </update>

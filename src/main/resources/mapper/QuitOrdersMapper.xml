@@ -2,36 +2,36 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hospital_purchase.dao.QuitOrdersMapper">
   <resultMap id="BaseResultMap" type="com.hospital_purchase.pojo.QuitOrders">
-    <id column=" sr_id" jdbcType="INTEGER" property="srId" />
-    <result column=" hospital_id" jdbcType="INTEGER" property="hospitalId" />
-    <result column=" quit_time" jdbcType="TIMESTAMP" property="quitTime" />
-    <result column=" quit_number" jdbcType="VARCHAR" property="quitNumber" />
-    <result column=" quit_state" jdbcType="INTEGER" property="quitState" />
-    <result column=" quit_name" jdbcType="VARCHAR" property="quitName" />
-    <result column=" fund_time" jdbcType="TIMESTAMP" property="fundTime" />
+    <id column="sr_id" jdbcType="INTEGER" property="srId" />
+    <result column="hospital_id" jdbcType="INTEGER" property="hospitalId" />
+    <result column="quit_time" jdbcType="TIMESTAMP" property="quitTime" />
+    <result column="quit_number" jdbcType="VARCHAR" property="quitNumber" />
+    <result column="quit_state" jdbcType="INTEGER" property="quitState" />
+    <result column="quit_name" jdbcType="VARCHAR" property="quitName" />
+    <result column="fund_time" jdbcType="TIMESTAMP" property="fundTime" />
     <result column="submit_time" jdbcType="TIMESTAMP" property="submitTime" />
     <result column="linkman" jdbcType="VARCHAR" property="linkman" />
     <result column="linkman_phone" jdbcType="VARCHAR" property="linkmanPhone" />
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
   </resultMap>
   <sql id="Base_Column_List">
-    " sr_id", " hospital_id", " quit_time", " quit_number", " quit_state", " quit_name", 
-    " fund_time", submit_time, linkman, linkman_phone, remarks
+    sr_id, hospital_id, quit_time, quit_number, quit_state, quit_name, fund_time, submit_time, 
+    linkman, linkman_phone, remarks
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 'true' as QUERYID,
     <include refid="Base_Column_List" />
     from quit_orders
-    where " sr_id" = #{srId,jdbcType=INTEGER}
+    where sr_id = #{srId,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from quit_orders
-    where " sr_id" = #{srId,jdbcType=INTEGER}
+    where sr_id = #{srId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.hospital_purchase.pojo.QuitOrders">
-    insert into quit_orders (" sr_id", " hospital_id", " quit_time", 
-      " quit_number", " quit_state", " quit_name", 
-      " fund_time", submit_time, linkman, 
+    insert into quit_orders (sr_id, hospital_id, quit_time, 
+      quit_number, quit_state, quit_name, 
+      fund_time, submit_time, linkman, 
       linkman_phone, remarks)
     values (#{srId,jdbcType=INTEGER}, #{hospitalId,jdbcType=INTEGER}, #{quitTime,jdbcType=TIMESTAMP}, 
       #{quitNumber,jdbcType=VARCHAR}, #{quitState,jdbcType=INTEGER}, #{quitName,jdbcType=VARCHAR}, 
@@ -42,25 +42,25 @@
     insert into quit_orders
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="srId != null">
-        " sr_id",
+        sr_id,
       </if>
       <if test="hospitalId != null">
-        " hospital_id",
+        hospital_id,
       </if>
       <if test="quitTime != null">
-        " quit_time",
+        quit_time,
       </if>
       <if test="quitNumber != null">
-        " quit_number",
+        quit_number,
       </if>
       <if test="quitState != null">
-        " quit_state",
+        quit_state,
       </if>
       <if test="quitName != null">
-        " quit_name",
+        quit_name,
       </if>
       <if test="fundTime != null">
-        " fund_time",
+        fund_time,
       </if>
       <if test="submitTime != null">
         submit_time,
@@ -115,22 +115,22 @@
     update quit_orders
     <set>
       <if test="hospitalId != null">
-        " hospital_id" = #{hospitalId,jdbcType=INTEGER},
+        hospital_id = #{hospitalId,jdbcType=INTEGER},
       </if>
       <if test="quitTime != null">
-        " quit_time" = #{quitTime,jdbcType=TIMESTAMP},
+        quit_time = #{quitTime,jdbcType=TIMESTAMP},
       </if>
       <if test="quitNumber != null">
-        " quit_number" = #{quitNumber,jdbcType=VARCHAR},
+        quit_number = #{quitNumber,jdbcType=VARCHAR},
       </if>
       <if test="quitState != null">
-        " quit_state" = #{quitState,jdbcType=INTEGER},
+        quit_state = #{quitState,jdbcType=INTEGER},
       </if>
       <if test="quitName != null">
-        " quit_name" = #{quitName,jdbcType=VARCHAR},
+        quit_name = #{quitName,jdbcType=VARCHAR},
       </if>
       <if test="fundTime != null">
-        " fund_time" = #{fundTime,jdbcType=TIMESTAMP},
+        fund_time = #{fundTime,jdbcType=TIMESTAMP},
       </if>
       <if test="submitTime != null">
         submit_time = #{submitTime,jdbcType=TIMESTAMP},
@@ -145,20 +145,20 @@
         remarks = #{remarks,jdbcType=VARCHAR},
       </if>
     </set>
-    where " sr_id" = #{srId,jdbcType=INTEGER}
+    where sr_id = #{srId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.hospital_purchase.pojo.QuitOrders">
     update quit_orders
-    set " hospital_id" = #{hospitalId,jdbcType=INTEGER},
-      " quit_time" = #{quitTime,jdbcType=TIMESTAMP},
-      " quit_number" = #{quitNumber,jdbcType=VARCHAR},
-      " quit_state" = #{quitState,jdbcType=INTEGER},
-      " quit_name" = #{quitName,jdbcType=VARCHAR},
-      " fund_time" = #{fundTime,jdbcType=TIMESTAMP},
+    set hospital_id = #{hospitalId,jdbcType=INTEGER},
+      quit_time = #{quitTime,jdbcType=TIMESTAMP},
+      quit_number = #{quitNumber,jdbcType=VARCHAR},
+      quit_state = #{quitState,jdbcType=INTEGER},
+      quit_name = #{quitName,jdbcType=VARCHAR},
+      fund_time = #{fundTime,jdbcType=TIMESTAMP},
       submit_time = #{submitTime,jdbcType=TIMESTAMP},
       linkman = #{linkman,jdbcType=VARCHAR},
       linkman_phone = #{linkmanPhone,jdbcType=VARCHAR},
       remarks = #{remarks,jdbcType=VARCHAR}
-    where " sr_id" = #{srId,jdbcType=INTEGER}
+    where sr_id = #{srId,jdbcType=INTEGER}
   </update>
 </mapper>
