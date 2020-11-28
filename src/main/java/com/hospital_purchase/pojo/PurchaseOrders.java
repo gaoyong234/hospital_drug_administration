@@ -47,6 +47,14 @@ public class PurchaseOrders {
         this.auditState = auditState;
     }
 
+    public String getAuditOpinion() {
+        return auditOpinion;
+    }
+
+    public void setAuditOpinion(String auditOpinion) {
+        this.auditOpinion = auditOpinion == null ? null : auditOpinion.trim();
+    }
+
     public Integer getHospitalId() {
         return hospitalId;
     }
@@ -117,14 +125,6 @@ public class PurchaseOrders {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
-    }
-
-    public String getAuditOpinion() {
-        return auditOpinion;
-    }
-
-    public void setAuditOpinion(String auditOpinion) {
-        this.auditOpinion = auditOpinion == null ? null : auditOpinion.trim();
     }
 
     public Date getAuditTime() {

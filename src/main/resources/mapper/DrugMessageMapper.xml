@@ -3,16 +3,16 @@
 <mapper namespace="com.hospital_purchase.dao.DrugMessageMapper">
   <resultMap id="BaseResultMap" type="com.hospital_purchase.pojo.DrugMessage">
     <id column="dm_id" jdbcType="INTEGER" property="dmId" />
-    <result column=" drug_items_id" jdbcType="INTEGER" property="drugItemsId" />
+    <result column="drug_items_id" jdbcType="INTEGER" property="drugItemsId" />
     <result column="company_name" jdbcType="VARCHAR" property="companyName" />
-    <result column=" commodity_name" jdbcType="VARCHAR" property="commodityName" />
-    <result column=" bidding_price" jdbcType="DECIMAL" property="biddingPrice" />
-    <result column=" quality_level" jdbcType="VARCHAR" property="qualityLevel" />
-    <result column=" found_time" jdbcType="TIMESTAMP" property="foundTime" />
-    <result column=" approval_number" jdbcType="VARCHAR" property="approvalNumber" />
-    <result column=" is_entrance" jdbcType="BIT" property="isEntrance" />
+    <result column="commodity_name" jdbcType="VARCHAR" property="commodityName" />
+    <result column="bidding_price" jdbcType="DECIMAL" property="biddingPrice" />
+    <result column="quality_level" jdbcType="VARCHAR" property="qualityLevel" />
+    <result column="found_time" jdbcType="TIMESTAMP" property="foundTime" />
+    <result column="approval_number" jdbcType="VARCHAR" property="approvalNumber" />
+    <result column="is_entrance" jdbcType="BIT" property="isEntrance" />
     <result column="pack_unit" jdbcType="INTEGER" property="packUnit" />
-    <result column=" retail_provenance" jdbcType="VARCHAR" property="retailProvenance" />
+    <result column="retail_provenance" jdbcType="VARCHAR" property="retailProvenance" />
     <result column="heckout_number" jdbcType="VARCHAR" property="heckoutNumber" />
     <result column="product_explain" jdbcType="VARCHAR" property="productExplain" />
     <result column="approval_time" jdbcType="TIMESTAMP" property="approvalTime" />
@@ -25,10 +25,10 @@
     <result column="modified_time" jdbcType="TIMESTAMP" property="modifiedTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    dm_id, " drug_items_id", company_name, " commodity_name", " bidding_price", " quality_level", 
-    " found_time", " approval_number", " is_entrance", pack_unit, " retail_provenance", 
-    heckout_number, product_explain, approval_time, packaging_texture, newest_price, 
-    is_checkout, drug_valid_time, quality_level_explain, product_photo, modified_time
+    dm_id, drug_items_id, company_name, commodity_name, bidding_price, quality_level, 
+    found_time, approval_number, is_entrance, pack_unit, retail_provenance, heckout_number, 
+    product_explain, approval_time, packaging_texture, newest_price, is_checkout, drug_valid_time, 
+    quality_level_explain, product_photo, modified_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 'true' as QUERYID,
@@ -41,10 +41,10 @@
     where dm_id = #{dmId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.hospital_purchase.pojo.DrugMessage">
-    insert into drug_message (dm_id, " drug_items_id", company_name, 
-      " commodity_name", " bidding_price", " quality_level", 
-      " found_time", " approval_number", " is_entrance", 
-      pack_unit, " retail_provenance", heckout_number, 
+    insert into drug_message (dm_id, drug_items_id, company_name, 
+      commodity_name, bidding_price, quality_level, 
+      found_time, approval_number, is_entrance, 
+      pack_unit, retail_provenance, heckout_number, 
       product_explain, approval_time, packaging_texture, 
       newest_price, is_checkout, drug_valid_time, 
       quality_level_explain, product_photo, modified_time
@@ -65,34 +65,34 @@
         dm_id,
       </if>
       <if test="drugItemsId != null">
-        " drug_items_id",
+        drug_items_id,
       </if>
       <if test="companyName != null">
         company_name,
       </if>
       <if test="commodityName != null">
-        " commodity_name",
+        commodity_name,
       </if>
       <if test="biddingPrice != null">
-        " bidding_price",
+        bidding_price,
       </if>
       <if test="qualityLevel != null">
-        " quality_level",
+        quality_level,
       </if>
       <if test="foundTime != null">
-        " found_time",
+        found_time,
       </if>
       <if test="approvalNumber != null">
-        " approval_number",
+        approval_number,
       </if>
       <if test="isEntrance != null">
-        " is_entrance",
+        is_entrance,
       </if>
       <if test="packUnit != null">
         pack_unit,
       </if>
       <if test="retailProvenance != null">
-        " retail_provenance",
+        retail_provenance,
       </if>
       <if test="heckoutNumber != null">
         heckout_number,
@@ -195,34 +195,34 @@
     update drug_message
     <set>
       <if test="drugItemsId != null">
-        " drug_items_id" = #{drugItemsId,jdbcType=INTEGER},
+        drug_items_id = #{drugItemsId,jdbcType=INTEGER},
       </if>
       <if test="companyName != null">
         company_name = #{companyName,jdbcType=VARCHAR},
       </if>
       <if test="commodityName != null">
-        " commodity_name" = #{commodityName,jdbcType=VARCHAR},
+        commodity_name = #{commodityName,jdbcType=VARCHAR},
       </if>
       <if test="biddingPrice != null">
-        " bidding_price" = #{biddingPrice,jdbcType=DECIMAL},
+        bidding_price = #{biddingPrice,jdbcType=DECIMAL},
       </if>
       <if test="qualityLevel != null">
-        " quality_level" = #{qualityLevel,jdbcType=VARCHAR},
+        quality_level = #{qualityLevel,jdbcType=VARCHAR},
       </if>
       <if test="foundTime != null">
-        " found_time" = #{foundTime,jdbcType=TIMESTAMP},
+        found_time = #{foundTime,jdbcType=TIMESTAMP},
       </if>
       <if test="approvalNumber != null">
-        " approval_number" = #{approvalNumber,jdbcType=VARCHAR},
+        approval_number = #{approvalNumber,jdbcType=VARCHAR},
       </if>
       <if test="isEntrance != null">
-        " is_entrance" = #{isEntrance,jdbcType=BIT},
+        is_entrance = #{isEntrance,jdbcType=BIT},
       </if>
       <if test="packUnit != null">
         pack_unit = #{packUnit,jdbcType=INTEGER},
       </if>
       <if test="retailProvenance != null">
-        " retail_provenance" = #{retailProvenance,jdbcType=VARCHAR},
+        retail_provenance = #{retailProvenance,jdbcType=VARCHAR},
       </if>
       <if test="heckoutNumber != null">
         heckout_number = #{heckoutNumber,jdbcType=VARCHAR},
@@ -259,16 +259,16 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.hospital_purchase.pojo.DrugMessage">
     update drug_message
-    set " drug_items_id" = #{drugItemsId,jdbcType=INTEGER},
+    set drug_items_id = #{drugItemsId,jdbcType=INTEGER},
       company_name = #{companyName,jdbcType=VARCHAR},
-      " commodity_name" = #{commodityName,jdbcType=VARCHAR},
-      " bidding_price" = #{biddingPrice,jdbcType=DECIMAL},
-      " quality_level" = #{qualityLevel,jdbcType=VARCHAR},
-      " found_time" = #{foundTime,jdbcType=TIMESTAMP},
-      " approval_number" = #{approvalNumber,jdbcType=VARCHAR},
-      " is_entrance" = #{isEntrance,jdbcType=BIT},
+      commodity_name = #{commodityName,jdbcType=VARCHAR},
+      bidding_price = #{biddingPrice,jdbcType=DECIMAL},
+      quality_level = #{qualityLevel,jdbcType=VARCHAR},
+      found_time = #{foundTime,jdbcType=TIMESTAMP},
+      approval_number = #{approvalNumber,jdbcType=VARCHAR},
+      is_entrance = #{isEntrance,jdbcType=BIT},
       pack_unit = #{packUnit,jdbcType=INTEGER},
-      " retail_provenance" = #{retailProvenance,jdbcType=VARCHAR},
+      retail_provenance = #{retailProvenance,jdbcType=VARCHAR},
       heckout_number = #{heckoutNumber,jdbcType=VARCHAR},
       product_explain = #{productExplain,jdbcType=VARCHAR},
       approval_time = #{approvalTime,jdbcType=TIMESTAMP},
