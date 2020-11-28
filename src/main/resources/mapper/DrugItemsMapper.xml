@@ -13,16 +13,22 @@
     <result column="production_name" jdbcType="VARCHAR" property="productionName" />
     <result column="commodity_name" jdbcType="VARCHAR" property="commodityName" />
     <result column="serial_number" jdbcType="VARCHAR" property="serialNumber" />
+    <result column="drug_category" jdbcType="INTEGER" property="drugCategory" />
+    <result column="drug_state" jdbcType="INTEGER" property="drugState" />
   </resultMap>
   <sql id="Base_Column_List">
     di_id, common_name, dosage_form, speciflcation, unit_id, coefficient, create_time, 
-    modified_time, production_name, commodity_name, serial_number
+    modified_time, production_name, commodity_name, serial_number, drug_category, drug_state
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 'true' as QUERYID,
     <include refid="Base_Column_List" />
     from drug_items
     where di_id = #{diId,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select *
+    from drug_items
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from drug_items
@@ -32,11 +38,13 @@
     insert into drug_items (di_id, common_name, dosage_form, 
       speciflcation, unit_id, coefficient, 
       create_time, modified_time, production_name, 
-      commodity_name, serial_number)
+      commodity_name, serial_number, drug_category, 
+      drug_state)
     values (#{diId,jdbcType=INTEGER}, #{commonName,jdbcType=VARCHAR}, #{dosageForm,jdbcType=VARCHAR}, 
       #{speciflcation,jdbcType=VARCHAR}, #{unitId,jdbcType=INTEGER}, #{coefficient,jdbcType=INTEGER}, 
       #{createTime,jdbcType=TIMESTAMP}, #{modifiedTime,jdbcType=TIMESTAMP}, #{productionName,jdbcType=VARCHAR}, 
-      #{commodityName,jdbcType=VARCHAR}, #{serialNumber,jdbcType=VARCHAR})
+      #{commodityName,jdbcType=VARCHAR}, #{serialNumber,jdbcType=VARCHAR}, #{drugCategory,jdbcType=INTEGER}, 
+      #{drugState,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.hospital_purchase.pojo.DrugItems">
     insert into drug_items
@@ -74,6 +82,12 @@
       <if test="serialNumber != null">
         serial_number,
       </if>
+      <if test="drugCategory != null">
+        drug_category,
+      </if>
+      <if test="drugState != null">
+        drug_state,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="diId != null">
@@ -108,6 +122,12 @@
       </if>
       <if test="serialNumber != null">
         #{serialNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="drugCategory != null">
+        #{drugCategory,jdbcType=INTEGER},
+      </if>
+      <if test="drugState != null">
+        #{drugState,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -144,6 +164,12 @@
       <if test="serialNumber != null">
         serial_number = #{serialNumber,jdbcType=VARCHAR},
       </if>
+      <if test="drugCategory != null">
+        drug_category = #{drugCategory,jdbcType=INTEGER},
+      </if>
+      <if test="drugState != null">
+        drug_state = #{drugState,jdbcType=INTEGER},
+      </if>
     </set>
     where di_id = #{diId,jdbcType=INTEGER}
   </update>
@@ -158,7 +184,9 @@
       modified_time = #{modifiedTime,jdbcType=TIMESTAMP},
       production_name = #{productionName,jdbcType=VARCHAR},
       commodity_name = #{commodityName,jdbcType=VARCHAR},
-      serial_number = #{serialNumber,jdbcType=VARCHAR}
+      serial_number = #{serialNumber,jdbcType=VARCHAR},
+      drug_category = #{drugCategory,jdbcType=INTEGER},
+      drug_state = #{drugState,jdbcType=INTEGER}
     where di_id = #{diId,jdbcType=INTEGER}
   </update>
 </mapper>
