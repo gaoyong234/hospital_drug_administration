@@ -18,9 +18,43 @@
         label { float: left; width: 10em; margin-right: 1em; text-align: right; }
     </style>
     <script>
-       var app= angular.moduel("myApp",[]);
+       var app= angular.module("myApp",["pagination"]);
        app.controller("myContr",function ($scope,$http) {
+        $scope.addClick=function () {
 
+        }
+           $scope.paginationConf={
+               currentPage: 1,  				//当前页
+               totalItems: 10,					//总记录数
+               itemsPerPage: 10,				//每页记录数
+               perPageOptions: [5,10, 20, 30, 40, 50], //分页选项，下拉选择一页多少条记录
+               onChange: function () {
+                   $scope.find($scope.paginationConf.currentPage,$scope.paginationConf.itemsPerPage)
+               }
+           }
+           $scope.find=function(pageNum,items) {
+               if (pageNum==null||pageNum==""){
+                   pageNum=1;
+               }
+               var druglist=$scope.drug;
+               console.log(druglist)
+               $http({
+                   url:"/conditionfand",
+                   method:"get",
+                   params:{
+                       "druglist":druglist,
+                       "pageNum":pageNum,
+                       "pageSize":items
+                   },
+
+
+               }).success(function (response) {
+                   $scope.lists=response.list;
+                   $scope.item=new Date();
+                   $scope.paginationConf.totalItems=response.total;
+               })
+
+           }
 
 
        })
@@ -31,32 +65,47 @@
 </head>
 <body ng-app="myApp" ng-controller="myContr">
 <div>
+   <h5 class="alert alert-infoalert alert-info">药品品目查询</h5>
 <table class="table table-bordered table-striped">
 <tr>
-    <td>药品品目号:<input></td>
-    <td>通用名:<input></td>
+    <td>药品品目号:<input ng-model="drug.diId"></td>
+    <td>通用名:<input ng-model="drug.commonName"></td>
 
 </tr>
     <tr>
-        <td>剂型:<input></td>
-        <td>规格:<input></td>
+        <td>剂型:<input ng-model="drug.dosageForm"></td>
+        <td>规格:<input ng-model="drug.speciflcation"></td>
     </tr>
     <tr>
-        <td>单位:<input></td>
-        <td>转换系数:<input></td>
+        <td>单位:<input ng-model="drug.unitId"></td>
+        <td>转换系数:<input ng-model="drug.coefficient"></td>
     </tr>
     <tr>
-        <td>药品类别:<input></td>
-        <td>状态:<input></td>
+        <td>药品类别:<select ng-model="drug.drugCategory">
+            <option value="0">全部</option>
+        <option value="1">儿童用药</option>
+        </select>
+        </td>
+        <td>
+            状态:<select ng-model="drug.drugState">
+            <option value="0">全部</option>
+        <option value="2">正常</option>
+            <option value="3">不正常</option>
+        </select>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1" align="right"> <button type="button" class="btn1" ng-click="find()">查询</button></td>
+        <td> <button type="button" class="btn1">导出</button></td>
     </tr>
 
 </table>
 
 </div>
                 <div>
-                            <button type="button" class="btn1" onclick="addClick()">添加
+                            <button type="button" class="btn1" ng-click="addClick()">添加
                             </button>
-                            <button type="button" class="btn1" onclick="loadlick()">导入
+                            <button type="button" class="btn1" ng-click="loadlick()">导入
                             </button>
                 </div>
                 <div>
@@ -76,22 +125,36 @@
             <th>删除</th>
         </tr>
         </thead>
-        <tbody id="tbody" >
-        <tr th:each="drug : ${list}">
-            <td th:text="${drug.diId}"></td>
-            <td th:text="${drug.commonName}"></td>
-            <td th:text="${drug.dosageForm}"></td>
-            <td th:text="${drug.unitId}"></td>
-            <td th:text="${drug.speciflcation}"></td>
-            <td th:text="${drug.coefficient}"></td>
-            <td th:text="${drug.drugCategory}"></td>
-            <td th:text="${drug.drugState}"></td>
-            <td th:value="${drug.diId}"><a>详细</a></td>
-            <td th:value="${drug.diId}"><a>修改</a></td>
-            <td th:value="${drug.diId}"><a>删除</a></td>
+<!--        <tbody id="tbody" >-->
+<!--        <tr th:each="drug : ${list}">-->
+<!--            <td th:text="${drug.diId}"></td>-->
+<!--            <td th:text="${drug.commonName}"></td>-->
+<!--            <td th:text="${drug.dosageForm}"></td>-->
+<!--            <td th:text="${drug.speciflcation}"></td>-->
+<!--            <td th:text="${drug.unitId}"></td>-->
+<!--            <td th:text="${drug.coefficient}"></td>-->
+<!--            <td th:text="${drug.drugStateName}"></td>-->
+<!--            <td th:text="${drug.drugCategoryName}"></td>-->
+<!--            <td th:value="${drug.diId}"><a>详细</a></td>-->
+<!--            <td th:value="${drug.diId}"><a>修改</a></td>-->
+<!--            <td th:value="${drug.diId}"><a>删除</a></td>-->
+<!--        </tr>-->
+
+<!--        </tbody>-->
+        <tbody id="tbody">
+        <tr ng-repeat="x in lists">
+            <td>{{x.diId}}</td>
+            <td>{{x.commonName}}</td>
+            <td>{{x.dosageForm}}</td>
+            <td>{{x.speciflcation}}</td>
+            <td>{{x.unitId}}</td>
+            <td>{{x.coefficient}}</td>
+            <td>{{x.drugStateName}}</td>
+            <td>{{x.drugCategoryName}}</td>
         </tr>
         </tbody>
     </table>
+          <tm-pagination conf="paginationConf"></tm-pagination>
                 </div>
 <div class="#editModal"></div>
 </body>

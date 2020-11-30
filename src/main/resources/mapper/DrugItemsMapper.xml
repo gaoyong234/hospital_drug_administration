@@ -16,19 +16,78 @@
     <result column="drug_category" jdbcType="INTEGER" property="drugCategory" />
     <result column="drug_state" jdbcType="INTEGER" property="drugState" />
   </resultMap>
+  <resultMap id="BaseMap" type="com.hospital_purchase.vo.DrugItemsVO">
+    <id column="di_id" jdbcType="INTEGER" property="diId" />
+    <result column="common_name" jdbcType="VARCHAR" property="commonName" />
+    <result column="dosage_form" jdbcType="VARCHAR" property="dosageForm" />
+    <result column="speciflcation" jdbcType="VARCHAR" property="speciflcation" />
+    <result column="unit_id" jdbcType="INTEGER" property="unitId" />
+    <result column="coefficient" jdbcType="INTEGER" property="coefficient" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="modified_time" jdbcType="TIMESTAMP" property="modifiedTime" />
+    <result column="production_name" jdbcType="VARCHAR" property="productionName" />
+    <result column="commodity_name" jdbcType="VARCHAR" property="commodityName" />
+    <result column="serial_number" jdbcType="VARCHAR" property="serialNumber" />
+    <result column="drug_category" jdbcType="INTEGER" property="drugCategory" />
+    <result column="drug_state" jdbcType="INTEGER" property="drugState" />
+    <result column="drug_category_name" jdbcType="INTEGER" property="drugCategoryName" />
+    <result column="drug_state_name" jdbcType="INTEGER" property="drugStateName" />
+  </resultMap>
   <sql id="Base_Column_List">
     di_id, common_name, dosage_form, speciflcation, unit_id, coefficient, create_time, 
     modified_time, production_name, commodity_name, serial_number, drug_category, drug_state
   </sql>
+
+  <select id="conditionfand" resultMap="BaseMap" parameterType="DrugItems">
+    select di_id,common_name,dosage_form,speciflcation,unit_id,coefficient,di.dictionaries_name drug_state_name,dic.dictionaries_name drug_category_name
+    from drug_items
+    left join dictionaries di on drug_items.drug_category=di.dic_id
+    left join dictionaries dic on drug_items.drug_state=dic.dic_id
+    <where>
+      <if test="diId!=null and diId!=''">
+        and diId = di_id
+      </if>
+
+      <if test="commonName!=null and commonName!=''">
+        and commonName like CONCAT("%",#{zuzhi},"%")
+      </if>
+
+      <if test="dosageForm!=null and dosageForm!=''">
+        and dosageForm like CONCAT("%",#{jieshou},"%")
+      </if>
+
+      <if test="speciflcation!=null and speciflcation!=''">
+        and speciflcation like CONCAT("%",#{jieshou},"%")
+      </if>
+
+      <if test="unitId!=null and unitId!=''">
+        and unitId like CONCAT("%",#{jieshou},"%")
+      </if>
+
+      <if test="coefficient!=null and coefficient!=''">
+        and coefficient like CONCAT("%",#{jieshou},"%")
+      </if>
+
+      <if test="drugCategory!=null and drugCategory!=''">
+        and drug_category like CONCAT("%",#{jieshou},"%")
+      </if>
+
+      <if test="drugState!=null and drugState!=''">
+        and drug_state like CONCAT("%",#{jieshou},"%")
+      </if>
+    </where>
+  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 'true' as QUERYID,
     <include refid="Base_Column_List" />
     from drug_items
     where di_id = #{diId,jdbcType=INTEGER}
   </select>
-  <select id="selectAll" resultMap="BaseResultMap">
-    select *
+  <select id="selectAll" resultMap="BaseMap">
+    select di_id,common_name,dosage_form,speciflcation,unit_id,coefficient,di.dictionaries_name drug_state_name,dic.dictionaries_name drug_category_name
     from drug_items
+    left join dictionaries di on drug_items.drug_category=di.dic_id
+    left join dictionaries dic on drug_items.drug_state=dic.dic_id
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from drug_items

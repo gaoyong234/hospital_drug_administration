@@ -1,6 +1,7 @@
 package com.hospital_purchase.dao;
 
 import com.hospital_purchase.pojo.DrugItems;
+import com.hospital_purchase.vo.DrugItemsVO;
 
 import java.util.List;
 
@@ -17,5 +18,7 @@ public interface DrugItemsMapper {
 
     int updateByPrimaryKey(DrugItems record);
 
-    List<DrugItems> selectAll();
+    List<DrugItemsVO> selectAll();
+
+    List<DrugItemsVO> conditionfand(DrugItems druglist);
 }

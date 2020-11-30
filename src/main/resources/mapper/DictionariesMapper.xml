@@ -17,6 +17,11 @@
     from dictionaries
     where di_id = #{diId,jdbcType=INTEGER}
   </select>
+  <select id="selectByid" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select di_id,dictionaries_name
+    <include refid="Base_Column_List" />
+    from dictionaries
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from dictionaries
     where di_id = #{diId,jdbcType=INTEGER}
