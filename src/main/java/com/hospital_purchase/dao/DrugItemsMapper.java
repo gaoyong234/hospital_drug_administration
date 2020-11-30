@@ -18,4 +18,6 @@ public interface DrugItemsMapper {
     int updateByPrimaryKey(DrugItems record);
 
     List<DrugItems> selectAll();
+    //查询药品信息维护
+    List<DrugItems> FindDrugItemsInfo();
 }
