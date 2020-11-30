@@ -1,0 +1,57 @@
+ <!DOCTYPE html>
+ <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../../static/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script src="../../static/plugins/angularjs/angular.min.js"></script>
+    <link rel="stylesheet" href="../../static/plugins/bootstrap/css/bootstrap.css">
+    <script type="text/javascript" src="../../static/renponsetable/js/jquery.basictable.min.js"></script>
+    <script type="text/javascript" src="../../static/renponsetable/reponsetable.min.js"></script>
+    <script type="text/javascript" src="../../static/renponsetable/layer/layer.js"></script>
+    <script type="text/javascript">
+        var app = angular.module("app", []);
+        app.controller("myctl", function ($scope, $http) {
+            $scope.add = function () {
+                window.location.href="/limitFunction/LimitAdd.html";
+            }
+        })
+    </script>
+
+
+</head>
+<body ng-app="app" ng-controller="myctl">
+<form class="layui-form" action="">
+    <div class="layui-form-item">
+        <label class="layui-form-label">单行输入框</label>
+        <div class="layui-input-block">
+            <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
+        </div>
+    </div>
+</form>
+<button type="button" class="layui-btn " ng-click="add()" >添加</button>
+<table align="center" class="table">
+    <tr>
+        <td>功能名称</td>
+        <td>功能地址</td>
+        <td>父级名称</td>
+        <td>创建时间</td>
+        <td>操作</td>
+    </tr>
+
+    <tr th:each="LimitFunction:${pageInfo.list}">
+        <td th:text="${LimitFunction.limitName}"></td>
+        <td th:text="${LimitFunction.actionName}"></td>
+        <td th:text="${LimitFunction.parentName}" ></td>
+        <td  th:text="${#dates.format(LimitFunction.creationTime, 'yyyy-MM-dd')}"></td>
+        <td>
+            <div class="layui-btn-group">
+                <button type="button" class="layui-btn " ng-click="sub('+${LimitFunction.lfId}+')">编辑</button>
+                <button type="button" class="layui-btn">删除</button>
+            </div>
+        </td>
+    </tr>
+
+</table>
+</body>
+</html>

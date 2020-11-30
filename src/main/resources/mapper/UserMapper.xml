@@ -197,4 +197,9 @@
       modification_time = #{modificationTime,jdbcType=TIMESTAMP}
     where us_id = #{usId,jdbcType=INTEGER}
   </update>
+  <select id="selectUserByAccountAndPassword" resultType="integer">
+    select count(*) from user
+    where user_account = #{userAccount,jdbcType=INTEGER}
+    and user_password = #{userPassword,jdbcType=VARCHAR}
+  </select>
 </mapper>
