@@ -3,7 +3,7 @@ package com.hospital_purchase.pojo;
 import java.util.Date;
 
 public class Dictionaries {
-    private Integer dicId;
+    private Integer diId;
 
     private String dictionariesName;
 
@@ -13,12 +13,12 @@ public class Dictionaries {
 
     private Date modifiedTime;
 
-    public Integer getDicId() {
-        return dicId;
+    public Integer getDiId() {
+        return diId;
     }
 
-    public void setDicId(Integer dicId) {
-        this.dicId = dicId;
+    public void setDiId(Integer diId) {
+        this.diId = diId;
     }
 
     public String getDictionariesName() {

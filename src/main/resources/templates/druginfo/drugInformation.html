@@ -24,48 +24,16 @@
 	<script type="text/javascript" src="../../static/renponsetable/reponsetable.min.js"></script>
 	<script type="text/javascript" src="../../static/renponsetable/layer/layer.js"></script>
 </head>
-<body>
+<body ng-app="myApp" ng-controller="myCtrl">
 	<div class="layui-fluid layadmin-homepage-fluid" style="background: #fff;width:90%;margin:0 auto;">
 		<div id="page">
 			<div class="btn-container">
 				<button class="layui-btn" onclick="addtr();">新增一行</button>
 				<button class="layui-btn" onclick="ExportExcel();">导出Excel</button>
-				<button class="layui-btn" onclick="getSample();">搜索</button>
 				<!--<button class="layui-btn" onclick="resivetabledata();">获取table数据</button>
 				<button class="layui-btn" onclick="reloadtable();">刷新table表格</button>
 				<button class="layui-btn" onclick="coldata();">获取某一列的数据</button>-->
 			</div>
-			<form id="drugForm">
-				<ul >
-					<li>
-						<lable>流水号:</lable><input type="text" name="serialNumber"/>
-						<lable>通用名:</lable><input type="text" name="commonName"/>
-						<lable>剂型:</lable><input type="text" name="dosageForm"/>
-						<lable>规格:</lable><input type="text" name="speciflcation"/>
-					</li>
-					<li>
-						<lable>单位:</lable><input type="text" name="company"/>
-						<lable>转换系数:</lable><input type="text" name="coefficient"/>
-						<lable>生产企业:</lable><input type="text" name="productionName"/>
-						<lable>商品名称:</lable><input type="text" name="commodityName"/>
-					</li>
-					<li>
-						<lable>中标价格:</lable><input type="text" name="biddingPriceStart"/>--<input type="text" name="biddingPriceEnd"/>
-						<lable>质量层次:</lable>
-						<select name="qualityLevel" id="qualityLevel">
-							<option value="">请选择</option>
-						</select>
-						<lable>药品类别:</lable>
-						<select name="drugCategorys" id="drugCategorys">
-							<option value="">请选择</option>
-						</select>
-						<lable>药品交易状态:</lable>
-						<select name="drugState" id="drugState">
-							<option value="">请选择</option>
-						</select>
-					</li>
-				</ul>
-			</form>
 			<table id="table" class="reponsetable" ></table>
 			<script type="text/html" id="editer">
 				<a class="layui-btn layui-btn-xs" onclick="edittr(this)">编辑</a>
@@ -76,140 +44,81 @@
 		</div>
 	</div>
 	<div id="editcontent" class="alertceng">
-            流 水 号:<input type="text" name="serialNumber"/>
-			通 用 名:<input type="text" name="commonName"/><br/>
-			剂    型:<input type="text" name="dosageForm"/>
-			规    格:<input type="text" name="speciflcation"/><br/>
-			单    位:<input type="text" name="company"/>
-			转换系数:<input type="text" name="coefficient"/><br/>
-            生产企业:<input type="text" name="productionName"/>
-            商品名称:<input type="text" name="commodityName"/><br/>
-            中标价格:<input type="text" name="biddingPrice"/>
-		批准文号:<input type="text" name="approvalNumber"/><br/>
-		批准文号有效期:<input type="date" name="approvalTime"/>
-		是否进口药:<input type="radio" name="isEntrance" value="0"/>是
-				  <input type="radio" name="isEntrance" value="2"/>否<br/>
-		包装材质:<input type="text" name="packagingTexture"/>
-		包装单位:<input type="text" name="packUnit"/><br/>
-		最新零售价:<input type="text" name="newestPrice"/><br/>
-		零售价出处:<input type="text" name="retailProvenance"/><br/>
-            质量层次:<select name="qualityLevel">
-                        <option value="">请选择</option>
-                    </select>
-		质量层次说明:<input type="text" name="qualityLevelExplain"/><br/>
-		有无药品检验报告:<input type="radio" name="isCheckout" value="0"/>有
-						<input type="radio" name="isCheckout" value="1"/>无<br/>
-		药品检验报告编码:<input type="text" name="heckoutNumber"/><br/>
-		药品检验报告有效期:<input type="date" name="drugValidTime"/><br/>
-		产品说明:<input type="text" name="productExplain"/><br/>
-            药品类别:<select name="">
-						<option value="drugCategory">请选择</option>
-					</select>
-            药品交易状态:<select name="drugState">
-							<option value="">请选择</option>
-						</select>
+			药品流水号:<input type="text" id="serialNumber"/>
+			通用名:<input type="text" id="commonName"/>
+			<p><span class="title">剂型:</span><input type="text" id="dosageForm"/></p>
+			<p><span class="title">规格:</span><input type="text" id="speciflcation"/></p>
+			<p><span class="title">单位:</span><input type="text" id="company"/></p>
+			<p><span class="title">转换系数:</span><input type="text" id="coefficient"/></p>
+            <p><span class="title">生产企业名称:</span><input type="text" id="productionName"/></p>
+            <p><span class="title">商品名称:</span><input type="text" id="commodityName"/></p>
+            <p><span class="title">中标价格:</span><input type="text" id="biddingPrice"/></p>
+		<p><span class="title">批准文号:</span><input type="text" id="biddingPrice"/></p>
+		<p><span class="title">批准文号有效期:</span><input type="text" id="biddingPrice"/></p>
+		<p><span class="title">是否进口药:</span><input type="text" id="biddingPrice"/></p>
+		<p><span class="title">包装材质:</span><input type="text" id="biddingPrice"/></p>
+		<p><span class="title">包装单位:</span><input type="text" id="biddingPrice"/></p>
+		<p><span class="title">最新零售价:</span><input type="text" id="biddingPrice"/></p>
+		<p><span class="title">零售价出处:</span><input type="text" id="biddingPrice"/></p>
+            <p><span class="title">质量层次:</span><input type="text" id="qualityLevel"/></p>
+		<p><span class="title">质量层次说明:</span><input type="text" id="qualityLevel"/></p>
+		<p><span class="title">有无药品检验报告:</span><input type="text" id="qualityLevel"/></p>
+		<p><span class="title">药品检验报告编码:</span><input type="text" id="qualityLevel"/></p>
+		<p><span class="title">药品检验报告有效期:</span><input type="text" id="qualityLevel"/></p>
+		<p><span class="title">产品说明:</span><input type="text" id="qualityLevel"/></p>
+            <p><span class="title">药品类别:</span><input type="text" id="drugCategory"/></p>
+            <p><span class="title">药品交易状态:</span><input type="text" id="drugState"/></p>
 	</div>
+<script>
+	var app = angular.module("myApp",[]);
+	app.controller("myCtrl",function ($scope,$http) {
+		$http({
+			method:"get",
+			url:"/findDrugItemsInfo",
+		}).then(function successCallback(response) {
+			//console.log(response.data)
+            var list = response.data;
+            console.log(list);
+            $.each(list,function (index,item) {
+            	list[index].biddingPrice=list[index].biddingPrice.biddingPrice;
+				list[index].company=list[index].company.dictionariesName;
+				list[index].qualityLevel=list[index].qualityLevel.dictionariesName;
+				list[index].drugCategorys=list[index].drugCategorys.dictionariesName;
+			})
+            $("#table").reponsetable({
+                "id":"table",
+                "operation": "editer",
+                "type":"numbers",
+                "colum": [
+                    {"field": "serialNumber","title": "药品流水号"},
+                    {"field": "commonName","title": "通用名"},
+                    {"field": "dosageForm","title": "剂型"},
+                    {"field": "speciflcation","title": "规格"},
+                    {"field": "company","title": "单位"},
+                    {"field": "coefficient","title": "转换系数"},
+                    {"field": "productionName","title": "生产企业"},
+                    {"field": "commodityName","title": "商品名称"},
+                    {"field": "biddingPrice","title": "中标价"},
+                    {"field": "qualityLevel","title": "质量层次"},
+                    {"field": "drugCategorys","title": "药品类别"},
+                    {"field": "drugState","title": "交易状态"}
+                ],
+                "data": list
+            });
+		},function errorCallback(response) {
+
+		});
+	})
+</script>
 </body>
 <script type="text/javascript">
 	$(function(){
 		$('#table').basictable({
 			breakpoint: 768
 		});
-		dataForm();
-		findQualityLevel();
-		findDrugCategorys();
+
+
 	})
-	//查询全部药品信息
-	function dataForm(){
-		var ser = $("#drugForm").serialize();
-		$.ajax({
-			url:"/drugInformation/findAllDrugInfoLike",
-			type:"get",
-			dataType:"json",
-			data:ser,
-			success:function (data) {
-				$.each(data,function (index,item) {
-					data[index].biddingPrice=data[index].biddingPrice.biddingPrice;
-					data[index].company=data[index].company.dictionariesName;
-					data[index].qualityLevel=data[index].qualityLevel.dictionariesName;
-					data[index].drugCategorys=data[index].drugCategorys.dictionariesName;
-					if(data[index].drugState==1){
-						data[index].drugState = "正常";
-					}else {
-						data[index].drugState = "交易暂停";
-					}
-				})
-				$("#table").empty();//模糊查询清楚之前表格数据
-				$("#table").reponsetable({
-					"id":"table",
-					"operation": "editer",
-					"type":"numbers",
-					"colum": [
-						{"field": "serialNumber","title": "药品流水号"},
-						{"field": "commonName","title": "通用名"},
-						{"field": "dosageForm","title": "剂型"},
-						{"field": "speciflcation","title": "规格"},
-						{"field": "company","title": "单位"},
-						{"field": "coefficient","title": "转换系数"},
-						{"field": "productionName","title": "生产企业"},
-						{"field": "commodityName","title": "商品名称"},
-						{"field": "biddingPrice","title": "中标价"},
-						{"field": "qualityLevel","title": "质量层次"},
-						{"field": "drugCategorys","title": "药品类别"},
-						{"field": "drugState","title": "交易状态"}
-					],
-					"data": data
-				});
-			},error:function (data) {
-
-			}
-		})
-	}
-	//模糊查询
-	function getSample() {
-		if (confirm("确定要搜索吗？")){
-			dataForm();
-		}
-	}
-	//查询质量层次
-	function findQualityLevel() {
-		var dictionariesId = 11;
-		$.ajax({
-			url:"/drugInformation/findQualityLevel",
-			type:"get",
-			dataType:"json",
-			data:dictionariesId,
-			success:function (data) {
-				//console.log(data);
-				var str = "<option value=''>请选择</option>";
-				for (var i = 0; i <data.length ; i++) {
-					str += '<option value="'+ data[i].dicId +'">'+  data[i].dictionariesName  +'</option>'
-				}
-				$("#qualityLevel").html(str);
-			},error:function (data) {
-
-			}
-		})
-	}
-	//查询药品类别
-	function findDrugCategorys() {
-		$.ajax({
-			url:"/drugInformation/findDrugCategorys",
-			type:"get",
-			dataType:"json",
-			success:function (data) {
-				//console.log(data);
-				var str = "<option value=''>请选择</option>";
-				for (var i = 0; i <data.length ; i++) {
-					str += '<option value="'+ data[i].dicId +'">'+  data[i].dictionariesName  +'</option>'
-				}
-				$("#drugCategorys").html(str);
-			},error:function (data) {
-
-			}
-		})
-	}
-	//新增药品信息
 	function addtr() {
 		layer.open({
 		  type: 1,
@@ -221,52 +130,25 @@
 		  content: $('#editcontent'),
 		  btn:["保存","关闭"],
 		  btn1:function(index,layero){
-
-			  var serialNumber=$("input[name='serialNumber']").val();
-			  var commonName=$("input[name='commonName']").val();
-			  var dosageForm=$("input[name='dosageForm']").val();
-			  var speciflcation=$("input[name='speciflcation']").val();
-			  /*var company=$("#company").val();
-			  var coefficient=$("#coefficient").val();
-			  var productionName=$("#productionName").val();
-			  var commodityName=$("#commodityName").val();
-			  var biddingPrice=$("#biddingPrice").val();
-			  var approvalNumber=$("#approvalNumber").val();
-			  var approvalTime=$("#approvalTime").val();
-			  var isEntrance=$("#isEntrance").val();
-			  var packagingTexture=$("#packagingTexture").val();
-			  var packUnit=$("#packUnit").val();
-			  var newestPrice=$("#newestPrice").val();
-			  var retailProvenance=$("#retailProvenance").val();
-			  var qualityLevelExplain=$("#qualityLevelExplain").val();
-			  var isCheckout=$("#isCheckout").val();
-			  var heckoutNumber=$("#heckoutNumber").val();
-			  var drugValidTime=$("#drugValidTime").val();
-			  var drugCategory=$("#drugCategory").val();
-			  var drugState=$("#drugState").val();*/
+			  var Name=$("#Name").val();
+			  var Age=$("#Age").val();
+			  var Gender=$("#Gender").val();
+			  var Height=$("#Height").val();
+			  var Province=$("#Province").val();
+			  var Sport=$("#Sport").val();
 			  var obj = {
-				"serialNumber":serialNumber,
-			  	"commonName": commonName,
-			  	"dosageForm": dosageForm,
-			  	"speciflcation": speciflcation
+				"Name":Name,
+			  	"Age": Age,
+			  	"Gender": Gender,
+			  	"Height": Height,
+			  	"Province": Province,
+				"Sport":Sport
 			  };
 			  reponse.addtr(obj, "table");
 			  //reponse.editsavetr(obj, "table");
-
-			  $.ajax({
-				  url:"/drugInformation/addDrugInformation",
-				  type:"post",
-				  datatype:"json",
-				  data:obj,
-				  success:function (data) {
-					console.log(data);
-				  },error:function (data) {
-
-				  }
-			  })
-			  layer.close(index);
+			  layer.close(drugInformation);
 		  },btn2:function(index,layero){
-			  layer.close(index);
+			  layer.close(drugInformation);
 		  }
 		});
 	};
