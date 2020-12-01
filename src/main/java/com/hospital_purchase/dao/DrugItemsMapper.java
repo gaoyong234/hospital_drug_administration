@@ -18,7 +18,5 @@ public interface DrugItemsMapper {
 
     int updateByPrimaryKey(DrugItems record);
 
-    List<DrugItemsVO> selectAll();
-
     List<DrugItemsVO> conditionfand(DrugItems druglist);
 }
