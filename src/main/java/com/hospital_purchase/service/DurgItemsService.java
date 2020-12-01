@@ -7,7 +7,7 @@ import com.hospital_purchase.vo.DrugItemsVO;
 import java.util.List;
 
 public interface DurgItemsService {
- List<DrugItemsVO> inquireDurgItems();
+
 
     PageInfo<DrugItemsVO> conditionfand(Integer pageNum, Integer pageSize, DrugItems druglist);
 }

@@ -18,11 +18,7 @@ public class durgItemsImpl implements DurgItemsService {
     private DrugItemsMapper drugItemsMapper;
 
 
-    @Override
-    public List<DrugItemsVO> inquireDurgItems() {
-        List<DrugItemsVO> dr = drugItemsMapper.selectAll();
-        return dr;
-    }
+
 
     @Override
     public PageInfo<DrugItemsVO> conditionfand(Integer pageNum, Integer pageSize, DrugItems druglist) {
