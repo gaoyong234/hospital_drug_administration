@@ -1,9 +1,6 @@
 package com.hospital_purchase.dao;
 
-import com.hospital_purchase.pojo.DrugItems;
 import com.hospital_purchase.pojo.DrugMessage;
-
-import java.util.List;
 
 public interface DrugMessageMapper {
     int deleteByPrimaryKey(Integer dmId);

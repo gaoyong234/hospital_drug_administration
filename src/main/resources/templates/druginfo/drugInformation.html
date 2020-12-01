@@ -44,30 +44,12 @@
 		</div>
 	</div>
 	<div id="editcontent" class="alertceng">
-			药品流水号:<input type="text" id="serialNumber"/>
-			通用名:<input type="text" id="commonName"/>
-			<p><span class="title">剂型:</span><input type="text" id="dosageForm"/></p>
-			<p><span class="title">规格:</span><input type="text" id="speciflcation"/></p>
-			<p><span class="title">单位:</span><input type="text" id="company"/></p>
-			<p><span class="title">转换系数:</span><input type="text" id="coefficient"/></p>
-            <p><span class="title">生产企业名称:</span><input type="text" id="productionName"/></p>
-            <p><span class="title">商品名称:</span><input type="text" id="commodityName"/></p>
-            <p><span class="title">中标价格:</span><input type="text" id="biddingPrice"/></p>
-		<p><span class="title">批准文号:</span><input type="text" id="biddingPrice"/></p>
-		<p><span class="title">批准文号有效期:</span><input type="text" id="biddingPrice"/></p>
-		<p><span class="title">是否进口药:</span><input type="text" id="biddingPrice"/></p>
-		<p><span class="title">包装材质:</span><input type="text" id="biddingPrice"/></p>
-		<p><span class="title">包装单位:</span><input type="text" id="biddingPrice"/></p>
-		<p><span class="title">最新零售价:</span><input type="text" id="biddingPrice"/></p>
-		<p><span class="title">零售价出处:</span><input type="text" id="biddingPrice"/></p>
-            <p><span class="title">质量层次:</span><input type="text" id="qualityLevel"/></p>
-		<p><span class="title">质量层次说明:</span><input type="text" id="qualityLevel"/></p>
-		<p><span class="title">有无药品检验报告:</span><input type="text" id="qualityLevel"/></p>
-		<p><span class="title">药品检验报告编码:</span><input type="text" id="qualityLevel"/></p>
-		<p><span class="title">药品检验报告有效期:</span><input type="text" id="qualityLevel"/></p>
-		<p><span class="title">产品说明:</span><input type="text" id="qualityLevel"/></p>
-            <p><span class="title">药品类别:</span><input type="text" id="drugCategory"/></p>
-            <p><span class="title">药品交易状态:</span><input type="text" id="drugState"/></p>
+			<p><span class="title">姓名:</span><input type="text" id="Name"/></p>
+			<p><span class="title">年龄:</span><input type="text" id="Age"/></p>
+			<p><span class="title">性别:</span><input type="text" id="Gender"/></p>
+			<p><span class="title">身高:</span><input type="text" id="Height"/></p>
+			<p><span class="title">省份:</span><input type="text" id="Province"/></p>
+			<p><span class="title">市级:</span><input type="text" id="Sport"/></p>
 	</div>
 <script>
 	var app = angular.module("myApp",[]);
@@ -76,35 +58,7 @@
 			method:"get",
 			url:"/findDrugItemsInfo",
 		}).then(function successCallback(response) {
-			//console.log(response.data)
-            var list = response.data;
-            console.log(list);
-            $.each(list,function (index,item) {
-            	list[index].biddingPrice=list[index].biddingPrice.biddingPrice;
-				list[index].company=list[index].company.dictionariesName;
-				list[index].qualityLevel=list[index].qualityLevel.dictionariesName;
-				list[index].drugCategorys=list[index].drugCategorys.dictionariesName;
-			})
-            $("#table").reponsetable({
-                "id":"table",
-                "operation": "editer",
-                "type":"numbers",
-                "colum": [
-                    {"field": "serialNumber","title": "药品流水号"},
-                    {"field": "commonName","title": "通用名"},
-                    {"field": "dosageForm","title": "剂型"},
-                    {"field": "speciflcation","title": "规格"},
-                    {"field": "company","title": "单位"},
-                    {"field": "coefficient","title": "转换系数"},
-                    {"field": "productionName","title": "生产企业"},
-                    {"field": "commodityName","title": "商品名称"},
-                    {"field": "biddingPrice","title": "中标价"},
-                    {"field": "qualityLevel","title": "质量层次"},
-                    {"field": "drugCategorys","title": "药品类别"},
-                    {"field": "drugState","title": "交易状态"}
-                ],
-                "data": list
-            });
+			console.log(response.data)
 		},function errorCallback(response) {
 
 		});
@@ -116,7 +70,26 @@
 		$('#table').basictable({
 			breakpoint: 768
 		});
-
+		$("#table").reponsetable({
+			"id":"table",
+			"operation": "editer",
+			"type":"numbers",
+			"colum": [
+				{"field": "Name","title": "姓名"},
+				{"field": "Age","title": "年龄"},
+				{"field": "Gender","title": "性别"},
+				{"field": "Height","title": "身高"},
+				{"field": "Province","title": "省份"},
+				{"field": "Sport","title": "市级"}
+			],
+			"data": [
+				{"Name": "jAHBSvfkewmbrgevfkuebrfjtgkjubrhtk","Gender": "女","Height": 189,"Province": "河北","Sport": "唐山市"},
+				{"Name": "李四","Age": 15,"Gender": "女","Height": 189,"Province": "河北","Sport": "邯郸市"},
+				{"Name": "1","Age": 15,"Gender": "1","Height": 189,"Province": "1","Sport": "1"},
+				{"Name": "2","Age": 15,"Gender": "2","Height": 2,"Province": "2","Sport": "2"},
+				{"Name": "3","Age": 15,"Gender": "4","Height": 189,"Province": "3","Sport": "3"},
+			]
+		});
 
 	})
 	function addtr() {
