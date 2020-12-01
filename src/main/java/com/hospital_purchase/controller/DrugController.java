@@ -18,9 +18,6 @@ public class DrugController {
     public ModelAndView durgItemsInquire(){
         ModelAndView mode = new ModelAndView();
         mode.setViewName("durgItemsInquire");
-        // mode.addObject("key","123");
-        List<DrugItemsVO> drugItems = durgItemsService.inquireDurgItems();
-        mode.addObject("list",drugItems);
         return mode;
     }
 
