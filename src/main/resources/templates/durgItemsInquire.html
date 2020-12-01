@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -32,22 +32,23 @@
                    $scope.find($scope.paginationConf.currentPage,$scope.paginationConf.itemsPerPage)
                }
            }
+           $scope.drug={
+               pageNum:0,
+               pageSize:10
+           }
            $scope.find=function(pageNum,items) {
                if (pageNum==null||pageNum==""){
                    pageNum=1;
                }
+               $scope.drug.pageNum=pageNum;
+               $scope.drug.pageSize=items;
                var druglist=$scope.drug;
                console.log(druglist)
                $http({
-                   url:"/conditionfand",
-                   method:"get",
-                   params:{
-                       "druglist":druglist,
-                       "pageNum":pageNum,
-                       "pageSize":items
-                   },
-
-
+                   url:"/items/conditionfand",
+                   method:"post",
+                   params: druglist
+                   ,
                }).success(function (response) {
                    $scope.lists=response.list;
                    $scope.item=new Date();
@@ -55,11 +56,66 @@
                })
 
            }
+           $scope.addClick=function () {
 
+           }
+           $scope.baoCun = function () {
+               var demo=false;
+               var formDa = $scope.entity;
+               var len=0;
+               for (len in formDa) {
+                   len++;
+                   if (formDa[i]!=null || formDa[i]!=""){
+                       demo=true;
+                   }else {
+                       demo=false;
+                       break;
+                   }
+               }
+               if (len<10){
+                   demo=false;
+               }
+
+               if (demo){
+                   $http({
+                       url: "inserOne",
+                       method: "get",
+                       params: formDa
+                   })
+                   alert("添加成功")
+               }else {
+                   alert("请完善信息")
+               }
+           }
 
        })
 
 
+    </script>
+    <script>
+        function loadlick() {
+            var chil = $("[name=pitchOn]");
+            var a=false;
+            for (var i = 0; i < chil.length; i++) {
+                if (chil[i].checked){
+                    a=true;
+                    break;
+                }
+            }
+            if (!a){
+                alert("请选择要下载的数据")
+
+            }else{
+                var array = new Array();
+                for (var i = 0; i < chil.length; i++) {
+                    if (chil[i].checked) {
+                        array.push(chil[i].value);
+                    }
+                }
+                window.location.href = "pitchOn?arr=" + array;
+            }
+
+        }
     </script>
 
 </head>
@@ -96,19 +152,19 @@
     </tr>
     <tr>
         <td colspan="1" align="right"> <button type="button" class="btn1" ng-click="find()">查询</button></td>
-        <td> <button type="button" class="btn1">导出</button></td>
+        <td> <button type="button" class="btn1" onclick="loadlick()">导出</button></td>
     </tr>
 
 </table>
 
 </div>
-                <div>
-                            <button type="button" class="btn1" ng-click="addClick()">添加
-                            </button>
-                            <button type="button" class="btn1" ng-click="loadlick()">导入
-                            </button>
-                </div>
-                <div>
+    <div>
+        <button type="button" class="btn1" data-toggle="modal" data-target="#editModal" ng-click="addClick()">添加
+        </button>
+        <button type="button" class="btn1" ng-click="loadlick()">导入
+        </button>
+    </div>
+         <div>
     <table id="dataList" class="table">
         <thead>
         <tr>
@@ -125,24 +181,10 @@
             <th>删除</th>
         </tr>
         </thead>
-<!--        <tbody id="tbody" >-->
-<!--        <tr th:each="drug : ${list}">-->
-<!--            <td th:text="${drug.diId}"></td>-->
-<!--            <td th:text="${drug.commonName}"></td>-->
-<!--            <td th:text="${drug.dosageForm}"></td>-->
-<!--            <td th:text="${drug.speciflcation}"></td>-->
-<!--            <td th:text="${drug.unitId}"></td>-->
-<!--            <td th:text="${drug.coefficient}"></td>-->
-<!--            <td th:text="${drug.drugStateName}"></td>-->
-<!--            <td th:text="${drug.drugCategoryName}"></td>-->
-<!--            <td th:value="${drug.diId}"><a>详细</a></td>-->
-<!--            <td th:value="${drug.diId}"><a>修改</a></td>-->
-<!--            <td th:value="${drug.diId}"><a>删除</a></td>-->
-<!--        </tr>-->
 
-<!--        </tbody>-->
         <tbody id="tbody">
         <tr ng-repeat="x in lists">
+            <td><input type="checkbox" name="pitchOn" value="{{x.diId}}" onchange="childrenCheck()" ></td>
             <td>{{x.diId}}</td>
             <td>{{x.commonName}}</td>
             <td>{{x.dosageForm}}</td>
@@ -157,5 +199,57 @@
           <tm-pagination conf="paginationConf"></tm-pagination>
                 </div>
 <div class="#editModal"></div>
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:80%;">
+        <div class="modal-content" >
+            <div class="modal-header">
+                <button id="bt1" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel">药品品目添加</h3>
+            </div>
+            <div class="modal-body">
+
+                <table class="table table-bordered table-striped"  >
+                    <tr>
+                        <td>药品品目号:</td>
+                        <td><input ng-blur="count=count+1" ng-init="count=0" name="entity.diId" ng-model="entity.unitName" value="" class="form-control"></td>
+                        <td>通用名:</td>
+                        <td><input ng-blur="count=count+1" ng-init="count=0" name="entity.commonName" ng-model="entity.organizationalCode" class="form-control" placeholder="以0开头的八位数字"></td>
+                    </tr>
+                    <tr>
+
+                        <td>剂型:</td>
+                        <td><input ng-blur="count=count+1" ng-init="count=0" name="entity.dosageForm" ng-model="entity.nameOfTheComplainant" class="form-control" ></td>
+                        <td>规格:</td>
+                        <td><input ng-blur="count=count+1" ng-init="count=0" name="entity.speciflcation" ng-model="entity.idCard" class="form-control"  placeholder="由十八位数字或者十七位数字末尾加x组成"></td>
+                    </tr>
+                    <tr>
+                        <td>单位:</td>
+                        <td><input ng-blur="count=count+1" ng-init="count=0" name="entity.unitId" ng-model="entity.phone" class="form-control" placeholder="只能以13、15、18开头"></td>
+                        <td>转换系数:</td>
+                        <td><input ng-blur="count=count+1" ng-init="count=0" name="entity.coefficient" ng-model="entity.nameOfRegistrant" class="form-control" ></td>
+
+                    </tr>
+                    <tr>
+                        <td>药品类别:</td>
+                        <td><select  name="entity.drugStateName" ng-model="entity.drugStateName" class="form-control" >
+                            <option value="0">全部</option>
+                            <option value="1">儿童用药</option>
+                        </select></td>
+                        <td>状态:</td>
+                        <td><select  name="entity.drugCategoryName" ng-model="entity.accountCharacter" class="form-control" >
+                            <option value="2">正常</option>
+                            <option value="3">非正常</option>
+                        </select></td>
+                    </tr>
+                </table>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" ng-click="baoCun()">提交</button>
+                <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
