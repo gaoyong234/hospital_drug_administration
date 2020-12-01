@@ -2,12 +2,10 @@ package com.hospital_purchase.pojo;
 
 import java.util.Date;
 
-public class Limit {
-    private Integer liId;
+public class LimitFunction {
+    private Integer lfId;
 
     private String limitName;
-
-    private Integer userId;
 
     private String actionName;
 
@@ -17,12 +15,12 @@ public class Limit {
 
     private Date modificationTime;
 
-    public Integer getLiId() {
-        return liId;
+    public Integer getLfId() {
+        return lfId;
     }
 
-    public void setLiId(Integer liId) {
-        this.liId = liId;
+    public void setLfId(Integer lfId) {
+        this.lfId = lfId;
     }
 
     public String getLimitName() {
@@ -31,14 +29,6 @@ public class Limit {
 
     public void setLimitName(String limitName) {
         this.limitName = limitName == null ? null : limitName.trim();
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
     }
 
     public String getActionName() {

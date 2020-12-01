@@ -31,24 +31,6 @@ public class DrugItems {
 
     private Integer drugState;
 
-    private String drugStatei;
-
-    public void setDrugCategoryi(String drugCategoryi) {
-        this.drugCategoryi = drugCategoryi;
-    }
-
-    public void setDrugStatei(String drugStatei) {
-        this.drugStatei = drugStatei;
-    }
-
-    public String getDrugCategoryi() {
-        return drugCategoryi;
-    }
-
-    public String getDrugStatei() {
-        return drugStatei;
-    }
-
     public Integer getDiId() {
         return diId;
     }
