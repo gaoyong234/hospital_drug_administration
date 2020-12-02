@@ -29,7 +29,10 @@ public class DrugItemsController {
     @ResponseBody
     public PageInfo<DrugItemsVO> conditionfand(@RequestParam(value = "pageNum",defaultValue = "1") Integer pageNum,
                                                @RequestParam(value = "pageSize",defaultValue = "10") Integer pageSize,
-                                               DrugItemsVO druglist){
+                                               DrugItems druglist){
+        System.out.println(druglist.getDiId());
+        System.out.println("============");
+        System.out.println(pageNum);
         PageInfo<DrugItemsVO> conditionfand = durgItemsService.conditionfand(pageNum, pageSize, druglist);
         return conditionfand;
     }
