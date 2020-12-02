@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hospital_purchase.dao.DrugItemsMapper">
-  <resultMap id="BaseResultMap" type="com.hospital_purchase.pojo.DrugItems">
+<mapper namespace="com.hospital_purchase.dao.drugInformation.DrugInformationMapper">
+  <resultMap id="BaseResultMap" type="com.hospital_purchase.vo.DrugInfoVO">
     <id column="di_id" jdbcType="INTEGER" property="diId" />
     <result column="common_name" jdbcType="VARCHAR" property="commonName" />
     <result column="dosage_form" jdbcType="VARCHAR" property="dosageForm" />
@@ -16,10 +16,122 @@
     <result column="drug_category" jdbcType="INTEGER" property="drugCategory" />
     <result column="drug_state" jdbcType="INTEGER" property="drugState" />
   </resultMap>
+  <resultMap id="BaseResultMapOne" type="com.hospital_purchase.vo.DrugInfoVO">
+    <id column="di_id" jdbcType="INTEGER" property="diId" />
+    <result column="serial_number" jdbcType="VARCHAR" property="serialNumber" />
+    <result column="common_name" jdbcType="VARCHAR" property="commonName" />
+    <result column="dosage_form" jdbcType="VARCHAR" property="dosageForm" />
+    <result column="speciflcation" jdbcType="VARCHAR" property="speciflcation" />
+    <result column="coefficient" jdbcType="INTEGER" property="coefficient" />
+    <result column="production_name" jdbcType="VARCHAR" property="productionName" />
+    <result column="commodity_name" jdbcType="VARCHAR" property="commodityName" />
+    <result column="drug_state" jdbcType="INTEGER" property="drugState" />
+    <association property="biddingPrice" javaType="com.hospital_purchase.pojo.DrugMessage">
+      <result column="bidding_price" jdbcType="DECIMAL" property="biddingPrice" />
+    </association>
+    <association property="company" javaType="com.hospital_purchase.pojo.Dictionaries">
+      <result column="company" jdbcType="VARCHAR" property="dictionariesName" />
+    </association>
+    <association property="qualityLevel" javaType="com.hospital_purchase.pojo.Dictionaries">
+      <result column="quality_level" jdbcType="VARCHAR" property="dictionariesName" />
+    </association>
+    <association property="drugCategorys" javaType="com.hospital_purchase.pojo.Dictionaries">
+      <result column="drug_category" jdbcType="VARCHAR" property="dictionariesName" />
+    </association>
+    <association property="approvalNumber" javaType="com.hospital_purchase.pojo.DrugMessage">
+      <result column="approval_number" jdbcType="VARCHAR" property="approvalNumber" />
+    </association>
+    <association property="drugValidTime" javaType="com.hospital_purchase.pojo.DrugMessage">
+      <result column="drug_valid_time" jdbcType="TIMESTAMP" property="drugValidTime" />
+    </association>
+    <association property="isEntrances" javaType="com.hospital_purchase.pojo.DrugMessage">
+      <result column="is_entrance" jdbcType="BIT" property="isEntrance" />
+    </association>
+    <association property="packagingTexture" javaType="com.hospital_purchase.pojo.DrugMessage">
+      <result column="packaging_texture" jdbcType="VARCHAR" property="packagingTexture" />
+    </association>
+  </resultMap>
   <sql id="Base_Column_List">
     di_id, common_name, dosage_form, speciflcation, unit_id, coefficient, create_time,
     modified_time, production_name, commodity_name, serial_number, drug_category, drug_state
   </sql>
+  <insert id="addDrugInformation" parameterType="com.hospital_purchase.pojo.DrugItems" useGeneratedKeys="true" keyProperty="diId">
+    insert into drug_items (di_id, common_name, dosage_form,
+      speciflcation, unit_id, coefficient,
+      create_time, modified_time, production_name,
+      commodity_name, serial_number, drug_category,
+      drug_state)
+    values (#{diId,jdbcType=INTEGER}, #{commonName,jdbcType=VARCHAR}, #{dosageForm,jdbcType=VARCHAR},
+      #{speciflcation,jdbcType=VARCHAR}, #{unitId,jdbcType=INTEGER}, #{coefficient,jdbcType=INTEGER},
+      #{createTime,jdbcType=TIMESTAMP}, #{modifiedTime,jdbcType=TIMESTAMP}, #{productionName,jdbcType=VARCHAR},
+      #{commodityName,jdbcType=VARCHAR}, #{serialNumber,jdbcType=VARCHAR}, #{drugCategory,jdbcType=INTEGER},
+      #{drugState,jdbcType=INTEGER})
+  </insert>
+  <select id="findDrugItemsInfo" resultMap="BaseResultMapOne">
+    SELECT di.di_id,di.serial_number,di.common_name,di.dosage_form,di.speciflcation,
+	d.dictionaries_name as company,di.coefficient,di.production_name,di.commodity_name,dm.bidding_price
+	,dic.dictionaries_name as quality_level,dict.dictionaries_name as drug_category,di.drug_state,
+	dm.approval_number,dm.approval_time,dm.is_entrance,dm.packaging_texture,dm.pack_unit,
+	dm.newest_price,dm.retail_provenance,dm.is_checkout,dm.heckout_number,dm.drug_valid_time
+	FROM drug_items di
+	LEFT JOIN dictionaries d on di.unit_id = d.dic_id
+	LEFT JOIN drug_message dm on di.di_id = dm.drug_items_id
+	LEFT JOIN dictionaries dic on dm.quality_level = dic.dic_id
+	LEFT JOIN dictionaries dict on di.drug_category = dict.dic_id
+  </select>
+  <select id="findAllDrugInfoLike" resultMap="BaseResultMapOne">
+    SELECT di.di_id,di.serial_number,di.common_name,di.dosage_form,di.speciflcation,
+	d.dictionaries_name as company,di.coefficient,di.production_name,di.commodity_name,dm.bidding_price
+	,dic.dictionaries_name as quality_level,dict.dictionaries_name as drug_category,di.drug_state,
+    dm.approval_number,dm.approval_time,dm.is_entrance,dm.packaging_texture,dm.pack_unit,
+    dm.newest_price,dm.retail_provenance,dm.is_checkout,dm.heckout_number,dm.drug_valid_time
+	FROM drug_items di
+	LEFT JOIN dictionaries d on di.unit_id = d.dic_id
+	LEFT JOIN drug_message dm on di.di_id = dm.drug_items_id
+	LEFT JOIN dictionaries dic on dm.quality_level = dic.dic_id
+	LEFT JOIN dictionaries dict on di.drug_category = dict.dic_id
+	<where>
+        <if test="diId != null and diId != ''">
+            and di.di_id like CONCAT("%",#{diId},"%")
+        </if>
+        <if test="serialNumber != null and serialNumber != ''">
+            and di.serial_number =#{serialNumber}
+        </if>
+        <if test="commonName != null and commonName != ''">
+            and di.common_name like CONCAT("%",#{commonName},"%")
+        </if>
+        <if test="dosageForm != null and dosageForm != ''">
+            and di.dosage_form like CONCAT("%",#{dosageForm},"%")
+        </if>
+        <if test="speciflcation != null and speciflcation !=''">
+            and di.speciflcation = #{speciflcation}
+        </if>
+        <if test="coefficient != null and coefficient != ''">
+            and di.coefficient = #{coefficient}
+        </if>
+        <if test="productionName != null and productionName != ''">
+            and di.production_name like CONCAT("%",#{productionName},"%")
+        </if>
+      <if test="commodityName != null and commodityName != ''">
+            and di.commodity_name like CONCAT("%",#{commodityName},"%")
+      </if>
+      <if test="biddingPriceStart != null and biddingPriceStart != ''">
+            and dm.bidding_price BETWEEN #{biddingPriceStart} and #{biddingPriceEnd}
+      </if>
+      <if test="company != null and company != ''">
+            and d.dictionaries_name = #{company}
+      </if>
+      <if test="qualityLevel != null and qualityLevel != ''">
+            and dic.dic_id = #{qualityLevel}
+      </if>
+      <if test="drugCategorys != null and drugCategorys != ''">
+            and dict.dic_id = #{drugCategorys}
+      </if>
+      <if test="drugState != null and drugState != ''">
+            and di.drug_state = #{drugState}
+      </if>
+    </where>
+  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 'true' as QUERYID,
     <include refid="Base_Column_List" />
