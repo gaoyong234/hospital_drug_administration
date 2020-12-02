@@ -30,6 +30,7 @@ public class LimitFunctionServiceImpl implements LimitFunctionService {
 
     @Override
     public int changeLimit(LimitFunction record) {
+        record.setModificationTime(new Date());
         return limitFunctionMapper.updateByPrimaryKeySelective(record);
     }
 
@@ -46,8 +47,13 @@ public class LimitFunctionServiceImpl implements LimitFunctionService {
     @Override
     public PageInfo findAllLimitFunction(Integer pageNum,Integer pageSize) {
         PageHelper.startPage(pageNum,pageSize);
-        List<LimitFunctionVO> list = limitFunctionMapper.selectAllLimitFunction();
+        List<LimitFunctionVO> list = limitFunctionMapper.selectAllLimitFunctionVO();
         PageInfo<LimitFunctionVO> pageInfo = new PageInfo<>(list);
         return pageInfo;
+    }
+
+    @Override
+    public Integer removeLimitFunction(Integer id) {
+        return limitFunctionMapper.deleteByPrimaryKey(id);
     }
 }
