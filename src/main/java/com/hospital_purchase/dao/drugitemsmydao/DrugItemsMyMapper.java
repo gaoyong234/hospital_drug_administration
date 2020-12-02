@@ -1,12 +1,11 @@
-package com.hospital_purchase.dao;
+package com.hospital_purchase.dao.drugitemsmydao;
 
 import com.hospital_purchase.pojo.DrugItems;
-import com.hospital_purchase.vo.DrugInformationVO;
 import com.hospital_purchase.vo.DrugItemsVO;
 
 import java.util.List;
 
-public interface DrugItemsMapper {
+public interface DrugItemsMyMapper {
     int deleteByPrimaryKey(Integer diId);
 
     int insert(DrugItems record);
@@ -19,5 +18,7 @@ public interface DrugItemsMapper {
 
     int updateByPrimaryKey(DrugItems record);
 
+    List<DrugItemsVO> conditionfand(DrugItemsVO druglist);
 
+    DrugItems selectAll();
 }
