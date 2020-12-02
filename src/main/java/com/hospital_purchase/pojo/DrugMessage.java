@@ -1,5 +1,8 @@
 package com.hospital_purchase.pojo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -16,11 +19,13 @@ public class DrugMessage {
 
     private String qualityLevel;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date foundTime;
 
     private String approvalNumber;
 
-    private Boolean isEntrance;
+    private Byte isEntrance;
 
     private Integer packUnit;
 
@@ -30,6 +35,8 @@ public class DrugMessage {
 
     private String productExplain;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date approvalTime;
 
     private String packagingTexture;
@@ -38,12 +45,16 @@ public class DrugMessage {
 
     private Byte isCheckout;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date drugValidTime;
 
     private String qualityLevelExplain;
 
     private String productPhoto;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date modifiedTime;
 
     public Integer getDmId() {
@@ -110,11 +121,11 @@ public class DrugMessage {
         this.approvalNumber = approvalNumber == null ? null : approvalNumber.trim();
     }
 
-    public Boolean getIsEntrance() {
+    public Byte getIsEntrance() {
         return isEntrance;
     }
 
-    public void setIsEntrance(Boolean isEntrance) {
+    public void setIsEntrance(Byte isEntrance) {
         this.isEntrance = isEntrance;
     }
 

@@ -1,10 +1,11 @@
 package com.hospital_purchase.service.impl;
 
 import com.hospital_purchase.dao.DictionariesMapper;
-import com.hospital_purchase.dao.DrugItemsMapper;
-import com.hospital_purchase.dao.DrugMessageMapper;
+import com.hospital_purchase.dao.drugInformation.DrugInformationMapper;
+import com.hospital_purchase.dao.drugInformation.DrugMessageInformationMapper;
 import com.hospital_purchase.pojo.Dictionaries;
 import com.hospital_purchase.pojo.DrugItems;
+import com.hospital_purchase.pojo.DrugMessage;
 import com.hospital_purchase.service.DrugInformationService;
 import com.hospital_purchase.vo.DrugInformationVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,20 +17,23 @@ import java.util.List;
 public class DrugInformationServiceImpl implements DrugInformationService {
 
     @Autowired
-    private DrugItemsMapper drugItemsMapper;
+    private DrugInformationMapper drugInformationMapper;
 
     @Autowired
     private DictionariesMapper dictionariesMapper;
 
+    @Autowired
+    private DrugMessageInformationMapper drugMessageInformationMapper;
+
     @Override
     public List<DrugItems> findDrugItemsInfo() {
-        List<DrugItems> list = drugItemsMapper.FindDrugItemsInfo();
+        List<DrugItems> list = drugInformationMapper.findDrugItemsInfo();
         return list;
     }
 
     @Override
     public List<DrugItems> findAllDrugInfoLike(DrugInformationVO drugInformationVO) {
-        return drugItemsMapper.findAllDrugInfoLike(drugInformationVO);
+        return drugInformationMapper.findAllDrugInfoLike(drugInformationVO);
     }
 
     @Override
@@ -44,6 +48,11 @@ public class DrugInformationServiceImpl implements DrugInformationService {
 
     @Override
     public int addDrugInformation(DrugItems drugItems) {
-        return drugItemsMapper.addDrugInformation(drugItems);
+        return drugInformationMapper.addDrugInformation(drugItems);
+    }
+
+    @Override
+    public int addDrugMessageInfo(DrugMessage drugMessage) {
+        return drugMessageInformationMapper.addDrugMessageInfo(drugMessage);
     }
 }

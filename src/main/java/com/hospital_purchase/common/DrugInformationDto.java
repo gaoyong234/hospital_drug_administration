@@ -1,12 +1,14 @@
 package com.hospital_purchase.common;
 
 
+import com.hospital_purchase.pojo.DrugMessage;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
 public class DrugInformationDto {
+    private Integer diId;
 
     private String serialNumber;
 
@@ -31,7 +33,7 @@ public class DrugInformationDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date approvalTime;
 
-    private Boolean isEntrance;
+    private Byte isEntrance;
 
     private String packagingTexture;
 
@@ -57,6 +59,14 @@ public class DrugInformationDto {
     private Integer drugCategory;
 
     private Integer drugState;
+
+    public Integer getDiId() {
+        return diId;
+    }
+
+    public void setDiId(Integer diId) {
+        this.diId = diId;
+    }
 
     public String getSerialNumber() {
         return serialNumber;
@@ -146,12 +156,12 @@ public class DrugInformationDto {
         this.approvalTime = approvalTime;
     }
 
-    public Boolean getEntrance() {
+    public Byte getIsEntrance() {
         return isEntrance;
     }
 
-    public void setEntrance(Boolean entrance) {
-        isEntrance = entrance;
+    public void setIsEntrance(Byte isEntrance) {
+        this.isEntrance = isEntrance;
     }
 
     public String getPackagingTexture() {

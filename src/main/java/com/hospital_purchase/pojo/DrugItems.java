@@ -27,47 +27,7 @@ public class DrugItems {
 
     private Integer drugCategory;
 
-    private String drugCategoryi;
-
     private Integer drugState;
-
-    private DrugMessage biddingPrice;
-
-    private Dictionaries company;
-    private Dictionaries qualityLevel;
-    private Dictionaries drugCategorys;
-
-    public Dictionaries getCompany() {
-        return company;
-    }
-
-    public void setCompany(Dictionaries company) {
-        this.company = company;
-    }
-
-    public Dictionaries getQualityLevel() {
-        return qualityLevel;
-    }
-
-    public void setQualityLevel(Dictionaries qualityLevel) {
-        this.qualityLevel = qualityLevel;
-    }
-
-    public Dictionaries getDrugCategorys() {
-        return drugCategorys;
-    }
-
-    public void setDrugCategorys(Dictionaries drugCategorys) {
-        this.drugCategorys = drugCategorys;
-    }
-
-    public DrugMessage getBiddingPrice() {
-        return biddingPrice;
-    }
-
-    public void setBiddingPrice(DrugMessage biddingPrice) {
-        this.biddingPrice = biddingPrice;
-    }
 
     public Integer getDiId() {
         return diId;
