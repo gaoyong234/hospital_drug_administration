@@ -20,5 +20,7 @@ public interface LimitFunctionMapper {
 
     List selectParentLimit();
 
-    List<LimitFunctionVO> selectAllLimitFunction();
+    List<LimitFunctionVO> selectAllLimitFunctionVO();
+
+    List<LimitFunction> selectAllLimitFunction();
 }

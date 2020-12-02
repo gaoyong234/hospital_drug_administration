@@ -19,9 +19,9 @@ public class DurgItemsImpl implements DurgItemsService {
     @Override
     public PageInfo<DrugItemsVO> conditionfand(Integer pageNum, Integer pageSize, DrugItems druglist) {
         PageHelper.startPage(pageNum,pageSize);
-        List<DrugItemsVO> registrationOfCases = drugItemsMapper.conditionfand(druglist);
-        PageInfo<DrugItemsVO> pageInfo = new PageInfo<DrugItemsVO>(registrationOfCases);
-        return pageInfo;
+        //List<DrugItemsVO> registrationOfCases = drugItemsMapper.conditionfand(druglist);
+       // PageInfo<DrugItemsVO> pageInfo = new PageInfo<DrugItemsVO>(registrationOfCases);
+        return null;
     }
 
 }

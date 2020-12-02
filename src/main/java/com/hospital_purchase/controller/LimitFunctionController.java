@@ -14,13 +14,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.List;
 
 @Controller
+@RequestMapping("/LimitFunctionController")
 public class LimitFunctionController {
     @Autowired
     private LimitFunctionService limitFunctionService;
     @RequestMapping("/toLimit")
     public String toLimit(){
 
-        return "/limitFunction/limitAdd";
+        return "/limitFunction/AllLimitFunction1";
     }
     @RequestMapping("/addLimitFunction")
     @ResponseBody
@@ -44,10 +45,24 @@ public class LimitFunctionController {
     }
 
     @RequestMapping("/findAllLimit")
-    public String findAllLimit(@RequestParam(value = "pageNum",defaultValue = "1") Integer pageNum, @RequestParam(value = "pageSize",defaultValue = "5") Integer pageSize, Model model){
+    @ResponseBody
+    public PageInfo findAllLimit(@RequestParam(value = "pageNum",defaultValue = "1") Integer pageNum, @RequestParam(value = "pageSize",defaultValue = "5") Integer pageSize, Model model){
         PageInfo pageInfo = limitFunctionService.findAllLimitFunction(pageNum,pageSize);
-        model.addAttribute("pageInfo",pageInfo);
-        return "/limitFunction/AllLimitFunction";
 
+        return pageInfo;
     }
+
+    @RequestMapping("/changeLimitFunction")
+    @ResponseBody
+    public Integer changeLimitFunction(LimitFunction limitFunction){
+        System.out.println(limitFunction);
+        return limitFunctionService.changeLimit(limitFunction);
+    }
+
+    @RequestMapping("/removeLimitFunction")
+    @ResponseBody
+    public Integer removeLimitFunction(Integer id){
+        return limitFunctionService.removeLimitFunction(id);
+    }
+
 }

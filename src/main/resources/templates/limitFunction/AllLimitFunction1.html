@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title></title>
+    <link rel="stylesheet" href="../../static/renponsetable/layer/theme/default/layer.css">
+    <link rel="stylesheet" type="text/css" href="../../static/renponsetable/css/reponse.css">
+    <style type="text/css">
+        .alertceng {
+            background: #FFFFFF;
+            padding: 10px;
+            display: none;
+        }
+
+        .alertceng span.title {
+            margin-right: 10px;
+        }
+    </style>
+    <script src="https://cdn.staticfile.org/angular.js/1.4.6/angular.min.js"></script>
+    <script src="https://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+    <script type="text/javascript" src="../../static/renponsetable/js/jquery.basictable.min.js"></script>
+    <script type="text/javascript" src="../../static/renponsetable/reponsetable.min.js"></script>
+    <script type="text/javascript" src="../../static/renponsetable/layer/layer.js"></script>
+</head>
+<body ng-app="myApp" ng-controller="myCtrl">
+<div class="layui-fluid layadmin-homepage-fluid" style="background: #fff;width:90%;margin:0 auto;">
+    <div id="page">
+        <div class="btn-container">
+            <button class="layui-btn" onclick="addtr();">新增一行</button>
+            <!--<button class="layui-btn" onclick="ExportExcel();">导出Excel</button>-->
+            <!--<button class="layui-btn" onclick="resivetabledata();">获取table数据</button>
+            <button class="layui-btn" onclick="reloadtable();">刷新table表格</button>
+            <button class="layui-btn" onclick="coldata();">获取某一列的数据</button>-->
+        </div>
+        <table id="table" class="reponsetable"></table>
+        <script type="text/html" id="editer">
+            <a class="layui-btn layui-btn-xs" onclick="edittr(this)">编辑</a>
+            <a class="layui-btn layui-btn-xs" onclick="deletetr(this)">删除</a>
+            <!--<a class="layui-btn layui-btn-xs" onclick="uptr(this)">上移</a>
+            <a class="layui-btn layui-btn-xs" onclick="downtr(this)">下移</a>-->
+        </script>
+    </div>
+</div>
+<div id="editcontent" class="alertceng">
+    <p><span class="title">编&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp号:</span><input type="text" disabled="disabled" id="lfId"/>
+    </p>
+    <p><span class="title">功能名称:</span><input type="text" id="limitName"/></p>
+    <p><span class="title">功能路径:</span><input type="text" id="actionName"/></p>
+    <p><span class="title">父级功能:</span>
+        <select id="parentId">
+            <option value="">请选择</option>
+            <option ng-repeat="parent in parentNames" ng-value="parent.lfId">{{parent.limitName}}
+            </option>
+
+        </select></p>
+
+    <p><span class="title">创建时间:</span><input disabled="disabled" type="text" id="creationTime"/></p>
+    <p><span class="title">修改时间:</span><input disabled="disabled" type="text" id="modificationTime"/></p>
+</div>
+<div id="editcontent2" class="alertceng">
+    <p><span class="title">功能名称:</span><input type="text" id="limitName1"/></p>
+    <p><span class="title">功能路径:</span><input type="text" id="actionName1"/></p>
+    <p><span class="title">父级功能:</span>
+        <select id="parentId1">
+            <option value="">请选择</option>
+            <option ng-repeat="parent in parentNames" ng-value="parent.lfId">{{parent.limitName}}
+            </option>
+        </select>
+    </p>
+</div>
+<script>
+    var app = angular.module("myApp", []);
+    app.controller("myCtrl", function ($scope, $http) {
+        $http({
+            method: "get",
+            url: "/LimitFunctionController/findAllLimit",
+        }).then(function successCallback(response) {
+            //console.log(response.data)
+            $("#table").reponsetable({
+                "id": "lfId",
+                "operation": "editer",
+                "type": "numbers",
+                "colum": [
+                    {"field": "lfId", "title": "编号", "hide": true},
+                    {"field": "limitName", "title": "功能名称"},
+                    {"field": "actionName", "title": "功能路径"},
+                    {"field": "parentName", "title": "父级功能"},
+                    {"field": "creationTime", "title": "创建时间"},
+                    {"field": "modificationTime", "title": "修改时间"},
+                    {"field": "parentId", "title": "父级id"}
+                ],
+                "data": response.data.list,
+                done: function () {
+                    $("[data-field='lfId']").css('display', 'none');
+                }
+
+            });
+        }, function errorCallback(response) {
+
+        });
+        $http({
+            url: '/LimitFunctionController/findAllParentLimit',
+            method: 'get',
+        }).success(function (data) {
+            $scope.parentNames = data;
+        });
+    })
+</script>
+</body>
+<script type="text/javascript">
+    $(function () {
+        $('#table').basictable({
+            breakpoint: 768
+        });
+
+    })
+
+    function addtr() {
+        layer.open({
+            type: 1,
+            title: '添加功能及信息',
+            closeBtn: 1,
+            area: '516px',
+            skin: '#fff', //没有背景色
+            shadeClose: true,
+            content: $('#editcontent2'),
+            btn: ["保存", "关闭"],
+            btn1: function (index) {
+
+                var date = new Date();
+                var dateYear = date.getFullYear();             //获取年
+                var dateMonth = date.getMonth() + 1;               //获取月
+                var dateDate = date.getDate();                 //获取当日
+                var dateHours = date.getHours();               //获取小时
+                var dateMinutes = date.getMinutes();           //获取分钟
+                var dateSeconds = date.getSeconds();           //获取秒
+                var creationTime = dateYear + "-" + dateMonth + "-" + dateDate + " " + dateHours + ":" + dateMinutes + ":" + dateSeconds;
+
+                var limitName = $("#limitName1").val();
+                var actionName = $("#actionName1").val();
+                var parentId = $("#parentId1").val();
+                //获取下拉框选中的项  获取下拉的name值
+                var option = $("#parentId1 option:selected").text();
+                console.log(option)
+                var obj = {
+                    "limitName": limitName,
+                    "actionName": actionName,
+                    "parentId": parentId,
+                    "parentName": option,
+                    "creationTime": creationTime
+                };
+                reponse.addtr(obj, "table");
+                $.ajax({
+                    url: "/LimitFunctionController/addLimitFunction",
+                    data: obj,
+                    dataType: "JSON",
+                    Type: "post",
+                    success: function (data) {
+                        if (data > 0) {
+                            alert("添加成功")
+                        }
+                    }
+
+                })
+                //reponse.editsavetr(obj, "table");
+                layer.close(index);
+            }, btn2: function (index) {
+                layer.close(index);
+            }
+        });
+    };
+    /*function uptr(btn, e) {
+        var tr = $(btn).parent().parent();
+        reponse.moveuptr(tr, "table");
+    }*/
+    /*function downtr(btn, e) {
+        var tr = $(btn).parent().parent();
+        reponse.moveDown(tr, "table");
+    }*/
+    /*function ExportExcel() {
+        var tableobj=$("#table").data("tableObj");
+        reponse.JSONToCSVConvertor(tableobj, true,"人员表格");
+    }*/
+    /*function resivetabledata(){
+        var pp=$("#table").data("tableObj").data;
+        alert(JSON.stringify(pp));
+    }*/
+    /*function reloadtable(){
+        var data=[
+            {"Name": "1111","Age": 15,"Gender": "1","Height": 189,"Province": "1","Sport": "1"},
+            {"Name": "2222","Age": 15,"Gender": "2","Height": 2,"Province": "2","Sport": "2"},
+            {"Name": "3333","Age": 15,"Gender": "4","Height": 189,"Province": "3","Sport": "3"}
+        ]
+        reponse.reloadtable(data,"table");
+    }*/
+    function edittr(a) {
+        var tr = $(a).parent().parent();
+        console.log(tr)
+        console.log(1111)
+        reponse.resiverowdata(tr, "table");
+        var rowdata = $("#table").data("rowdata");
+        console.log(JSON.stringify(rowdata));
+        //页面层-佟丽娅
+        $("#lfId").val(rowdata.lfId);
+        $("#limitName").val(rowdata.limitName);
+        $("#actionName").val(rowdata.actionName);
+        $("#parentId").val(rowdata.parentId);
+        $("#creationTime").val(rowdata.creationTime);
+        $("#modificationTime").val(rowdata.modificationTime);
+
+        layer.open({
+            type: 1,
+            title: '更改功能信息',
+            closeBtn: 1,
+            area: '516px',
+            skin: '#fff', //没有背景色
+            shadeClose: true,
+            content: $('#editcontent'),
+            btn: ["保存", "关闭"],
+            btn1: function (index) {
+                var lfId = $("#lfId").val();
+                var limitName = $("#limitName").val();
+                var actionName = $("#actionName").val();
+                var creationTime = $("#creationTime").val();
+                var modificationTime = $("#modificationTime").val();
+                var parentId = $("#parentId").val();
+                //获取下拉框选中的项  获取下拉的name值
+                var option = $("#parentId option:selected").text();
+
+                var obj = {
+                    "lfId": lfId,
+                    "limitName": limitName,
+                    "actionName": actionName,
+                    "parentName": option,
+                    "creationTime": creationTime,
+                    "modificationTime": modificationTime,
+                    "parentId": parentId
+                };
+                reponse.editsavetr(obj, "table");
+                $.ajax({
+                    url: "/LimitFunctionController/changeLimitFunction",
+                    data: obj,
+                    dataType: "JSON",
+                    Type: "post",
+                    success: function (data) {
+                        if (data > 0) {
+                            alert("修改成功")
+                        }
+                    }
+
+                })
+                layer.close(index);
+            }, btn2: function (index, layero) {
+                layer.close(index);
+            }
+        });
+    }
+
+    function deletetr(a, e) {
+        var tr = $(a).parent().parent();
+        var rowdata = $("#table").data("rowdata");
+        console.log(tr.innerText)
+        reponse.deletetr(tr, e);
+
+        console.log(JSON.stringify(rowdata));
+        var  id= rowdata.lfId;
+
+        $.ajax({
+            url:"LimitFunctionController/removeLimitFunction",
+            date:{"id":id},
+            dataType:"JSON",
+            type:"post",
+            success: function (data) {
+                if (data > 0) {
+                    alert("删除成功")
+                }
+            }
+        })
+    }
+
+    /*function coldata(){
+        var pp=reponse.Columndata("Name","table");
+        alert(pp);
+    }*/
+</script>
+</html>

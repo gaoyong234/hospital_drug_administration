@@ -14,4 +14,6 @@ public interface LimitFunctionService {
     LimitFunction getOneLimitFunction(Integer id);
 
     PageInfo findAllLimitFunction(Integer pageNum,Integer pageSize);
+
+    Integer removeLimitFunction(Integer id);
 }

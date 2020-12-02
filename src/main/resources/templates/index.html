@@ -98,7 +98,8 @@
             <ul class="sidebar-menu">
                 <li class="header">菜单</li>
                 <!--药品品目维护-->
-                <li class="treeview"  ng-if="true"><!-- ng-if="isInArray(rolenames,'KEZHANG')||isInArray(rolenames,'KESHICAOZUO')" -->
+                <li class="treeview" ng-if="true">
+                    <!-- ng-if="isInArray(rolenames,'KEZHANG')||isInArray(rolenames,'KESHICAOZUO')" -->
                     <a href="#">
                         <i class="fa fa-folder"></i>
                         <span>药品品目维护</span>
@@ -108,9 +109,9 @@
                     </a>
                     <ul class="treeview-menu">
                         <li id="admin-login">
-                            <a th:href="@{/durgItemsInquire}" target="iframe">
+                            <a th:href="@{items/durgItemsInquire}" target="iframe">
                                 <i class="fa fa-circle-o"></i> 药品品目查询
-                            </a>
+                            </ a>
                         </li>
                         <li id="admin-login">
                             <a href="registrationOfCasesAjax.html" target="iframe">
@@ -130,7 +131,8 @@
                     </ul>
                 </li>
                 <!--药品信息维护-->
-                <li class="treeview"  ng-if="true"><!-- ng-if="isInArray(rolenames,'KEZHANG')||isInArray(rolenames,'KESHICAOZUO')" -->
+                <li class="treeview" ng-if="true">
+                    <!-- ng-if="isInArray(rolenames,'KEZHANG')||isInArray(rolenames,'KESHICAOZUO')" -->
                     <a href="#">
                         <i class="fa fa-folder"></i>
                         <span>药品信息维护</span>
@@ -162,7 +164,8 @@
                     </ul>
                 </li>
                 <!-- 采购单管理 -->
-                <li class="treeview" ng-if="true"><!-- ng-if="isInArray(rolenames,'KEZHANG')||isInArray(rolenames,'KESHICAOZUO')" -->
+                <li class="treeview" ng-if="true">
+                    <!-- ng-if="isInArray(rolenames,'KEZHANG')||isInArray(rolenames,'KESHICAOZUO')" -->
                     <a href="#">
                         <i class="fa fa-folder"></i>
                         <span>采购单管理</span>
@@ -204,7 +207,7 @@
                     </ul>
                 </li>
                 <!--供货管理-->
-                <li class="treeview" ng-if="true" ><!-- ng-if="isInArray(rolenames,'KEZHANG')" -->
+                <li class="treeview" ng-if="true"><!-- ng-if="isInArray(rolenames,'KEZHANG')" -->
                     <a href="#">
                         <i class="fa fa-folder"></i>
                         <span>供货管理</span>
@@ -221,7 +224,8 @@
                     </ul>
                 </li>
                 <!--交易查询统计-->
-                <li class="treeview" ng-if="true" ><!-- ng-if="isInArray(rolenames,'KEZHANG')||isInArray(rolenames,'KESHICAOZUO')" -->
+                <li class="treeview" ng-if="true">
+                    <!-- ng-if="isInArray(rolenames,'KEZHANG')||isInArray(rolenames,'KESHICAOZUO')" -->
                     <a href="#">
                         <i class="fa fa-folder"></i>
                         <span>查寻统计</span>
@@ -258,7 +262,7 @@
                     </ul>
                 </li>
                 <!--结算单管理-->
-                <li class="treeview" ng-if="true" ><!-- ng-if="isInArray(rolenames,'KEZHANG')" -->
+                <li class="treeview" ng-if="true"><!-- ng-if="isInArray(rolenames,'KEZHANG')" -->
                     <a href="#">
                         <i class="fa fa-folder"></i>
                         <span>结算单管理</span>
@@ -290,7 +294,8 @@
                     </ul>
                 </li>
                 <!--退货单管理-->
-                <li class="treeview" ng-if="true" ><!-- ng-if="isInArray(rolenames,'KEZHANG')||isInArray(rolenames,'KESHICAOZUO')" -->
+                <li class="treeview" ng-if="true">
+                    <!-- ng-if="isInArray(rolenames,'KEZHANG')||isInArray(rolenames,'KESHICAOZUO')" -->
                     <a href="#">
                         <i class="fa fa-folder"></i>
                         <span>退货单管理</span>
@@ -322,7 +327,8 @@
                     </ul>
                 </li>
                 <!--系统管理-->
-                <li class="treeview" ng-if="true" ><!-- ng-if="isInArray(rolenames,'KEZHANG')||isInArray(rolenames,'KESHICAOZUO')" -->
+                <li class="treeview" ng-if="true">
+                    <!-- ng-if="isInArray(rolenames,'KEZHANG')||isInArray(rolenames,'KESHICAOZUO')" -->
                     <a href="#">
                         <i class="fa fa-folder"></i>
                         <span>系统管理</span>
@@ -367,7 +373,7 @@
                             </a>
                         </li>
                         <li id="admin-login">
-                            <a href="/findAllLimit" target="iframe">
+                            <a href="/LimitFunctionController/toLimit" target="iframe">
                                 <i class="fa fa-circle-o"></i> 所有功能
                             </a>
                         </li>
