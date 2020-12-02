@@ -43,7 +43,7 @@
                $scope.drug.pageNum=pageNum;
                $scope.drug.pageSize=items;
                var druglist=$scope.drug;
-               console.log(druglist)
+
                $http({
                    url:"/items/conditionfand",
                    method:"post",
@@ -54,18 +54,18 @@
                    $scope.item=new Date();
                    $scope.paginationConf.totalItems=response.total;
                })
-
+               console.log($scope.lists)
            }
            $scope.addClick=function () {
 
            }
-           $scope.baoCun = function () {
+           $scope.submit = function () {
                var demo=false;
                var formDa = $scope.entity;
-               var len=0;
+               console.log(formDa)
+               var len;
                for (len in formDa) {
-                   len++;
-                   if (formDa[i]!=null || formDa[i]!=""){
+                   if (len!=null && len!=""){
                        demo=true;
                    }else {
                        demo=false;
@@ -92,30 +92,37 @@
 
 
     </script>
-    <script>
-        function loadlick() {
-            var chil = $("[name=pitchOn]");
-            var a=false;
-            for (var i = 0; i < chil.length; i++) {
-                if (chil[i].checked){
-                    a=true;
-                    break;
+    <script type="text/javascript">
+        $(function () {
+            $("#editModal1 input").blur(function () {
+                $(this).next().html("");
+                $(this).next().css("color","black");
+                if (this.value==null||this.value==""){
+                    $(this).next().html("不能为空")
+                    $(this).next().css("clolor","red")
                 }
-            }
-            if (!a){
-                alert("请选择要下载的数据")
-
-            }else{
-                var array = new Array();
-                for (var i = 0; i < chil.length; i++) {
-                    if (chil[i].checked) {
-                        array.push(chil[i].value);
+                var name1=$(this).prop("name");
+                if(name1=="entity.diId"){
+                    var sfz=/^((\(\d{2,3}\))|(\d{3}\-))?1(3|5|8|9)\d{9}$/;
+                    if (sfz.test(this.value)){
+                        $.getJSON("fandPhone",{"phone":this.value},function (data) {
+                            if (data==true){
+                                demo=true;
+                            }else {
+                                $(this).next().html("手机号码已存在");
+                                $(this).next().css("color","blue")
+                                demo=false;
+                            }
+                        })
+                    }else{
+                        $(this).next().html("手机号码不符合规则");
+                        $(this).next().css("color","blue");
+                        demo=false;
                     }
                 }
-                window.location.href = "pitchOn?arr=" + array;
-            }
 
-        }
+            })
+        })
     </script>
 
 </head>
@@ -137,13 +144,13 @@
         <td>转换系数:<input ng-model="drug.coefficient"></td>
     </tr>
     <tr>
-        <td>药品类别:<select ng-model="drug.drugCategory">
+        <td>药品类别:<select ng-model="drug.drugCategoryName">
             <option value="0">全部</option>
         <option value="1">儿童用药</option>
         </select>
         </td>
         <td>
-            状态:<select ng-model="drug.drugState">
+            状态:<select ng-model="drug.drugStateName">
             <option value="0">全部</option>
         <option value="2">正常</option>
             <option value="3">不正常</option>
@@ -159,7 +166,7 @@
 
 </div>
     <div>
-        <button type="button" class="btn1" data-toggle="modal" data-target="#editModal" ng-click="addClick()">添加
+        <button type="button" class="btn1" data-toggle="modal" data-target="#editModal1" ng-click="addClick()">添加
         </button>
         <button type="button" class="btn1" ng-click="loadlick()">导入
         </button>
@@ -184,7 +191,7 @@
 
         <tbody id="tbody">
         <tr ng-repeat="x in lists">
-            <td><input type="checkbox" name="pitchOn" value="{{x.diId}}" onchange="childrenCheck()" ></td>
+<!--            <td><input type="checkbox" name="pitchOn" value="{{x.diId}}" onchange="childrenCheck()" ></td>-->
             <td>{{x.diId}}</td>
             <td>{{x.commonName}}</td>
             <td>{{x.dosageForm}}</td>
@@ -199,7 +206,7 @@
           <tm-pagination conf="paginationConf"></tm-pagination>
                 </div>
 <div class="#editModal"></div>
-<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="editModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog" style="width:80%;">
         <div class="modal-content" >
             <div class="modal-header">
@@ -207,45 +214,47 @@
                 <h3 id="myModalLabel">药品品目添加</h3>
             </div>
             <div class="modal-body">
-
+                <form id="inserInto">
                 <table class="table table-bordered table-striped"  >
                     <tr>
                         <td>药品品目号:</td>
-                        <td><input ng-blur="count=count+1" ng-init="count=0" name="entity.diId" ng-model="entity.unitName" value="" class="form-control"></td>
+                        <input name="id" type="hidden">
+                        <td><input  name="entity.diId" onblur class="form-control">
+                            <span ></span></td>
                         <td>通用名:</td>
-                        <td><input ng-blur="count=count+1" ng-init="count=0" name="entity.commonName" ng-model="entity.organizationalCode" class="form-control" placeholder="以0开头的八位数字"></td>
+                        <td><input  name="entity.commonName" onblur class="form-control" placeholder="以0开头的八位数字"></td>
                     </tr>
                     <tr>
 
                         <td>剂型:</td>
-                        <td><input ng-blur="count=count+1" ng-init="count=0" name="entity.dosageForm" ng-model="entity.nameOfTheComplainant" class="form-control" ></td>
+                        <td><input  name="entity.dosageForm" onblur class="form-control" ></td>
                         <td>规格:</td>
-                        <td><input ng-blur="count=count+1" ng-init="count=0" name="entity.speciflcation" ng-model="entity.idCard" class="form-control"  placeholder="由十八位数字或者十七位数字末尾加x组成"></td>
+                        <td><input   name="entity.speciflcation" onblur class="form-control"  placeholder="由十八位数字或者十七位数字末尾加x组成"></td>
                     </tr>
                     <tr>
                         <td>单位:</td>
-                        <td><input ng-blur="count=count+1" ng-init="count=0" name="entity.unitId" ng-model="entity.phone" class="form-control" placeholder="只能以13、15、18开头"></td>
+                        <td><input   name="entity.unitId" onblur class="form-control" placeholder="只能以13、15、18开头"></td>
                         <td>转换系数:</td>
-                        <td><input ng-blur="count=count+1" ng-init="count=0" name="entity.coefficient" ng-model="entity.nameOfRegistrant" class="form-control" ></td>
+                        <td><input   namel="entity.coefficient" onblur class="form-control" ></td>
 
                     </tr>
                     <tr>
                         <td>药品类别:</td>
-                        <td><select  name="entity.drugStateName" ng-model="entity.drugStateName" class="form-control" >
+                        <td><select   name="entity.drugStateName" onblur class="form-control" >
                             <option value="0">全部</option>
                             <option value="1">儿童用药</option>
                         </select></td>
                         <td>状态:</td>
-                        <td><select  name="entity.drugCategoryName" ng-model="entity.accountCharacter" class="form-control" >
+                        <td><select   name="entity.accountCharacter" onblur class="form-control" >
                             <option value="2">正常</option>
                             <option value="3">非正常</option>
                         </select></td>
                     </tr>
                 </table>
-
+                </form>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" ng-click="baoCun()">提交</button>
+                <button class="btn btn-primary" onclick="submit()">保存</button>
                 <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">关闭</button>
             </div>
         </div>

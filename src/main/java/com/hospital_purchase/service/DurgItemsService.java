@@ -9,8 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 public interface DurgItemsService {
 
-    PageInfo<DrugItemsVO> conditionfand(Integer pageNum, Integer pageSize, DrugItems druglist);
-
+    PageInfo<DrugItemsVO> conditionfand(Integer pageNum, Integer pageSize, DrugItemsVO druglist);
 
 //    Workbook exportExcel(String fileName, String[] arr);
 }
