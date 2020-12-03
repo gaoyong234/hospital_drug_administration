@@ -100,9 +100,7 @@ public class DrugInformationController {
         drugItems.setCommonName(drugInformationDto.getCommonName());
         drugItems.setDosageForm(drugInformationDto.getDosageForm());
         drugItems.setSpeciflcation(drugInformationDto.getSpeciflcation());
-
         drugItems.setUnitId(drugInformationDto.getUnitId());
-
         drugItems.setCoefficient(drugInformationDto.getCoefficient());
         drugItems.setProductionName(drugInformationDto.getProductionName());
         drugItems.setCommodityName(drugInformationDto.getCommodityName());
@@ -130,6 +128,72 @@ public class DrugInformationController {
             msg = "添加成功";
         }else {
             msg = "添加失败";
+        }
+        return msg;
+    }
+
+    /**
+     * 2020/12/3
+     * 修改药品信息
+     * @param drugInformationDto
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/updateDrugInformation")
+    public String updateDrugInformation(DrugInformationDto drugInformationDto){
+        String msg = "修改失败";
+        DrugItems drugItems = new DrugItems();
+        DrugMessage drugMessage = new DrugMessage();
+
+        drugItems.setDiId(drugInformationDto.getDiId());
+        drugItems.setSerialNumber(drugInformationDto.getSerialNumber());
+        drugItems.setCommonName(drugInformationDto.getCommonName());
+        drugItems.setDosageForm(drugInformationDto.getDosageForm());
+        drugItems.setSpeciflcation(drugInformationDto.getSpeciflcation());
+        drugItems.setUnitId(drugInformationDto.getUnitId());
+        drugItems.setCoefficient(drugInformationDto.getCoefficient());
+        drugItems.setProductionName(drugInformationDto.getProductionName());
+        drugItems.setCommodityName(drugInformationDto.getCommodityName());
+        drugMessage.setDrugItemsId(drugItems.getDiId());
+        drugMessage.setBiddingPrice(drugInformationDto.getBiddingPrice());
+        drugMessage.setApprovalNumber(drugInformationDto.getApprovalNumber());
+        drugMessage.setApprovalTime(drugInformationDto.getApprovalTime());
+        drugMessage.setIsEntrance(drugInformationDto.getIsEntrance());
+        drugMessage.setPackagingTexture(drugInformationDto.getPackagingTexture());
+        drugMessage.setPackUnit(drugInformationDto.getPackUnit());
+        drugMessage.setNewestPrice(drugInformationDto.getNewestPrice());
+        drugMessage.setRetailProvenance(drugInformationDto.getRetailProvenance());
+        drugMessage.setIsCheckout(drugInformationDto.getIsCheckout());
+        drugMessage.setHeckoutNumber(drugInformationDto.getHeckoutNumber());
+        drugMessage.setDrugValidTime(drugInformationDto.getDrugValidTime());
+        drugMessage.setProductExplain(drugInformationDto.getProductExplain());
+        drugItems.setDrugState(drugInformationDto.getDrugState());
+
+        int i = drugInformationService.updateDrugInformation(drugItems);
+        int y = drugInformationService.updateDrugMessageInformation(drugMessage);
+        if (i>0 || y>0){
+            msg = "修改成功";
+        }else {
+            msg = "修改失败";
+        }
+        return msg;
+    }
+
+    /**
+     * 2020/12/3
+     * 删除药品信息
+     * @param id
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/delDrugInformation")
+    public String delDrugInformation(Integer id){
+        String msg = "删除失败";
+        int i = drugInformationService.delDrugInformation(id);
+        if(i>0){
+            msg = "删除成功";
+        }else {
+            msg = "删除失败";
         }
         return msg;
     }

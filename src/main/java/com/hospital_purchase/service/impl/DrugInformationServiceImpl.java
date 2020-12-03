@@ -55,4 +55,23 @@ public class DrugInformationServiceImpl implements DrugInformationService {
     public int addDrugMessageInfo(DrugMessage drugMessage) {
         return drugMessageInformationMapper.addDrugMessageInfo(drugMessage);
     }
+
+    @Override
+    public int updateDrugInformation(DrugItems drugItems) {
+        return drugInformationMapper.updateByPrimaryKeySelective(drugItems);
+    }
+
+    @Override
+    public int updateDrugMessageInformation(DrugMessage drugMessage) {
+        return drugMessageInformationMapper.updateByPrimaryKeySelective(drugMessage);
+    }
+
+    @Override
+    public int delDrugInformation(Integer id) {
+        int i = 0;
+        if (id != null && id != 0){
+             //i = drugInformationMapper.deleteByPrimaryKey(id);
+        }
+        return i;
+    }
 }

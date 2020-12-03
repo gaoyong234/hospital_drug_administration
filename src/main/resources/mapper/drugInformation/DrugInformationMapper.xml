@@ -41,14 +41,35 @@
     <association property="approvalNumber" javaType="com.hospital_purchase.pojo.DrugMessage">
       <result column="approval_number" jdbcType="VARCHAR" property="approvalNumber" />
     </association>
-    <association property="drugValidTime" javaType="com.hospital_purchase.pojo.DrugMessage">
-      <result column="drug_valid_time" jdbcType="TIMESTAMP" property="drugValidTime" />
+    <association property="approvalTime" javaType="com.hospital_purchase.pojo.DrugMessage">
+      <result column="approval_time" jdbcType="TIMESTAMP" property="approvalTime" />
     </association>
     <association property="isEntrances" javaType="com.hospital_purchase.pojo.DrugMessage">
       <result column="is_entrance" jdbcType="BIT" property="isEntrance" />
     </association>
     <association property="packagingTexture" javaType="com.hospital_purchase.pojo.DrugMessage">
       <result column="packaging_texture" jdbcType="VARCHAR" property="packagingTexture" />
+    </association>
+    <association property="packUnit" javaType="com.hospital_purchase.pojo.DrugMessage">
+      <result column="pack_unit" jdbcType="INTEGER" property="packUnit" />
+    </association>
+    <association property="newestPrice" javaType="com.hospital_purchase.pojo.DrugMessage">
+      <result column="newest_price" jdbcType="DECIMAL" property="newestPrice" />
+    </association>
+    <association property="retailProvenance" javaType="com.hospital_purchase.pojo.DrugMessage">
+      <result column="retail_provenance" jdbcType="VARCHAR" property="retailProvenance" />
+    </association>
+    <association property="isCheckouts" javaType="com.hospital_purchase.pojo.DrugMessage">
+      <result column="is_checkout" jdbcType="TINYINT" property="isCheckout" />
+    </association>
+    <association property="heckoutNumber" javaType="com.hospital_purchase.pojo.DrugMessage">
+      <result column="heckout_number" jdbcType="VARCHAR" property="heckoutNumber" />
+    </association>
+    <association property="drugValidTime" javaType="com.hospital_purchase.pojo.DrugMessage">
+      <result column="drug_valid_time" jdbcType="TIMESTAMP" property="drugValidTime" />
+    </association>
+    <association property="productExplain" javaType="com.hospital_purchase.pojo.DrugMessage">
+      <result column="product_explain" jdbcType="VARCHAR" property="productExplain" />
     </association>
   </resultMap>
   <sql id="Base_Column_List">
@@ -71,7 +92,7 @@
     SELECT di.di_id,di.serial_number,di.common_name,di.dosage_form,di.speciflcation,
 	d.dictionaries_name as company,di.coefficient,di.production_name,di.commodity_name,dm.bidding_price
 	,dic.dictionaries_name as quality_level,dict.dictionaries_name as drug_category,di.drug_state,
-	dm.approval_number,dm.approval_time,dm.is_entrance,dm.packaging_texture,dm.pack_unit,
+	dm.approval_number,dm.approval_time,dm.is_entrance,dm.packaging_texture,dm.pack_unit,dm.product_explain,
 	dm.newest_price,dm.retail_provenance,dm.is_checkout,dm.heckout_number,dm.drug_valid_time
 	FROM drug_items di
 	LEFT JOIN dictionaries d on di.unit_id = d.dic_id
@@ -83,7 +104,7 @@
     SELECT di.di_id,di.serial_number,di.common_name,di.dosage_form,di.speciflcation,
 	d.dictionaries_name as company,di.coefficient,di.production_name,di.commodity_name,dm.bidding_price
 	,dic.dictionaries_name as quality_level,dict.dictionaries_name as drug_category,di.drug_state,
-    dm.approval_number,dm.approval_time,dm.is_entrance,dm.packaging_texture,dm.pack_unit,
+    dm.approval_number,dm.approval_time,dm.is_entrance,dm.packaging_texture,dm.pack_unit,dm.product_explain,
     dm.newest_price,dm.retail_provenance,dm.is_checkout,dm.heckout_number,dm.drug_valid_time
 	FROM drug_items di
 	LEFT JOIN dictionaries d on di.unit_id = d.dic_id
