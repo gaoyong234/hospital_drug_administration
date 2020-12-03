@@ -5,8 +5,12 @@ import com.hospital_purchase.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpSession;
 
 @Controller
+@RequestMapping("/userController")
 public class UserLoginController {
     @Autowired
     private UserService userService;
@@ -17,9 +21,17 @@ public class UserLoginController {
      * @return 登录主页
      */
     @RequestMapping("/userLogin")
-    public String userLogin(User user){
+    @ResponseBody
+    public String userLogin(User user, HttpSession httpSession){
+        //通过用户名密码查到用户信息
+        int count = userService.getCountUserByAccountAndPassword(user);
+        if (count>0){
+            httpSession.setAttribute("user",user);
 
-        return "";
+        }
+        System.out.println("我来了");
+
+        return "index1";
     }
 
     /**
