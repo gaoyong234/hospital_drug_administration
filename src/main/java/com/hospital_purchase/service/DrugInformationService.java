@@ -20,4 +20,9 @@ public interface DrugInformationService {
     //新增药品信息
     int addDrugInformation(DrugItems drugItems);
     int addDrugMessageInfo(DrugMessage drugMessage);
+    //修改药品信息
+    int updateDrugInformation(DrugItems drugItems);
+    int updateDrugMessageInformation(DrugMessage drugMessage);
+    //删除药品信息
+    int delDrugInformation(Integer id);
 }

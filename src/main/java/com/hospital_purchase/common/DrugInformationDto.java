@@ -1,6 +1,7 @@
 package com.hospital_purchase.common;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hospital_purchase.pojo.DrugMessage;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -30,6 +31,7 @@ public class DrugInformationDto {
 
     private String approvalNumber;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date approvalTime;
 
@@ -51,6 +53,7 @@ public class DrugInformationDto {
 
     private String heckoutNumber;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date drugValidTime;
 

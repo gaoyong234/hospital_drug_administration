@@ -44,9 +44,72 @@ public class DrugInfoVO {
     private Dictionaries qualityLevel;
     private Dictionaries drugCategorys;
     private DrugMessage approvalNumber;
-    private DrugMessage drugValidTime;
+    private DrugMessage approvalTime;
     private DrugMessage isEntrances;
     private DrugMessage packagingTexture;
+    private DrugMessage packUnit;
+    private DrugMessage newestPrice;
+    private DrugMessage retailProvenance;
+    private DrugMessage isCheckouts;
+    private DrugMessage heckoutNumber;
+    private DrugMessage drugValidTime;
+    private DrugMessage productExplain;
+
+    public DrugMessage getProductExplain() {
+        return productExplain;
+    }
+
+    public void setProductExplain(DrugMessage productExplain) {
+        this.productExplain = productExplain;
+    }
+
+    public DrugMessage getApprovalTime() {
+        return approvalTime;
+    }
+
+    public void setApprovalTime(DrugMessage approvalTime) {
+        this.approvalTime = approvalTime;
+    }
+
+    public DrugMessage getHeckoutNumber() {
+        return heckoutNumber;
+    }
+
+    public void setHeckoutNumber(DrugMessage heckoutNumber) {
+        this.heckoutNumber = heckoutNumber;
+    }
+
+    public DrugMessage getIsCheckouts() {
+        return isCheckouts;
+    }
+
+    public void setIsCheckouts(DrugMessage isCheckouts) {
+        this.isCheckouts = isCheckouts;
+    }
+
+    public DrugMessage getRetailProvenance() {
+        return retailProvenance;
+    }
+
+    public void setRetailProvenance(DrugMessage retailProvenance) {
+        this.retailProvenance = retailProvenance;
+    }
+
+    public DrugMessage getNewestPrice() {
+        return newestPrice;
+    }
+
+    public void setNewestPrice(DrugMessage newestPrice) {
+        this.newestPrice = newestPrice;
+    }
+
+    public DrugMessage getPackUnit() {
+        return packUnit;
+    }
+
+    public void setPackUnit(DrugMessage packUnit) {
+        this.packUnit = packUnit;
+    }
 
     public DrugMessage getPackagingTexture() {
         return packagingTexture;
