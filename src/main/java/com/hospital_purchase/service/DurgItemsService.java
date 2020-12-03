@@ -11,5 +11,7 @@ public interface DurgItemsService {
 
     PageInfo<DrugItemsVO> conditionfand(Integer pageNum, Integer pageSize, DrugItemsVO druglist);
 
+    Integer addDrugItems(DrugItems drugItems);
+
 //    Workbook exportExcel(String fileName, String[] arr);
 }

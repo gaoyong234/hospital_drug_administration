@@ -34,17 +34,12 @@ public class DrugItemsController {
         return conditionfand;
     }
 
-    @RequestMapping("/pitchOn")
-    public boolean exporExcel1(@RequestParam("arr")String[] arr, HttpServletResponse response) throws IOException {
-//        String fileName = "全部数据信息.xlsx";
-////        Workbook workbook = selectAllInter.exportExcel1(fileName, arr);
-//        durgItemsService.exportExcel(fileName, arr);
-//        ServletOutputStream out = response.getOutputStream();
-//        fileName = URLEncoder.encode(fileName, "UTF-8");
-//        response.addHeader("Content-Disposition","attachment;filename=" + fileName);
-//        response.setContentType("multipart/form-data");
-//        workbook.write(out);
-//        out.close();
-        return false;
+    @RequestMapping("addDrugItems")
+    @ResponseBody
+    public Integer addDrugItems(DrugItems drugItems){
+        Integer integer = durgItemsService.addDrugItems(drugItems);
+        System.out.println(integer);
+        return integer;
     }
+
 }

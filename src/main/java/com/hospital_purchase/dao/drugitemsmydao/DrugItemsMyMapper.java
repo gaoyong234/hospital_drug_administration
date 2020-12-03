@@ -21,4 +21,6 @@ public interface DrugItemsMyMapper {
     List<DrugItemsVO> conditionfand(DrugItemsVO druglist);
 
     DrugItems selectAll();
+
+    Integer addDrugItems(DrugItems drugItems);
 }

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hospital_purchase.dao.drugitemsmydao.DrugItemsMyMapper">
+  <resultMap id="BaseResultMap" type="com.hospital_purchase.pojo.DrugItems">
+    <id column="di_id" jdbcType="INTEGER" property="diId" />
+    <result column="common_name" jdbcType="VARCHAR" property="commonName" />
+    <result column="dosage_form" jdbcType="VARCHAR" property="dosageForm" />
+    <result column="speciflcation" jdbcType="VARCHAR" property="speciflcation" />
+    <result column="unit_id" jdbcType="INTEGER" property="unitId" />
+    <result column="coefficient" jdbcType="INTEGER" property="coefficient" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="modified_time" jdbcType="TIMESTAMP" property="modifiedTime" />
+    <result column="production_name" jdbcType="VARCHAR" property="productionName" />
+    <result column="commodity_name" jdbcType="VARCHAR" property="commodityName" />
+    <result column="serial_number" jdbcType="VARCHAR" property="serialNumber" />
+    <result column="drug_category" jdbcType="INTEGER" property="drugCategory" />
+    <result column="drug_state" jdbcType="INTEGER" property="drugState" />
+  </resultMap>
+  <resultMap id="BaseMap" type="com.hospital_purchase.vo.DrugItemsVO">
+    <id column="di_id" jdbcType="INTEGER" property="diId" />
+    <result column="common_name" jdbcType="VARCHAR" property="commonName" />
+    <result column="dosage_form" jdbcType="VARCHAR" property="dosageForm" />
+    <result column="speciflcation" jdbcType="VARCHAR" property="speciflcation" />
+    <result column="unit_id" jdbcType="VARCHAR" property="unitId" />
+    <result column="coefficient" jdbcType="VARCHAR" property="coefficient" />
+    <result column="drug_category_name" jdbcType="VARCHAR" property="drugCategoryName" />
+    <result column="drug_state_name" jdbcType="VARCHAR" property="drugStateName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    di_id, common_name, dosage_form, speciflcation, unit_id, coefficient, create_time,
+    modified_time, production_name, commodity_name, serial_number, drug_category, drug_state
+  </sql>
+  <select id="conditionfand" resultMap="BaseMap">
+    SELECT di_id,common_name,dosage_form,speciflcation,
+	unit_id,coefficient,dc.dictionaries_name as drug_category_name,dic.dictionaries_name as drug_state_name
+	FROM drug_items di
+	LEFT JOIN dictionaries dc on di.drug_category = dc.dic_id
+	LEFT JOIN dictionaries dic on di.drug_state = dic.dic_id
+    <where>
+      <if test="diId != null and diId != ''">
+        and di.di_id = #{diId}
+      </if>
+      <if test="commonName != null and commonName != ''">
+        and di.common_name like CONCAT("%",#{commonName},"%")
+      </if>
+      <if test="dosageForm != null and dosageForm != ''">
+        and di.dosage_form like CONCAT("%",#{dosageForm},"%")
+      </if>
+      <if test="speciflcation != null and speciflcation !=''">
+        and di.speciflcation = #{speciflcation}
+      </if>
+      <if test="unitId != null and unitId != ''">
+        and di.unit_id = #{unitId}
+      </if>
+      <if test="coefficient != null and coefficient != ''">
+        and di.coefficient = {coefficient}
+      </if>
+      <if test="drugCategoryName != null and drugCategoryName != ''">
+        and di.drug_category_name like CONCAT("%",#{drug_category_name},"%")
+      </if>
+      <if test="drugStateName != null and drugStateName != ''">
+        and di.drug_state_name like CONCAT("%",#{drugStateName},"%")
+      </if>
+
+    </where>
+  </select>
+<insert id="addDrugItems" parameterType="com.hospital_purchase.pojo.DrugItems">
+    insert into drug_items
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="diId != null">
+        di_id,
+      </if>
+      <if test="commonName != null">
+        common_name,
+      </if>
+      <if test="dosageForm != null">
+        dosage_form,
+      </if>
+      <if test="speciflcation != null">
+        speciflcation,
+      </if>
+      <if test="unitId != null">
+        unit_id,
+      </if>
+      <if test="coefficient != null">
+        coefficient,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="modifiedTime != null">
+        modified_time,
+      </if>
+      <if test="productionName != null">
+        production_name,
+      </if>
+      <if test="commodityName != null">
+        commodity_name,
+      </if>
+      <if test="serialNumber != null">
+        serial_number,
+      </if>
+      <if test="drugCategory != null">
+        drug_category,
+      </if>
+      <if test="drugState != null">
+        drug_state,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="diId != null">
+        #{diId,jdbcType=INTEGER},
+      </if>
+      <if test="commonName != null">
+        #{commonName,jdbcType=VARCHAR},
+      </if>
+      <if test="dosageForm != null">
+        #{dosageForm,jdbcType=VARCHAR},
+      </if>
+      <if test="speciflcation != null">
+        #{speciflcation,jdbcType=VARCHAR},
+      </if>
+      <if test="unitId != null">
+        #{unitId,jdbcType=INTEGER},
+      </if>
+      <if test="coefficient != null">
+        #{coefficient,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifiedTime != null">
+        #{modifiedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="productionName != null">
+        #{productionName,jdbcType=VARCHAR},
+      </if>
+      <if test="commodityName != null">
+        #{commodityName,jdbcType=VARCHAR},
+      </if>
+      <if test="serialNumber != null">
+        #{serialNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="drugCategory != null">
+        #{drugCategory,jdbcType=INTEGER},
+      </if>
+      <if test="drugState != null">
+        #{drugState,jdbcType=INTEGER},
+      </if>
+    </trim>
+</insert>
+
+</mapper>
