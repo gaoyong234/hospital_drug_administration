@@ -25,4 +25,9 @@ public class DurgItemsImpl implements DurgItemsService {
         PageInfo<DrugItemsVO> pageInfo = new PageInfo<DrugItemsVO>(registrationOfCases);
         return pageInfo;
     }
+
+    @Override
+    public Integer addDrugItems(DrugItems drugItems) {
+        return drugItemsMyMapper.addDrugItems(drugItems);
+    }
 }

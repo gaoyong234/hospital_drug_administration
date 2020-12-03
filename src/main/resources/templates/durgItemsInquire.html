@@ -56,66 +56,51 @@
                })
 
            }
-           $scope.addClick=function () {
 
-           }
-           $scope.baoCun = function () {
-               var demo=false;
-               var formDa = $scope.entity;
-               var len=0;
-               for (len in formDa) {
-                   len++;
-                   if (formDa[i]!=null || formDa[i]!=""){
-                       demo=true;
-                   }else {
-                       demo=false;
-                       break;
-                   }
-               }
-               if (len<10){
-                   demo=false;
-               }
-
-               if (demo){
-                   $http({
-                       url: "inserOne",
-                       method: "get",
-                       params: formDa
-                   })
-                   alert("添加成功")
-               }else {
-                   alert("请完善信息")
-               }
-           }
 
        })
 
 
     </script>
-    <script>
-        function loadlick() {
-            var chil = $("[name=pitchOn]");
-            var a=false;
-            for (var i = 0; i < chil.length; i++) {
-                if (chil[i].checked){
-                    a=true;
-                    break;
+    <script type="text/javascript">
+        var demo=false;
+        $(function () {
+            $("#addition input").blur(function () {
+                $(this).next().html("");
+                $(this).next().css("color","black");
+                if (this.value!=null&&this.value!=""){
+                    demo=true;
+                }else{
+                    $(this).next().html("不能为空");
+                    $(this).next().css("color","red");
+                    demo=false;
                 }
-            }
-            if (!a){
-                alert("请选择要下载的数据")
 
-            }else{
-                var array = new Array();
-                for (var i = 0; i < chil.length; i++) {
-                    if (chil[i].checked) {
-                        array.push(chil[i].value);
+            })
+        })
+        function save() {
+            if (demo){
+                var addform = $("#addForm").serialize();
+                $.ajax({
+                    url: "/items/addDrugItems",
+                    dataType: "json",
+                    type: "post",
+                    data: addform,
+                    success: function (data) {
+                        if (data > 0) {
+                            alert("添加成功")
+
+                        } else {
+                            alert("添加失败")
+                        }
                     }
-                }
-                window.location.href = "pitchOn?arr=" + array;
-            }
+                })
 
+            }else {
+                alert("请完善信息后提交")
+            }
         }
+
     </script>
 
 </head>
@@ -138,13 +123,11 @@
     </tr>
     <tr>
         <td>药品类别:<select ng-model="drug.drugCategory">
-            <option value="0">全部</option>
         <option value="1">儿童用药</option>
         </select>
         </td>
         <td>
             状态:<select ng-model="drug.drugState">
-            <option value="0">全部</option>
         <option value="2">正常</option>
             <option value="3">不正常</option>
         </select>
@@ -159,7 +142,7 @@
 
 </div>
     <div>
-        <button type="button" class="btn1" data-toggle="modal" data-target="#editModal" ng-click="addClick()">添加
+        <button type="button" class="btn1" data-toggle="modal" data-target="#addition" ng-click="addClick()">添加
         </button>
         <button type="button" class="btn1" ng-click="loadlick()">导入
         </button>
@@ -168,6 +151,7 @@
     <table id="dataList" class="table">
         <thead>
         <tr>
+            <th></th>
             <th>药品品目号</th>
             <th>通用名</th>
             <th>剂型</th>
@@ -191,15 +175,18 @@
             <td>{{x.speciflcation}}</td>
             <td>{{x.unitId}}</td>
             <td>{{x.coefficient}}</td>
-            <td>{{x.drugStateName}}</td>
             <td>{{x.drugCategoryName}}</td>
+            <td>{{x.drugStateName}}</td>
+            <td><button value="{{x.diId}}" onclick="drugdetail()" data-toggle="modal" data-target="#more">详细</button></td>
+            <td><button value="{{x.diId}}" onclick="amend()">修改</button></td>
+            <td><button value="{{x.diId}}" onclick="expurgate()">删除</button></td>
         </tr>
         </tbody>
     </table>
           <tm-pagination conf="paginationConf"></tm-pagination>
                 </div>
-<div class="#editModal"></div>
-<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+<div class="modal fade" id="addition" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog" style="width:80%;">
         <div class="modal-content" >
             <div class="modal-header">
@@ -207,49 +194,121 @@
                 <h3 id="myModalLabel">药品品目添加</h3>
             </div>
             <div class="modal-body">
-
+                <form id="addForm">
                 <table class="table table-bordered table-striped"  >
                     <tr>
                         <td>药品品目号:</td>
-                        <td><input ng-blur="count=count+1" ng-init="count=0" name="entity.diId" ng-model="entity.unitName" value="" class="form-control"></td>
+                        <td><input name="diId"  onblur class="form-control">
+                        <span></span></td>
                         <td>通用名:</td>
-                        <td><input ng-blur="count=count+1" ng-init="count=0" name="entity.commonName" ng-model="entity.organizationalCode" class="form-control" placeholder="以0开头的八位数字"></td>
+                        <td><input name="commonName" onblur  class="form-control" >
+                        <span></span></td>
                     </tr>
                     <tr>
 
                         <td>剂型:</td>
-                        <td><input ng-blur="count=count+1" ng-init="count=0" name="entity.dosageForm" ng-model="entity.nameOfTheComplainant" class="form-control" ></td>
+                        <td><input name="dosageForm" onblur   class="form-control" >
+                        <span></span></td>
                         <td>规格:</td>
-                        <td><input ng-blur="count=count+1" ng-init="count=0" name="entity.speciflcation" ng-model="entity.idCard" class="form-control"  placeholder="由十八位数字或者十七位数字末尾加x组成"></td>
+                        <td><input name="speciflcation" onblur   class="form-control"  >
+                        <span></span></td>
                     </tr>
                     <tr>
                         <td>单位:</td>
-                        <td><input ng-blur="count=count+1" ng-init="count=0" name="entity.unitId" ng-model="entity.phone" class="form-control" placeholder="只能以13、15、18开头"></td>
+                        <td><input name="unitId" onblur   class="form-control" >
+                            <span></span></td>
                         <td>转换系数:</td>
-                        <td><input ng-blur="count=count+1" ng-init="count=0" name="entity.coefficient" ng-model="entity.nameOfRegistrant" class="form-control" ></td>
+                        <td><input name="coefficient" onblur   class="form-control" >
+                            <span></span></td>
 
                     </tr>
                     <tr>
                         <td>药品类别:</td>
-                        <td><select  name="entity.drugStateName" ng-model="entity.drugStateName" class="form-control" >
-                            <option value="0">全部</option>
+                        <td><select  name="drugCategory" onblur class="form-control" >
                             <option value="1">儿童用药</option>
-                        </select></td>
+                        </select><span></span></td>
                         <td>状态:</td>
-                        <td><select  name="entity.drugCategoryName" ng-model="entity.accountCharacter" class="form-control" >
+                        <td><select name="drugState" onblur  class="form-control" >
                             <option value="2">正常</option>
                             <option value="3">非正常</option>
-                        </select></td>
+                        </select><span></span></td>
                     </tr>
                 </table>
-
+                </form>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" ng-click="baoCun()">提交</button>
+                <button class="btn btn-primary" onclick="save()">保存</button>
                 <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">关闭</button>
             </div>
         </div>
     </div>
 </div>
+<div class="modal fade" id="more" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button id="bt" type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h3 id="myModalLabe">修改页面</h3>
+            </div>
+            <div class="modal-body">
+                <form id="inserInto">
+                    <table class="table table-bordered table-striped">
+                        <tr>
+                            <td>单位名称:</td>
+                            <td><input ng-model="xg.unitName" onblur class="form-control">
+                                <span ></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>组织机构代码:</td>
+                            <td><input ng-model="xg.organizationalCode" name="organizationalCode"  onblur class="form-control"></td>
+                            <td>投诉人姓名:</td>
+                            <td><input  ng-model="xg.nameOfTheComplainant" name="nameOfTheComplainant" onblur class="form-control"></td>
+                            <td>投诉人身份证号:</td>
+                            <td><input ng-model="xg.idCard" name="idCard" onblur  class="form-control">
+                                <span></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>联系电话:</td>
+                            <td><input  ng-model="xg.phone" name="phone" onblur class="form-control">
+                                <span></span></td>
+                            <td>接收人:</td>
+                            <td><input  ng-model="xg.nameOfRegistrant" name="nameOfRegistrant"  class="form-control"></td>
+                            <td>户口性质:</td>
+                            <td><select  ng-model="xg.accountCharacter" name="accountCharacter"  class="form-control">
+                                <option  value="0">农业户口</option>
+                                <option  value="1">非农业户口</option>
+                            </select></td>
+                        </tr>
+                        <tr>
+                            <td>年龄:</td>
+                            <td><input ng-model="xg.age" name="age"  class="form-control">
+                            </td>
+                            <td>性别:</td>
+                            <td><select  name="sex" ng-model="xg.sex"  class="form-control">
+                                <option value="0">男</option>
+                                <option value="1">女</option>
+                            </select></td>
+                            <td>立案人:</td>
+                            <td><input  ng-model="xg.nameOfTheFiler" name="nameOfTheFiler"  class="form-control">
+                            <td>立案月</td>
+                            <td><input ng-model="xg.filingMonth" name="filingMonth"  class="form-control"></td>
+                        </tr>
+                        <tr>
+                            <td>投诉内容:</td>
+                            <td><textarea  ng-model="xg.complaintContents" name="complaintContents" ></textarea></td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" ng-click="save()">保存</button>
+                <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
