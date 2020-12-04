@@ -1,5 +1,6 @@
 package com.hospital_purchase.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.hospital_purchase.common.DrugInformationDto;
 import com.hospital_purchase.pojo.Dictionaries;
 import com.hospital_purchase.pojo.DrugItems;
@@ -9,11 +10,10 @@ import com.hospital_purchase.vo.DrugInformationVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -36,14 +36,12 @@ public class DrugInformationController {
     /**
      * 2020/11/30
      * 查询药品信息维护
-     * @param model
      * @return
      */
     @ResponseBody
     @RequestMapping("/findDrugItemsInfo")
-    public List<DrugItems> findDrugItemsInfo(Model model){
+    public List<DrugItems> findDrugItemsInfo(){
         List<DrugItems> list = drugInformationService.findDrugItemsInfo();
-        model.addAttribute("lists",list);
         return list;
     }
 
@@ -55,9 +53,12 @@ public class DrugInformationController {
      */
     @ResponseBody
     @RequestMapping("/findAllDrugInfoLike")
-    public List<DrugItems> findAllDrugInfoLike(DrugInformationVO drugInformationVO){
-        List<DrugItems> list = drugInformationService.findAllDrugInfoLike(drugInformationVO);
-        return list;
+    public PageInfo<DrugItems> findAllDrugInfoLike(@RequestParam(value = "pageNum",defaultValue = "1")Integer pageNum,
+                                                   @RequestParam(value = "pageSize",defaultValue = "5")Integer pageSize,
+                                                   DrugInformationVO drugInformationVO){
+        PageInfo<DrugItems> pageInfo = drugInformationService.findAllDrugInfoLike(pageNum,pageSize,drugInformationVO);
+
+        return pageInfo;
     }
 
     /**
