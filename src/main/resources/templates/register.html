@@ -1,39 +1,37 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8">
-    <title>登录界面</title>
+    <title>注册界面</title>
     <link rel="stylesheet" href="../static/css/common.css">
     <link rel="stylesheet" href="../static/css/font-awesome.min.css">
     <link rel="stylesheet" href="../static/css/reset.css">
 
-
+    <script src="../static/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script src="../static/js/login/common.js"></script>
     <script type="text/javascript">
         function toLogin() {
-            var user = $("#login").serialize();
+            window.location = "/";
+        }
+        function selectAccount() {
+            var userAccount = $("[name='userAccount']").val();
             $.ajax({
-                url: "/userController/userLogin",
-                data: user,
-                dataType: "JSON",
-                type: "post",
-                success: function (msg) {
-                    console.log(msg)
-                    if (msg) {
-                        window.location = "/toMassage";
+                url:"/userController/userExist",
+                data:{"userAccount":userAccount},
+                dataType:"JSON",
+                type:"post",
+                success:function (data) {
+                    if (data>0){
+                        alert("该账号已经存在");
                     }
                 }
             })
-        }
 
-        function toRegister() {
-            window.location = "/toRegister";
         }
     </script>
-
     <style>
-        .login_wrap{
-            background: url(../static/img/login_bg.jpg) no-repeat center;
+        .login_wrap {
+            background: url(../static/img/logo_bg.jpg) no-repeat center;
             background-size: 100%;
         }
     </style>
@@ -41,36 +39,38 @@
 <body>
 <div class="wrap login_wrap">
     <div class="content">
+
         <div class="logo"></div>
+
         <div class="login_box">
 
             <div class="login_form">
                 <div class="login_title">
-                    登录
+                    注册
                 </div>
-                <form id="login">
+                <form action="#" method="post">
 
                     <div class="form_text_ipt">
-                        <input name="userAccount" type="text" placeholder="您的账号">
+                        <input name="userAccount" onblur="selectAccount()" type="text" placeholder="账号">
                     </div>
-                    <div class="ececk_warning"><span>手机号/邮箱不能为空</span></div>
+                    <div class="ececk_warning"><span>账号不能为空</span></div>
                     <div class="form_text_ipt">
                         <input name="userPassword" type="password" placeholder="密码">
                     </div>
                     <div class="ececk_warning"><span>密码不能为空</span></div>
-                    <div class="form_check_ipt">
-                        <div class="left check_left">
-                            <label><input name="" type="checkbox"> 下次自动登录</label>
-                        </div>
-                        <div class="right check_right">
-                            <a href="#">忘记密码</a>
-                        </div>
+                    <div class="form_text_ipt">
+                        <input name="rePassword" type="password" placeholder="重复密码">
                     </div>
+                    <div class="ececk_warning"><span>密码不能为空</span></div>
+                    <div class="form_text_ipt">
+                        <input name="userName" type="text" placeholder="昵称">
+                    </div>
+
                     <div class="form_btn">
-                        <button type="button" onclick="toLogin()">登录</button>
+                        <button type="button" onclick="javascript:window.location.href='#'">注册</button>
                     </div>
                     <div class="form_reg_btn">
-                        <span>还没有帐号？</span><a  href="javascript:void(0);" onclick="toRegister()">马上注册</a>
+                        <span>已有帐号？</span><a href="javascript:void(0);" onclick="toLogin()">马上登录</a>
                     </div>
                 </form>
                 <div class="other_login">
@@ -87,7 +87,5 @@
         </div>
     </div>
 </div>
-<script src="../static/plugins/jQuery/jquery-2.2.3.min.js"></script>
-<script src="../static/js/login/common.js"></script>
 </body>
 </html>

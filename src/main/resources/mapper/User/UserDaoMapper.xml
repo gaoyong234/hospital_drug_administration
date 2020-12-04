@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hospital_purchase.dao.User.UserDaoMapper">
+  <resultMap id="BaseResultMap" type="com.hospital_purchase.pojo.User">
+    <id column="us_id" jdbcType="INTEGER" property="usId" />
+    <result column="user_account" jdbcType="INTEGER" property="userAccount" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="user_category" jdbcType="INTEGER" property="userCategory" />
+    <result column="user_password" jdbcType="VARCHAR" property="userPassword" />
+    <result column="user_state" jdbcType="INTEGER" property="userState" />
+    <result column="user_unit" jdbcType="VARCHAR" property="userUnit" />
+    <result column="contact_address" jdbcType="VARCHAR" property="contactAddress" />
+    <result column="user_postal_code" jdbcType="INTEGER" property="userPostalCode" />
+    <result column="user_linkman" jdbcType="VARCHAR" property="userLinkman" />
+    <result column="user_phone" jdbcType="INTEGER" property="userPhone" />
+    <result column="user_email" jdbcType="VARCHAR" property="userEmail" />
+    <result column="creation_time" jdbcType="TIMESTAMP" property="creationTime" />
+    <result column="modification_time" jdbcType="TIMESTAMP" property="modificationTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    us_id, user_account, user_name, user_category, user_password, user_state, user_unit, 
+    contact_address, user_postal_code, user_linkman, user_phone, user_email, creation_time, 
+    modification_time
+  </sql>
+  <select id="selectOneUser" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from user
+    where user_account = #{userAccount}
+    and user_password=#{userPassword}
+  </select>
+  <select id="countUserByAccountPassword" resultType="integer">
+    select count(0)
+    from user
+    where user_account = #{userAccount}
+  </select>
+  <select id="selectUserByAccount" resultMap="BaseResultMap" parameterType="integer">
+    select
+    <include refid="Base_Column_List"/>
+    from user
+    where user_account = #{userAccount}
+  </select>
+
+</mapper>

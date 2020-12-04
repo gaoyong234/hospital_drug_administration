@@ -10,5 +10,15 @@ public class LoginController {
         return "index";
     }
 
+    @RequestMapping("/toMassage")
+    public String toMassage(){
+        return "homePage";
+    }
+
+    @RequestMapping("/toRegister")
+    public String toRegister(){
+        return "register";
+    }
+
 
 }

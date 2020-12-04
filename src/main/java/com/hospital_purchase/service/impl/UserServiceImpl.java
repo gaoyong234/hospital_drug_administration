@@ -1,5 +1,6 @@
 package com.hospital_purchase.service.impl;
 
+import com.hospital_purchase.dao.User.UserDaoMapper;
 import com.hospital_purchase.dao.UserMapper;
 import com.hospital_purchase.pojo.User;
 import com.hospital_purchase.service.UserService;
@@ -12,6 +13,8 @@ import java.util.Date;
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private UserDaoMapper userDaoMapper;
 
     /**
      * 添加用户
@@ -27,21 +30,35 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * 用户登录
-     * @param user
+     *  判断用户是否存在
+     * @param userAccount 账号
+     * @param password 密码
+     * @return 是否存在
+     */
+    @Override
+    public int getCountUserByAccountAndPassword(Integer userAccount) {
+
+        return userDaoMapper.countUserByAccountPassword(userAccount);
+    }
+
+    /**
+     *
+     * @param userAccount
+     * @param password
      * @return
      */
     @Override
-    public int getCountUserByAccountAndPassword(User user) {
-
-        User admin = userMapper.selectByPrimaryKey(user.getUsId());
-        if(user.getUserPassword()!=null &&MD5Util.md5Encrypt32Upper(user.getUserPassword()).equals(admin.getUserPassword())){
-            if (user.getUserAccount()!=null &&user.getUserAccount().equals(admin.getUserAccount())){
-
-            }
-        }
-
-        return 0;
+    public User getOneUserByUserAccountAndPassword(Integer userAccount, String password) {
+        return userDaoMapper.selectOneUser(userAccount,password);
     }
+
+    @Override
+    public User getUserByAccount(Integer userAccount) {
+
+        User user = userDaoMapper.selectUserByAccount(userAccount);
+
+        return user;
+    }
+
 
 }
