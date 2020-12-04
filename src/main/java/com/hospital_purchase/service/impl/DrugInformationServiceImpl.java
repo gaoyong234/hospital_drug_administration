@@ -1,5 +1,7 @@
 package com.hospital_purchase.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.hospital_purchase.dao.DictionariesMapper;
 import com.hospital_purchase.dao.drugInformation.DrugInformationMapper;
 import com.hospital_purchase.dao.drugInformation.DrugMessageInformationMapper;
@@ -32,8 +34,11 @@ public class DrugInformationServiceImpl implements DrugInformationService {
     }
 
     @Override
-    public List<DrugItems> findAllDrugInfoLike(DrugInformationVO drugInformationVO) {
-        return drugInformationMapper.findAllDrugInfoLike(drugInformationVO);
+    public PageInfo<DrugItems> findAllDrugInfoLike(Integer pageNum,Integer pageSize,DrugInformationVO drugInformationVO) {
+        PageHelper.startPage(pageNum,pageSize);
+        List<DrugItems> drugItemsList = drugInformationMapper.findAllDrugInfoLike(drugInformationVO);
+        PageInfo<DrugItems> pageInfo = new PageInfo<>(drugItemsList);
+        return pageInfo;
     }
 
     @Override

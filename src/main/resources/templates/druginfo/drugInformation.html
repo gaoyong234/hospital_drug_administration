@@ -5,6 +5,7 @@
 	<meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
 	<title></title>
 	<link rel="stylesheet" href="../../static/renponsetable/layer/theme/default/layer.css">
 	<link rel="stylesheet" type="text/css" href="../../static/renponsetable/css/reponse.css">
@@ -17,12 +18,26 @@
 		.alertceng span.title{
 			margin-right: 10px;
 		}
+		/*分页样式*/
+		/* 外面盒子样式---自己定义 */
+		.page_div{margin:20px 10px 20px 0;color:#666}
+		/* 页数按钮样式 */
+		.page_div button{display:inline-block;min-width:30px;height:28px;cursor:pointer;color:#666;font-size:13px;line-height:28px;background-color:#f9f9f9;border:1px solid #dce0e0;text-align:center;margin:0 4px;-webkit-appearance: none;-moz-appearance: none;appearance: none;}
+		#firstPage,#lastPage,#nextPage,#prePage{width:50px;color:#0073A9;border:1px solid #0073A9}
+		#nextPage,#prePage{width:70px}
+		.page_div .current{background-color:#0073A9;border-color:#0073A9;color:#FFF}
+		/* 页面数量 */
+		.totalPages{margin:0 10px}
+		.totalPages span,.totalSize span{color:#0073A9;margin:0 5px}
+		/*button禁用*/
+		.page_div button:disabled{opacity:.5;cursor:no-drop}
 	</style>
 	<script src="https://cdn.staticfile.org/angular.js/1.4.6/angular.min.js"></script>
 	<script src="https://www.jq22.com/jquery/jquery-1.10.2.js"></script>
 	<script type="text/javascript" src="../../static/renponsetable/js/jquery.basictable.min.js"></script>
 	<script type="text/javascript" src="../../static/renponsetable/reponsetable.min.js"></script>
 	<script type="text/javascript" src="../../static/renponsetable/layer/layer.js"></script>
+	<script type="text/javascript" src="../../static/renponsetable/js/pageMe.js"></script>
 </head>
 <body>
 	<div class="layui-fluid layadmin-homepage-fluid" style="background: #fff;width:99%;margin:0 auto;">
@@ -57,7 +72,7 @@
 							</select>
 						</lable>
 						<lable>药品类别:
-							<select name="drugCategory" id="drugCategory">
+							<select name="drugCategorys" id="drugCategory">
 								<option value="">请选择</option>
 							</select>
 						</lable>
@@ -77,18 +92,20 @@
 				<!--<a class="layui-btn layui-btn-xs" onclick="uptr(this)">上移</a>
 				<a class="layui-btn layui-btn-xs" onclick="downtr(this)">下移</a>-->
 		  </script>
+			<!--分页-->
+			<div id="pages" class="page_div"></div>
 		</div>
 	</div>
 	<!--新增的弹框-->
 	<div id="editcontent" class="alertceng">
             流 水 号:<input type="text" name="serialNumber" id="serialNumber"/>
-			通 用 名:<input type="text" name="commonName" id="commonName"/><br/>
-			剂    型:<input type="text" name="dosageForm" id="dosageForm"/>
-			规    格:<input type="text" name="speciflcation" id="speciflcation"/><br/>
-			单    位:<input type="text" name="company" id="company"/>
-			转换系数:<input type="text" name="coefficient" id="coefficient"/><br/>
-            生产企业:<input type="text" name="productionName" id="productionName"/>
-            商品名称:<input type="text" name="commodityName" id="commodityName"/><br/>
+			通 用 名:<input type="text" name="commonName" id="commonName" placeholder="不能为空！！"/><br/>
+			剂    型:<input type="text" name="dosageForm" id="dosageForm" placeholder="不能为空！！"/>
+			规    格:<input type="text" name="speciflcation" id="speciflcation" placeholder="不能为空！！"/><br/>
+			单    位:<input type="text" name="company" id="company" placeholder="不能为空！！"/>
+			转换系数:<input type="text" name="coefficient" id="coefficient" placeholder="不能为空！！"/><br/>
+            生产企业:<input type="text" name="productionName" id="productionName" placeholder="不能为空！！"/>
+            商品名称:<input type="text" name="commodityName" id="commodityName" placeholder="不能为空！！"/><br/>
             中标价格:<input type="text" name="biddingPrice" id="biddingPrice"/>
 		批准文号:<input type="text" name="approvalNumber" id="approvalNumber"/><br/>
 		批准文号有效期:<input type="date" name="approvalTime" id="approvalTime"/>
@@ -111,7 +128,6 @@
 						<option value="">请选择</option>
 					</select>
             药品交易状态:<select name="drugStates" id="drugStates">
-							<option value="">请选择</option>
 							<option value="0">正常</option>
 							<option value="1">交易暂停</option>
 						</select>
@@ -152,11 +168,11 @@
 		$('#table').basictable({
 			breakpoint: 1000
 		});
-		dataForm();
 		findQualityLevel();
 		findDrugCategory();
 		findDrugCategorys();
 		findQualityLevels();
+		dataForm();
 	})
 	//查询全部药品信息
 	function dataForm(){
@@ -166,8 +182,9 @@
 			type:"get",
 			dataType:"json",
 			data:ser,
-			success:function (data) {
-			    //console.log(data)
+			success:function (datas) {
+				//console.log(datas);
+				var data = datas.list;
 				$.each(data,function (index,item) {
 					data[index].biddingPrice=data[index].biddingPrice.biddingPrice;
 					data[index].company=data[index].company.dictionariesName;
@@ -222,6 +239,16 @@
 						{"field": "productExplain","title": "产品说明"}
 					],
 					"data": data
+				});
+				//分页
+				// pageMe.js 使用方法
+				$("#pages").paging({
+					pageNum: datas.pageNum, // 当前页面
+					totalNum: datas.pages, // 总页码
+					totalList: datas.total, // 记录总数量
+					callback: function (num) { //回调函数
+						console.log(num);
+					}
 				});
 				//隐藏单元格
                 $("[data-field='diId']").css('display','none');
@@ -390,16 +417,43 @@
 				  "drugCategory":drugCategory,
 				  "drugState":drugState
 			  };
-			  reponse.addtr(obj, "table");
+			  //reponse.addtr(obj, "table");
 			  //console.log(obj);
+			  //查询药品品目信息 验证新添加的药品品目信息是否重复
 			  $.ajax({
-				  url:"/drugInformation/addDrugInformation",
-				  type:"post",
+				  url:"/items/conditionfand",
+				  type:"get",
 				  datatype:"json",
-				  data:obj,
 				  success:function (data) {
-					alert("添加成功");
-					window.location.reload();
+					 var dataList = data.list;
+					 var msg = 0;
+					  $.each(dataList,function (index,item) {
+					  	//console.log(dataList[index]);
+					  	if (dataList[index].commonName == obj.commonName || dataList[index].dosageForm == obj.dosageForm){
+							alert("添加失败，药品品目已存在:{"+"通用名:【"+obj.commonName+"】"+"  剂型:"+"【"+obj.dosageForm+"】"+"}");
+						  msg = 1;
+					  	}
+					  });
+					  if(msg<=0){
+					  	if (obj.commonName !="" && obj.dosageForm !="" && obj.speciflcation !="" &&
+							obj.unitId !="" && obj.coefficient !="" && obj.productionName !="" &&
+							obj.commodityName !="" && obj.biddingPrice !=""){
+							$.ajax({
+								url:"/drugInformation/addDrugInformation",
+								type:"post",
+								datatype:"json",
+								data:obj,
+								success:function (data) {
+									alert("添加成功");
+									window.location.reload();
+								},error:function (data) {
+
+								}
+							})
+						}else {
+					  		alert("添加失败（通用名，剂型，单位，转换系数，企业名称，商品名，中标价格不能为空）！！")
+						}
+					  }
 				  },error:function (data) {
 
 				  }
