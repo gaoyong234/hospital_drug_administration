@@ -23,4 +23,6 @@ public interface DrugItemsMyMapper {
     DrugItems selectAll();
 
     Integer addDrugItems(DrugItems drugItems);
+
+    DrugItemsVO fandId(Integer diId);
 }

@@ -75,29 +75,72 @@
                     $(this).next().css("color","red");
                     demo=false;
                 }
-
             })
         })
-        function save() {
-            if (demo){
-                var addform = $("#addForm").serialize();
-                $.ajax({
-                    url: "/items/addDrugItems",
-                    dataType: "json",
-                    type: "post",
-                    data: addform,
-                    success: function (data) {
-                        if (data > 0) {
-                            alert("添加成功")
 
-                        } else {
-                            alert("添加失败")
-                        }
+        var lists;
+        function save() {
+            var did = $("[name='diId']").val();
+           var commonName=$("[name='commonName']").val();
+           var dosageForm=$("[name='dosageForm']").val();
+          var  speciflcation=$("[name='speciflcation']").val();
+           var unitId=$("[name='unitId']").val();
+           var coefficient=$("[name='coefficient']").val();
+          var  drugCategoryName=$("[name='drugCategoryName']").val();
+           var drugStateName=$("[name='drugStateName']").val();
+            demo = did != null && did != "" && commonName != null && commonName != "" && dosageForm != null && dosageForm != "" && speciflcation != null && speciflcation != "" && unitId != null && unitId != "" && coefficient != null && coefficient != "" && drugCategoryName != null && drugCategoryName != "" && drugStateName != null && drugStateName != "";
+            console.log(demo)
+            if (demo){
+                $.ajax({
+                    url:"/items/fandId",
+                    method:"get",
+                    data:{
+                        "diId":did,
+                        "drugCategoryName":drugCategoryName,
+                        "drugStateName":drugStateName
+                    },
+                    dataType:"json",
+                    success:function (data) {
+                         lists = eval(data);
                     }
                 })
+                var dem=false;
+                var li=0;
+               if (lists[0]!=0&&lists[0]!=null){
+                   dem=true;
+               }else{
+                   dem=false;
+               }
+
+                if(dem){
+                    $.ajax({
+                        url: "/items/addDrugItems",
+                        dataType: "json",
+                        type: "post",
+                        data: addform,
+                        success: function (data) {
+                            if (data > 0) {
+                                document.getElementById("headline").innerHTML="成功提示信息"
+                                document.getElementById("whether").innerHTML="您的操作成功"
+                                alert("增加成功")
+                            } else {
+                                document.getElementById("headline").innerHTML="失败提示信息"
+                                document.getElementById("whether").innerHTML="您的操作失败,请尝试刷新页面,重新操作"
+                                alert("数据库增加失败")
+                            }
+                        }
+                    })
+                }else {
+                    document.getElementById("headline").innerHTML="失败提示信息"
+                    document.getElementById("whether").innerHTML="您的操作失败,请尝试刷新页面,重新操作"
+                    // document.getElementById("lose").innerHTML=lists[li];
+                    alert("失败-已存在")
+                }
+
 
             }else {
-                alert("请完善信息后提交")
+                document.getElementById("headline").innerHTML="失败提示信息"
+                document.getElementById("whether").innerHTML="因数据不完整,您的操作失败,请尝试刷新页面,重新操作"
             }
         }
 
@@ -122,12 +165,12 @@
         <td>转换系数:<input ng-model="drug.coefficient"></td>
     </tr>
     <tr>
-        <td>药品类别:<select ng-model="drug.drugCategory">
+        <td>药品类别:<select ng-model="drug.drugCategoryName">
         <option value="1">儿童用药</option>
         </select>
         </td>
         <td>
-            状态:<select ng-model="drug.drugState">
+            状态:<select ng-model="drug.drugStateName">
         <option value="2">正常</option>
             <option value="3">不正常</option>
         </select>
@@ -224,11 +267,11 @@
                     </tr>
                     <tr>
                         <td>药品类别:</td>
-                        <td><select  name="drugCategory" onblur class="form-control" >
+                        <td><select  name="drugCategoryName" onblur class="form-control" >
                             <option value="1">儿童用药</option>
                         </select><span></span></td>
                         <td>状态:</td>
-                        <td><select name="drugState" onblur  class="form-control" >
+                        <td><select name="drugStateName" onblur  class="form-control" >
                             <option value="2">正常</option>
                             <option value="3">非正常</option>
                         </select><span></span></td>
@@ -237,12 +280,29 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" onclick="save()">保存</button>
+                <button class="btn btn-primary" data-toggle="modal" data-dismiss="modal" data-target="#status" onclick="save()">保存</button>
                 <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">关闭</button>
             </div>
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="status" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>药品品目添加</h4>
+                <h4 id="headline" type="text" style="width: 100%;height: 45px;display: block;line-height: 45px;text-align: center;"></h4>
+                <p id="whether" type="text" style="width: 100%;height: 45px;display: block;line-height: 45px;text-align: center;"></p>
+                <div>
+                    <p id="lose" ></p>
+                </div>
+                <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="more" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog" style="width:80%;">
         <div class="modal-content">
