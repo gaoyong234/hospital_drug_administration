@@ -7,7 +7,9 @@
     <link rel="stylesheet" href="../static/css/common.css">
     <link rel="stylesheet" href="../static/css/font-awesome.min.css">
     <link rel="stylesheet" href="../static/css/reset.css">
-
+    <script src="../static/js/login/common.js"></script>
+    <script src="../static/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script src="../static/js/showLoading.js" type="text/javascript" charset="utf-8"></script>
 
     <script type="text/javascript">
         function toLogin() {
@@ -19,24 +21,43 @@
                 type: "post",
                 success: function (msg) {
                     console.log(msg)
-                    if (msg) {
+                    if (msg.estimate) {
                         window.location = "/toMassage";
+                    } else {
+                        showModalButton1(msg.slogan);
                     }
                 }
             })
         }
+        function showModalButton1(slogan){
+            showModal({
+                title: "温馨提示",  //提示的标题
+                content: slogan,  //提示的内容
+                showCancel: false,  //是否显示取消按钮，默认为 true
+                cancelText: '取消',  //取消按钮的文字，默认为"取消"，最多 4 个字符
+                cancelColor: "#fff",  //取消按钮的文字颜色，默认为"#000000"
+                cancelBgColor: '#4c4c4c',  //取消按钮的背景颜色
+                confirmText: '确定',
+                confirmColor: '#fff',
+                confirmBgColor: '#ff130a',
+                success: function(res) {
 
+                }
+            });
+        }
         function toRegister() {
             window.location = "/toRegister";
         }
     </script>
 
     <style>
-        .login_wrap{
+        .login_wrap {
             background: url(../static/img/login_bg.jpg) no-repeat center;
             background-size: 100%;
         }
     </style>
+
+
 </head>
 <body>
 <div class="wrap login_wrap">
@@ -53,7 +74,7 @@
                     <div class="form_text_ipt">
                         <input name="userAccount" type="text" placeholder="您的账号">
                     </div>
-                    <div class="ececk_warning"><span>手机号/邮箱不能为空</span></div>
+                    <div class="ececk_warning"><span>账号不能为空</span></div>
                     <div class="form_text_ipt">
                         <input name="userPassword" type="password" placeholder="密码">
                     </div>
@@ -70,7 +91,7 @@
                         <button type="button" onclick="toLogin()">登录</button>
                     </div>
                     <div class="form_reg_btn">
-                        <span>还没有帐号？</span><a  href="javascript:void(0);" onclick="toRegister()">马上注册</a>
+                        <span>还没有帐号？</span><a href="javascript:void(0);" onclick="toRegister()">马上注册</a>
                     </div>
                 </form>
                 <div class="other_login">
@@ -87,7 +108,5 @@
         </div>
     </div>
 </div>
-<script src="../static/plugins/jQuery/jquery-2.2.3.min.js"></script>
-<script src="../static/js/login/common.js"></script>
 </body>
 </html>

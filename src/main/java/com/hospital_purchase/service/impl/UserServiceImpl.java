@@ -5,6 +5,7 @@ import com.hospital_purchase.dao.UserMapper;
 import com.hospital_purchase.pojo.User;
 import com.hospital_purchase.service.UserService;
 import com.hospital_purchase.util.MD5Util;
+import com.hospital_purchase.vo.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Date;
@@ -22,23 +23,40 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public int addUser(User record) {
+    public Message addUser(User record) {
+        Message m = new Message();
         //密码加密
         record.setUserPassword(MD5Util.md5Encrypt32Upper(record.getUserPassword()));
         record.setCreationTime(new Date());// new Date()为获取当前系统时间
-        return userMapper.insertSelective(record);
+        int count = userMapper.insertSelective(record);
+        if (count>0){
+            m.setSlogan("注册成功去登陆！！");
+            m.setEstimate(true);
+
+        }else {
+            m.setSlogan("未注册成功请重新注册！！");
+            m.setEstimate(false);
+        }
+        return m;
     }
 
     /**
      *  判断用户是否存在
      * @param userAccount 账号
-     * @param password 密码
      * @return 是否存在
      */
     @Override
-    public int getCountUserByAccountAndPassword(Integer userAccount) {
-
-        return userDaoMapper.countUserByAccountPassword(userAccount);
+    public Message getCountUserByAccountAndPassword(Integer userAccount) {
+        Message m = new Message();
+        Integer count = userDaoMapper.countUserByAccountPassword(userAccount);
+        if (count>0){
+            m.setEstimate(false);
+            m.setSlogan("该账号已被注册！！");
+        }else {
+            m.setSlogan("未被注册！！");
+            m.setEstimate(true);
+        }
+        return m;
     }
 
     /**

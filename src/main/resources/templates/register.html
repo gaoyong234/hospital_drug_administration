@@ -9,24 +9,106 @@
 
     <script src="../static/plugins/jQuery/jquery-2.2.3.min.js"></script>
     <script src="../static/js/login/common.js"></script>
+    <script src="../static/js/showLoading.js" type="text/javascript" charset="utf-8"></script>
+
     <script type="text/javascript">
         function toLogin() {
             window.location = "/";
         }
-        function selectAccount() {
-            var userAccount = $("[name='userAccount']").val();
-            $.ajax({
-                url:"/userController/userExist",
-                data:{"userAccount":userAccount},
-                dataType:"JSON",
-                type:"post",
-                success:function (data) {
-                    if (data>0){
-                        alert("该账号已经存在");
-                    }
-                }
-            })
+        function showModalButton1(slogan){
+            showModal({
+                title: "温馨提示",  //提示的标题
+                content: slogan,  //提示的内容
+                showCancel: false,  //是否显示取消按钮，默认为 true
+                cancelText: '取消',  //取消按钮的文字，默认为"取消"，最多 4 个字符
+                cancelColor: "#fff",  //取消按钮的文字颜色，默认为"#000000"
+                cancelBgColor: '#4c4c4c',  //取消按钮的背景颜色
+                confirmText: '确定',
+                confirmColor: '#fff',
+                confirmBgColor: '#ff130a',
+                success: function() {
 
+                }
+            });
+        }
+        function showModalButton2(slogan){
+            showModal({
+                title: "温馨提示",  //提示的标题
+                content: slogan,  //提示的内容
+                showCancel: false,  //是否显示取消按钮，默认为 true
+                cancelText: '取消',  //取消按钮的文字，默认为"取消"，最多 4 个字符
+                cancelColor: "#fff",  //取消按钮的文字颜色，默认为"#000000"
+                cancelBgColor: '#4c4c4c',  //取消按钮的背景颜色
+                confirmText: '确定',
+                confirmColor: '#fff',
+                confirmBgColor: '#ff130a',
+                success: function() {
+
+                    window.location = "/";
+                }
+            });
+        }
+        function login() {
+            var userPassword = $("#userPassword").val();
+            var rePassword = $("#rePassword").val();
+            var userAccount = $("#userAccount").val();
+            var userName = $("#userName").val();
+            var reg=/^\d{6,10}$/;
+            var judge = true;
+            if (userAccount==""){
+                showModalButton1("请填写账号");
+                judge = false;
+            }
+            if (rePassword==""){
+                showModalButton1("请填写重复密码");
+                judge = false;
+            }
+            if (userPassword==""){
+                showModalButton1("请填写密码");
+                judge = false;
+            }
+            if (userName==""){
+                showModalButton1("请填写昵称");
+                judge = false;
+            }
+
+            if (!reg.test(userAccount)){
+                showModalButton1("请填写6~10位数字账号");
+                judge = false;
+            }
+            if (userPassword!=rePassword) {
+                showModalButton1("两次输入密码不同请重新输入！！");
+                judge = false;
+            }
+            var user = $("#toAddForm").serialize();
+            if (judge) {
+                $.ajax({
+                    url:"/userController/userExist",
+                    data:{"userAccount":userAccount},
+                    dataType:"JSON",
+                    type:"post",
+                    success:function (data) {
+                        if (!data.estimate){
+                            showModalButton1(data.slogan)
+                        }else {
+                            $.ajax({
+                                url: "/userController/addUser",
+                                data: user,
+                                dataType: "JSON",
+                                type: "post",
+                                success: function (msg) {
+                                    if (msg.estimate) {
+                                        showModalButton2(msg.slogan);
+                                    } else {
+                                        showModalButton1(msg.slogan);
+                                    }
+                                }
+                            })
+                        }
+                    }
+                })
+
+            }
         }
     </script>
     <style>
@@ -48,26 +130,26 @@
                 <div class="login_title">
                     注册
                 </div>
-                <form action="#" method="post">
+                <form id="toAddForm">
 
                     <div class="form_text_ipt">
-                        <input name="userAccount" onblur="selectAccount()" type="text" placeholder="账号">
+                        <input name="userAccount"  id="userAccount" type="text" placeholder="6~10位账号">
                     </div>
                     <div class="ececk_warning"><span>账号不能为空</span></div>
                     <div class="form_text_ipt">
-                        <input name="userPassword" type="password" placeholder="密码">
+                        <input name="userPassword" id="userPassword" type="password" placeholder="密码">
                     </div>
                     <div class="ececk_warning"><span>密码不能为空</span></div>
                     <div class="form_text_ipt">
-                        <input name="rePassword" type="password" placeholder="重复密码">
+                        <input id="rePassword" type="password" placeholder="重复密码">
                     </div>
                     <div class="ececk_warning"><span>密码不能为空</span></div>
                     <div class="form_text_ipt">
-                        <input name="userName" type="text" placeholder="昵称">
+                        <input name="userName" id="userName" type="text" placeholder="昵称">
                     </div>
 
                     <div class="form_btn">
-                        <button type="button" onclick="javascript:window.location.href='#'">注册</button>
+                        <button type="button" onclick="login()">注册</button>
                     </div>
                     <div class="form_reg_btn">
                         <span>已有帐号？</span><a href="javascript:void(0);" onclick="toLogin()">马上登录</a>
