@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
 	<meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
 	<title></title>
+    <link rel="stylesheet" href="../static/plugins/bootstrap/css/bootstrap.min.css">
 	<link rel="stylesheet" href="../../static/renponsetable/layer/theme/default/layer.css">
 	<link rel="stylesheet" type="text/css" href="../../static/renponsetable/css/reponse.css">
 	<style type="text/css">
@@ -50,40 +51,52 @@
 				<!--<button class="layui-btn" onclick="reloadtable();">刷新table表格</button>
 				<button class="layui-btn" onclick="coldata();">获取某一列的数据</button>-->
 			</div>
+			<div style="padding-left: 10px">
+				<form method='POST' enctype="multipart/form-data" id="form_import_excel">
+					<label>请选择您要导入的excel文件:</label>
+					<input id="excel_file" type="file" class="form-control" name="excel_name">
+					<div class="form-group">
+						<button type='button' id='import' class='btn btn-primary'
+								onclick="checkExcel()">导入</button>
+					</div>
+				</form>
+			</div>
 			<!--模糊查询form表单-->
 			<form id="drugForm">
-				<span>
-					<lable>流水号:<input type="text" name="serialNumber"/></lable>
-					<lable>通用名:<input type="text" name="commonName"/></lable>
-					<lable>剂  型:<input type="text" name="dosageForm"/></lable>
-					<lable>规  格:<input type="text" name="speciflcation"/></lable>
-				</span><br/>
-				<span>
-					<lable>单位:<input type="text" name="company"/></lable>
-					<lable>转换系数:<input type="text" name="coefficient"/></lable>
-					<lable>生产企业:<input type="text" name="productionName"/></lable>
-					<lable>商品名称:<input type="text" name="commodityName"/></lable>
-				</span><br/>
-				<span>
-					<lable>中标价格:<input type="text" name="biddingPriceStart" style="width: 60px"/>--<input type="text" name="biddingPriceEnd" style="width: 60px"/></lable>
-						<lable>质量层次:
-							<select name="qualityLevel" id="qualityLevel">
-								<option value="">请选择</option>
-							</select>
-						</lable>
-						<lable>药品类别:
-							<select name="drugCategorys" id="drugCategory">
-								<option value="">请选择</option>
-							</select>
-						</lable>
-						<lable>药品交易状态:
-							<select name="drugState" id="drugState">
-								<option value="">请选择</option>
-								<option value="0">正常</option>
-								<option value="1">交易暂停</option>
-							</select>
-						</lable>
-				</span>
+                <table class="table table-bordered table-striped">
+                    <tr>
+                        <td>流水号:<input type="text" name="serialNumber"/></td>
+                        <td>通用名:<input type="text" name="commonName"/></td>
+                        <td>剂  型:<input type="text" name="dosageForm"/></td>
+                        <td>规  格:<input type="text" name="speciflcation"/></td>
+                    </tr>
+                    <tr>
+                        <td>单位:<input type="text" name="company"/></td>
+                        <td>转换系数:<input type="text" name="coefficient"/></td>
+                        <td>生产企业:<input type="text" name="productionName"/></td>
+                        <td>商品名称:<input type="text" name="commodityName"/></td>
+                    </tr>
+                    <tr>
+                        <td>中标价格:<input type="text" name="biddingPriceStart" style="width: 65px"/>--<input type="text" name="biddingPriceEnd" style="width: 65px"/>$</td>
+                        <td>质量层次:
+                            <select name="qualityLevel" id="qualityLevel">
+                                <option value="">请选择</option>
+                            </select>
+                        </td>
+                        <td>药品类别:
+                            <select name="drugCategorys" id="drugCategory">
+                                <option value="">请选择</option>
+                            </select>
+                        </td>
+                        <td>药品交易状态:
+                            <select name="drugState" id="drugState">
+                                <option value="">请选择</option>
+                                <option value="0">正常</option>
+                                <option value="1">交易暂停</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
 			</form>
 			<table id="table" class="reponsetable" ></table>
 			<script type="text/html" id="editer">
@@ -99,13 +112,13 @@
 	<!--新增的弹框-->
 	<div id="editcontent" class="alertceng">
             流 水 号:<input type="text" name="serialNumber" id="serialNumber"/>
-			通 用 名:<input type="text" name="commonName" id="commonName" placeholder="不能为空！！"/><br/>
-			剂    型:<input type="text" name="dosageForm" id="dosageForm" placeholder="不能为空！！"/>
-			规    格:<input type="text" name="speciflcation" id="speciflcation" placeholder="不能为空！！"/><br/>
-			单    位:<input type="text" name="company" id="company" placeholder="不能为空！！"/>
-			转换系数:<input type="text" name="coefficient" id="coefficient" placeholder="不能为空！！"/><br/>
-            生产企业:<input type="text" name="productionName" id="productionName" placeholder="不能为空！！"/>
-            商品名称:<input type="text" name="commodityName" id="commodityName" placeholder="不能为空！！"/><br/>
+            通 用 名:<input type="text" name="commonName" id="commonName" placeholder="不能为空！！"/><i style="color: red">*</i><br/>
+			剂    型:<input type="text" name="dosageForm" id="dosageForm" placeholder="不能为空！！"/><i style="color: red">*</i>
+			规    格:<input type="text" name="speciflcation" id="speciflcation" placeholder="不能为空！！"/><i style="color: red">*</i><br/>
+			单    位:<input type="text" name="company" id="company" placeholder="不能为空！！"/><i style="color: red">*</i>
+			转换系数:<input type="text" name="coefficient" id="coefficient" placeholder="不能为空！！"/><i style="color: red">*</i><br/>
+            生产企业:<input type="text" name="productionName" id="productionName" placeholder="不能为空！！"/><i style="color: red">*</i>
+            商品名称:<input type="text" name="commodityName" id="commodityName" placeholder="不能为空！！"/><i style="color: red">*</i><br/>
             中标价格:<input type="text" name="biddingPrice" id="biddingPrice"/>
 		批准文号:<input type="text" name="approvalNumber" id="approvalNumber"/><br/>
 		批准文号有效期:<input type="date" name="approvalTime" id="approvalTime"/>
@@ -123,7 +136,9 @@
 						<input type="radio" name="isCheckout" value="1"/>无<br/>
 		药品检验报告编码:<input type="text" name="heckoutNumber" id="heckoutNumber"/><br/>
 		药品检验报告有效期:<input type="date" name="drugValidTime" id="drugValidTime"/><br/>
-		产品说明:<input type="text" name="productExplain" id="productExplain"/><br/>
+		产品说明:<textarea rows="2" cols="40" name="productExplain" id="productExplain">
+
+                </textarea><br/>
             药品类别:<select name="drugCategorys" id="drugCategorys">
 						<option value="">请选择</option>
 					</select>
@@ -156,7 +171,9 @@
 						<input type="radio" name="isCheckouts" value="1"/>无<br/>
 		药品检验报告编码:<input type="text" name="heckoutNumber" id="heckoutNumbers"/><br/>
 		药品检验报告有效期:<input type="Date" name="drugValidTime" id="drugValidTimes"/><br/>
-		产品说明:<input type="text" name="productExplain" id="productExplains"/><br/>
+		产品说明:<textarea rows="2" cols="40" name="productExplain" id="productExplains">
+
+                </textarea><br/>
 		药品交易状态:<select name="drugStatess" id="drugStatess">
 						<option value="0">正常</option>
 						<option value="1">交易暂停</option>
@@ -172,12 +189,46 @@
 		findDrugCategory();
 		findDrugCategorys();
 		findQualityLevels();
-		dataForm();
+		dataForm(1);
 	})
+	//导入excel文件
+	function checkExcel() {
+		var fileDir = $("#excel_file").val();
+		var suffix = fileDir.substring(fileDir.lastIndexOf("."));
+		if ("" == fileDir) {
+			alert("选择需要导入的Excel文件！");
+			return false;
+		}
+		if (".xls" != suffix && ".xlsx" != suffix) {
+			alert("选择Excel格式的文件导入！");
+			return false;
+		}
+		var formData = new FormData($( "#form_import_excel" )[0]);
+
+		jQuery.ajax({
+			//修改url
+			url: "/drugInformation/ImportExcel",
+			type: 'POST',
+			cache: false,
+			data: formData,
+			processData: false,
+			contentType: false,
+			success: function (data) {
+				if(data.resultCode==1){
+					alert('导入成功')
+				}else if(data.resultCode==0){
+					alert('导入失败')
+				}
+			}
+		});
+	}
 	//查询全部药品信息
-	function dataForm(){
+	function dataForm(pageNum){
 		var ser = $("#drugForm").serialize();
-		$.ajax({
+        ser += "&pageNum="+pageNum;
+        /*$.param(ser);
+        console.log("表单序列化=============="+ser);*/
+        $.ajax({
 			url:"/drugInformation/findAllDrugInfoLike",
 			type:"get",
 			dataType:"json",
@@ -246,8 +297,9 @@
 					pageNum: datas.pageNum, // 当前页面
 					totalNum: datas.pages, // 总页码
 					totalList: datas.total, // 记录总数量
-					callback: function (num) { //回调函数
-						console.log(num);
+					callback: function (pageNum) { //回调函数
+                        dataForm(pageNum);
+						//console.log(pageNum);
 					}
 				});
 				//隐藏单元格
@@ -271,7 +323,7 @@
 	//模糊查询
 	function getSample() {
 		if (confirm("确定要搜索吗？")){
-			dataForm();
+			dataForm(1);
 		}
 	}
 	//查询质量层次
@@ -610,10 +662,16 @@
 		var tr = $(btn).parent().parent();
 		reponse.moveDown(tr, "table");
 	}*/
+	//导出Excel
 	function ExportExcel() {
 		var tableobj=$("#table").data("tableObj");
-		reponse.JSONToCSVConvertor(tableobj, true,"人员表格");
+		//console.log(JSON.stringify(tableobj));
+		reponse.JSONToCSVConvertor(tableobj, true,"药品表格");
 	}
+    //导入Excel
+	function ImportExcel() {
+        alert("ok")
+    }
 	function resivetabledata(){
 		var pp=$("#table").data("tableObj").data;
 		alert(JSON.stringify(pp));
