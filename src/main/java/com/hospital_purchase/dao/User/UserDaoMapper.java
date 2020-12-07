@@ -9,6 +9,5 @@ public interface UserDaoMapper {
 
     Integer countUserByAccountPassword(@Param(value = "userAccount") Integer userAccount);
 
-
     User selectUserByAccount(Integer userAccount);
 }

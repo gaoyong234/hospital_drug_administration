@@ -31,7 +31,7 @@ $(function () {
             $(this).parent().css({
                 'border': 'solid 1px #ccc',
             });
-            $(this).parent().next().hide();
+
         }
     });
 });

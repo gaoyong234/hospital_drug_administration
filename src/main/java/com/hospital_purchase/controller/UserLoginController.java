@@ -3,6 +3,7 @@ package com.hospital_purchase.controller;
 import com.hospital_purchase.pojo.User;
 import com.hospital_purchase.service.UserService;
 import com.hospital_purchase.util.MD5Util;
+import com.hospital_purchase.vo.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,33 +26,47 @@ public class UserLoginController {
      */
     @RequestMapping("/userLogin")
     @ResponseBody
-    public Boolean userLogin(Integer userAccount,String userPassword, HttpSession httpSession){
+    public Message userLogin(Integer userAccount, String userPassword, HttpSession httpSession){
         //通过用户名密码查到用户信息
         User admin = userService.getUserByAccount(userAccount);
+        Message m = new Message();
         if (admin!=null) {
             if (userPassword != null && MD5Util.md5Encrypt32Upper(userPassword).equals(admin.getUserPassword())) {
                 httpSession.setAttribute("admin", admin);
-                return true;
+                m.setEstimate(true);
+                m.setSlogan("都正确！！");
+            }else {
+                m.setEstimate(false);
+                m.setSlogan("登录密码不正确！！");
             }
+        }else {
+            m.setEstimate(false);
+            m.setSlogan("未找到该用户！！");
         }
-            return false;
+        return m;
     }
 
     /**
      *
-     * @param user 用户信息
-     * @return 注册成功页面
+     * @param userAccount 输入注册账号
+     * @return 判断账号是否存在
      */
-    @RequestMapping("/userRegistration")
-    public String userRegistration(User user){
-
-        return "";
-    }
     @RequestMapping("/userExist")
     @ResponseBody
-    public Integer userExist(Integer userAccount){
+    public Message userExist(Integer userAccount){
 
         return userService.getCountUserByAccountAndPassword(userAccount);
 
+    }
+
+    /**
+     *  用户是否注册成功信息
+     * @param user 用户信息
+     * @return 返回信息
+     */
+    @RequestMapping("/addUser")
+    @ResponseBody
+    public Message addUser(User user){
+        return userService.addUser(user);
     }
 }

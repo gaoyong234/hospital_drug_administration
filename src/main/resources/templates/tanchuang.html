@@ -1,0 +1,125 @@
+<html lang="zh">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>弹框加载层</title>
+
+	<script src="../static/plugins/jQuery/jquery-2.2.3.min.js"></script>
+	<script src="../static/js/showLoading.js" type="text/javascript" charset="utf-8"></script>
+	
+	<style type="text/css">
+		body{
+			text-align: center;
+		}
+		button{
+			min-width: 150px;
+			font-size: 16px;
+			margin: 10px;
+			background-color: #1E9FFF;
+			color: #fff;
+			border: none;
+			padding: 10px;
+		}
+	</style>
+</head>
+<body>
+	
+	<button type="button" onClick="showLoadingBUtton1()">Loading层</button>
+	<button type="button" onClick="showLoadingBUtton2()">成功层</button>
+	<button type="button" onClick="showLoadingBUtton3()">自动消失提示层</button>
+	
+	<button type="button" onClick="showModalButton1()">警告消息框</button>
+	<button type="button" onClick="showModalButton2()">确认消息框</button>
+	
+	
+	<script type="text/javascript">
+		function showLoadingBUtton1(){
+			showLoading({
+				title: "数据加载中。。。", //提示文字
+				icon: 'loading', // 图标，有效值 "success", "loading", "none"
+				image: '', // 自定义图标的本地路径，image 的优先级高于 icon
+				duration: 50000, //提示的延迟时间，单位毫秒，默认：1500
+				mask: true, // 是否显示透明蒙层，防止触摸穿透，默认：false
+				success: function(res) { //接口调用成功的回调函数
+					console.log(JSON.stringify(res))
+				},
+			
+			});
+			setTimeout(function() {
+				hideLoading()
+			}, 2000)
+		}
+		function showLoadingBUtton2(){
+			showLoading({
+				title: "数据加载成功", //提示文字
+				icon: 'success', // 图标，有效值 "success", "loading", "none"
+				image: '', // 自定义图标的本地路径，image 的优先级高于 icon
+				duration: 2000, //提示的延迟时间，单位毫秒，默认：1500
+				mask: true, // 是否显示透明蒙层，防止触摸穿透，默认：false
+				success: function(res) { //接口调用成功的回调函数
+					console.log(JSON.stringify(res))
+				},
+			
+			});
+			
+		}
+		function showLoadingBUtton3(){
+			showLoading({
+				title: "数据加载。。。", //提示文字
+				icon: 'none', // 图标，有效值 "success", "loading", "none"
+				image: '', // 自定义图标的本地路径，image 的优先级高于 icon
+				duration: 2000, //提示的延迟时间，单位毫秒，默认：1500
+				mask: true, // 是否显示透明蒙层，防止触摸穿透，默认：false
+				success: function(res) { //接口调用成功的回调函数
+					console.log(JSON.stringify(res))
+				},
+			
+			});
+		}
+		
+		function showModalButton1(){
+			showModal({ 
+				title: "温馨提示",  //提示的标题
+				content: "确认要删除吗？",  //提示的内容
+				showCancel: false,  //是否显示取消按钮，默认为 true
+				cancelText: 'no',  //取消按钮的文字，默认为"取消"，最多 4 个字符
+				cancelColor: "#fff",  //取消按钮的文字颜色，默认为"#000000"
+				cancelBgColor: '#4c4c4c',  //取消按钮的背景颜色 
+				confirmText: 'yes',
+				confirmColor: '#fff',
+				confirmBgColor: '#55aaff',
+				success: function(res) {
+					if (res.confirm) {
+						console.log('yes');
+					} else {
+						console.log('no');
+					}
+				}
+			});
+		}
+		function showModalButton2(){
+			showModal({ 
+				title: "温馨提示",  //提示的标题
+				content: "确认要删除吗？",  //提示的内容
+				showCancel: true,  //是否显示取消按钮，默认为 true
+				cancelText: 'no',  //取消按钮的文字，默认为"取消"，最多 4 个字符
+				cancelColor: "#fff",  //取消按钮的文字颜色，默认为"#000000"
+				cancelBgColor: '#4c4c4c',  //取消按钮的背景颜色 
+				confirmText: 'yes',
+				confirmColor: '#fff',
+				confirmBgColor: '#55aaff',
+				success: function(res) {
+					if (res.confirm) {
+						console.log('yes');
+					} else {
+						console.log('no');
+					}
+				}
+			});
+		}
+	</script>
+	
+	
+</body>
+</html>
