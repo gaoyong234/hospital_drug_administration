@@ -56,12 +56,29 @@
         and di.coefficient = {coefficient}
       </if>
       <if test="drugCategoryName != null and drugCategoryName != ''">
-        and di.drug_category_name like CONCAT("%",#{drug_category_name},"%")
+        and di.drug_category = #{drugCategoryName}
       </if>
       <if test="drugStateName != null and drugStateName != ''">
-        and di.drug_state_name like CONCAT("%",#{drugStateName},"%")
+        and di.drug_state = #{drugStateName}
       </if>
-
+    </where>
+  </select>
+  <select id="fandId" resultMap="BaseMap">
+    SELECT di_id,common_name,dosage_form,speciflcation,
+    unit_id,coefficient,dc.dictionaries_name as drug_category_name,dic.dictionaries_name as drug_state_name
+    FROM drug_items di
+    LEFT JOIN dictionaries dc on di.drug_category = dc.dic_id
+    LEFT JOIN dictionaries dic on di.drug_state = dic.dic_id
+    <where>
+      <if test="diId != null and diId != ''">
+        and di.di_id = #{diId}
+      </if>
+      <if test="drugCategoryName">
+        and di.drug_category = dc.dictionaries_name
+      </if>
+      <if test="drugStateName">
+        and di.drug_state = dic.dictionaries_name
+      </if>
     </where>
   </select>
 <insert id="addDrugItems" parameterType="com.hospital_purchase.pojo.DrugItems">

@@ -42,4 +42,9 @@ public class DrugItemsController {
         return integer;
     }
 
+    @RequestMapping("fandId")
+    public DrugItemsVO fandId(Integer diId){
+        DrugItemsVO drugItemsVO = durgItemsService.fandId(diId);
+        return drugItemsVO;
+    }
 }
