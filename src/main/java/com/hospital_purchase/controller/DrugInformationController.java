@@ -6,14 +6,21 @@ import com.hospital_purchase.pojo.Dictionaries;
 import com.hospital_purchase.pojo.DrugItems;
 import com.hospital_purchase.pojo.DrugMessage;
 import com.hospital_purchase.service.DrugInformationService;
+import com.hospital_purchase.util.ExcelUploadUtil;
 import com.hospital_purchase.vo.DrugInformationVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -22,6 +29,10 @@ public class DrugInformationController {
 
     @Autowired
     private DrugInformationService drugInformationService;
+    @Bean
+    private ExcelUploadUtil excelUploadUtil(){
+        return new ExcelUploadUtil();
+    }
 
     /**
      * 2020/11/30
@@ -199,9 +210,52 @@ public class DrugInformationController {
         return msg;
     }
 
-    @RequestMapping("/ImportExcel")
-    public String ImportExcel(MultipartFile file) {
-
-        return "导入成功!";
+    /*@ResponseBody
+    @RequestMapping(value = "/ImportExcel",method = RequestMethod.POST,produces = {"application/json;charset=utf-8"})
+    public void ImportExcel(@RequestParam("filename")MultipartFile file,
+                            HttpServletRequest request,HttpServletResponse response) throws Exception {
+        InputStream inputStream = file.getInputStream();
+        EasyExcel easyExcel = new EasyExcel();
+        List<Object> reader = easyExcel.reader(inputStream);
+        for (int i = 0; i <reader.size() ; i++) {
+            System.out.println(reader.get(i));
+        }
+    }*/
+    @ResponseBody
+    @RequestMapping(value = "/ImportExcel",method = RequestMethod.POST,produces = {"application/json;charset=utf-8"})
+    public void ImportExcel(@RequestParam("filename")MultipartFile file,
+                            HttpServletRequest request,HttpServletResponse response) {
+        InputStream inputStream = null;
+        String originalFilename = file.getOriginalFilename();
+        try {
+            inputStream = file.getInputStream();
+            inputStream = new BufferedInputStream(file.getInputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        List<Object> list = excelUploadUtil().reader(inputStream);
+        //表头信息
+        List<String> s  = (List<String>) list.get(0);
+        System.out.println(s);
+            for (int i = 1; i <list.size() ; i++) {
+            DrugItems drugItems = new DrugItems();
+            List<String> tableData = (List<String>) list.get(i);
+            if (tableData.size()<s.size()){
+                //获得每一个单元格数据
+                if (tableData.get(0) != null && !"".equals(tableData.get(0))){
+                    drugItems.setSerialNumber(tableData.get(0).trim());
+                }
+                if (tableData.get(1) != null && !"".equals(tableData.get(1))){
+                    drugItems.setCommonName(tableData.get(1).trim());
+                }
+                if (tableData.get(2) != null && !"".equals(tableData.get(2))){
+                    drugItems.setDosageForm(tableData.get(2).trim());
+                }
+                if (tableData.get(3) != null && !"".equals(tableData.get(3))){
+                    drugItems.setSpeciflcation(tableData.get(3).trim());
+                }
+                drugInformationService.addDrugInformation(drugItems);
+            }
+        }
     }
 }

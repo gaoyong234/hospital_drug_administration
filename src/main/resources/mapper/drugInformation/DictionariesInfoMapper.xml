@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hospital_purchase.dao.DictionariesMapper">
+<mapper namespace="com.hospital_purchase.dao.drugInformation.DictionariesInfoMapper">
   <resultMap id="BaseResultMap" type="com.hospital_purchase.pojo.Dictionaries">
     <id column="dic_id" jdbcType="INTEGER" property="dicId" />
     <result column="dictionaries_name" jdbcType="VARCHAR" property="dictionariesName" />
@@ -11,6 +11,12 @@
   <sql id="Base_Column_List">
     dic_id, dictionaries_name, dictionaries_id, create_time, modified_time
   </sql>
+  <select id="findQualityLevel" resultMap="BaseResultMap">
+    select dic_id,dictionaries_name,dictionaries_id from dictionaries WHERE dictionaries_id = 11
+  </select>
+  <select id="findDrugCategorys" resultMap="BaseResultMap">
+    select dic_id,dictionaries_name,dictionaries_id from dictionaries WHERE dictionaries_id = 19
+  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 'true' as QUERYID,
     <include refid="Base_Column_List" />

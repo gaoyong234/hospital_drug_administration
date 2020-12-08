@@ -45,39 +45,33 @@
 		<div id="page">
 			<div class="btn-container">
 				<button class="layui-btn" onclick="addtr();">添加</button>
-				<button class="layui-btn" onclick="ExportExcel();">导出Excel</button>
+				<!--<button class="layui-btn" onclick="ExportExcel();">导出Excel</button>-->
 				<button class="layui-btn" onclick="getSample();">搜索</button>
+				<input type="file" id="excelUpload"/>
+				<button type="button" class="layui-btn" onclick="excelUpload()">导入</button>
+				<!--<button class="layui-btn" onclick="javascript:$('#excelUpload').click()" >导入</button>
+				<input id="excelUpload" type="file" style="display: none" onchange="excelUpload()">-->
 				<!--<button class="layui-btn" onclick="resivetabledata();">获取table数据</button>-->
 				<!--<button class="layui-btn" onclick="reloadtable();">刷新table表格</button>
 				<button class="layui-btn" onclick="coldata();">获取某一列的数据</button>-->
-			</div>
-			<div style="padding-left: 10px">
-				<form method='POST' enctype="multipart/form-data" id="form_import_excel">
-					<label>请选择您要导入的excel文件:</label>
-					<input id="excel_file" type="file" class="form-control" name="excel_name">
-					<div class="form-group">
-						<button type='button' id='import' class='btn btn-primary'
-								onclick="checkExcel()">导入</button>
-					</div>
-				</form>
 			</div>
 			<!--模糊查询form表单-->
 			<form id="drugForm">
                 <table class="table table-bordered table-striped">
                     <tr>
-                        <td>流水号:<input type="text" name="serialNumber"/></td>
-                        <td>通用名:<input type="text" name="commonName"/></td>
-                        <td>剂  型:<input type="text" name="dosageForm"/></td>
-                        <td>规  格:<input type="text" name="speciflcation"/></td>
+                        <td>流 水 号:<input type="text" name="serialNumber"/></td>
+                        <td>通 用 名:<input type="text" name="commonName"/></td>
+                        <td>剂    型:<input type="text" name="dosageForm"/></td>
+                        <td>规    格:<input type="text" name="speciflcation"/></td>
                     </tr>
                     <tr>
-                        <td>单位:<input type="text" name="company"/></td>
+                        <td>单    位:<input type="text" name="company"/></td>
                         <td>转换系数:<input type="text" name="coefficient"/></td>
                         <td>生产企业:<input type="text" name="productionName"/></td>
                         <td>商品名称:<input type="text" name="commodityName"/></td>
                     </tr>
                     <tr>
-                        <td>中标价格:<input type="text" name="biddingPriceStart" style="width: 65px"/>--<input type="text" name="biddingPriceEnd" style="width: 65px"/>$</td>
+                        <td>中标价格:<input type="text" name="biddingPriceStart" style="width: 65px"/>至<input type="text" name="biddingPriceEnd" style="width: 65px"/>$</td>
                         <td>质量层次:
                             <select name="qualityLevel" id="qualityLevel">
                                 <option value="">请选择</option>
@@ -191,36 +185,31 @@
 		findQualityLevels();
 		dataForm(1);
 	})
+	//导出excel文件
+	function ExportExcel() {
+		
+	}
 	//导入excel文件
-	function checkExcel() {
-		var fileDir = $("#excel_file").val();
-		var suffix = fileDir.substring(fileDir.lastIndexOf("."));
-		if ("" == fileDir) {
-			alert("选择需要导入的Excel文件！");
-			return false;
-		}
-		if (".xls" != suffix && ".xlsx" != suffix) {
-			alert("选择Excel格式的文件导入！");
-			return false;
-		}
-		var formData = new FormData($( "#form_import_excel" )[0]);
+	function excelUpload() {
+		var file =  $("#excelUpload")[0].files[0];
+		var formData = new FormData();
+		formData.append("filename",file);
+		if (confirm("确定导入？")){
+			$.ajax({
+				url:"/drugInformation/ImportExcel",
+				type:"post",
+				dataType:"json",
+				data:formData,
+				cache: false,   //上传文件无需缓存
+				processData: false,   // 用于对参数进行序列化处理，这里必须设为false
+				contentType:false, // 必须
+				success:function (data) {
 
-		jQuery.ajax({
-			//修改url
-			url: "/drugInformation/ImportExcel",
-			type: 'POST',
-			cache: false,
-			data: formData,
-			processData: false,
-			contentType: false,
-			success: function (data) {
-				if(data.resultCode==1){
-					alert('导入成功')
-				}else if(data.resultCode==0){
-					alert('导入失败')
+				},error:function (data) {
+
 				}
-			}
-		});
+			})
+		}
 	}
 	//查询全部药品信息
 	function dataForm(pageNum){
@@ -663,11 +652,11 @@
 		reponse.moveDown(tr, "table");
 	}*/
 	//导出Excel
-	function ExportExcel() {
+	/*function ExportExcel() {
 		var tableobj=$("#table").data("tableObj");
 		//console.log(JSON.stringify(tableobj));
 		reponse.JSONToCSVConvertor(tableobj, true,"药品表格");
-	}
+	}*/
     //导入Excel
 	function ImportExcel() {
         alert("ok")
