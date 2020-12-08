@@ -61,6 +61,7 @@
       <if test="drugStateName != null and drugStateName != ''">
         and di.drug_state = #{drugStateName}
       </if>
+      and di.del_id = 0
     </where>
   </select>
   <select id="fandId" resultMap="BaseMap">
@@ -73,98 +74,79 @@
       <if test="diId != null and diId != ''">
         and di.di_id = #{diId}
       </if>
-      <if test="drugCategoryName">
-        and di.drug_category = dc.dictionaries_name
+      <if test="commonName != null and commonName != ''">
+        and di.common_name like CONCAT("%",#{commonName},"%")
       </if>
-      <if test="drugStateName">
-        and di.drug_state = dic.dictionaries_name
+      <if test="dosageForm != null and dosageForm != ''">
+        and di.dosage_form like CONCAT("%",#{dosageForm},"%")
       </if>
+      <if test="speciflcation != null and speciflcation !=''">
+        and di.speciflcation = #{speciflcation}
+      </if>
+      <if test="unitId != null and unitId != ''">
+        and di.unit_id = #{unitId}
+      </if>
+      <if test="coefficient != null and coefficient != ''">
+        and di.coefficient = {coefficient}
+      </if>
+      <if test="drugCategoryName != null and drugCategoryName != ''">
+        and di.drug_category = #{drugCategoryName}
+      </if>
+      <if test="drugStateName != null and drugStateName != ''">
+        and di.drug_state = #{drugStateName}
+      </if>
+      and di.del_id = 0
     </where>
   </select>
-<insert id="addDrugItems" parameterType="com.hospital_purchase.pojo.DrugItems">
-    insert into drug_items
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="diId != null">
-        di_id,
-      </if>
-      <if test="commonName != null">
-        common_name,
-      </if>
-      <if test="dosageForm != null">
-        dosage_form,
-      </if>
-      <if test="speciflcation != null">
-        speciflcation,
-      </if>
-      <if test="unitId != null">
-        unit_id,
-      </if>
-      <if test="coefficient != null">
-        coefficient,
-      </if>
-      <if test="createTime != null">
-        create_time,
-      </if>
-      <if test="modifiedTime != null">
-        modified_time,
-      </if>
-      <if test="productionName != null">
-        production_name,
-      </if>
-      <if test="commodityName != null">
-        commodity_name,
-      </if>
-      <if test="serialNumber != null">
-        serial_number,
-      </if>
-      <if test="drugCategory != null">
-        drug_category,
-      </if>
-      <if test="drugState != null">
-        drug_state,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="diId != null">
-        #{diId,jdbcType=INTEGER},
-      </if>
-      <if test="commonName != null">
-        #{commonName,jdbcType=VARCHAR},
-      </if>
-      <if test="dosageForm != null">
-        #{dosageForm,jdbcType=VARCHAR},
-      </if>
-      <if test="speciflcation != null">
-        #{speciflcation,jdbcType=VARCHAR},
-      </if>
-      <if test="unitId != null">
-        #{unitId,jdbcType=INTEGER},
-      </if>
-      <if test="coefficient != null">
-        #{coefficient,jdbcType=INTEGER},
-      </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="modifiedTime != null">
-        #{modifiedTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="productionName != null">
-        #{productionName,jdbcType=VARCHAR},
-      </if>
-      <if test="commodityName != null">
-        #{commodityName,jdbcType=VARCHAR},
-      </if>
-      <if test="serialNumber != null">
-        #{serialNumber,jdbcType=VARCHAR},
-      </if>
-      <if test="drugCategory != null">
-        #{drugCategory,jdbcType=INTEGER},
-      </if>
-      <if test="drugState != null">
-        #{drugState,jdbcType=INTEGER},
-      </if>
-    </trim>
+<insert id="addDrugItems" parameterType="com.hospital_purchase.vo.DrugItemsVO">
+  insert into drug_items
+  <trim prefix="(" suffix=")" suffixOverrides=",">
+    <if test="commonName != null">
+      common_name,
+    </if>
+    <if test="dosageForm != null">
+      dosage_form,
+    </if>
+    <if test="speciflcation != null">
+      speciflcation,
+    </if>
+    <if test="unitId != null">
+      unit_id,
+    </if>
+    <if test="coefficient != null">
+      coefficient,
+    </if>
+    <if test="drugCategoryName != null">
+      drug_category,
+    </if>
+    <if test="drugStateName != null">
+      drug_state,
+    </if>
+  </trim>
+  <trim prefix="values (" suffix=")" suffixOverrides=",">
+    <if test="commonName != null">
+      #{commonName,jdbcType=VARCHAR},
+    </if>
+    <if test="dosageForm != null">
+      #{dosageForm,jdbcType=VARCHAR},
+    </if>
+    <if test="speciflcation != null">
+      #{speciflcation,jdbcType=VARCHAR},
+    </if>
+    <if test="unitId != null">
+      #{unitId,jdbcType=INTEGER},
+    </if>
+    <if test="coefficient != null">
+      #{coefficient,jdbcType=INTEGER},
+    </if>
+
+    <if test="drugCategoryName != null">
+      #{drugCategoryName,jdbcType=INTEGER},
+    </if>
+    <if test="drugStateName != null">
+      #{drugStateName,jdbcType=INTEGER},
+    </if>
+  </trim>
 </insert>
 
 </mapper>

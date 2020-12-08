@@ -27,12 +27,12 @@ public class DurgItemsImpl implements DurgItemsService {
     }
 
     @Override
-    public Integer addDrugItems(DrugItems drugItems) {
+    public Integer addDrugItems(DrugItemsVO drugItems) {
         return drugItemsMyMapper.addDrugItems(drugItems);
     }
 
     @Override
-    public DrugItemsVO fandId(Integer diid) {
+    public DrugItemsVO fandId(DrugItemsVO diid) {
         DrugItemsVO drugItemsVO = drugItemsMyMapper.fandId(diid);
 
         return drugItemsMyMapper.fandId(diid);

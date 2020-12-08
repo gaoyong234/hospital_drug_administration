@@ -36,15 +36,22 @@ public class DrugItemsController {
 
     @RequestMapping("addDrugItems")
     @ResponseBody
-    public Integer addDrugItems(DrugItems drugItems){
+    public Integer addDrugItems(DrugItemsVO drugItems){
+        System.out.println(drugItems);
+        System.out.println("=======================");
         Integer integer = durgItemsService.addDrugItems(drugItems);
-        System.out.println(integer);
         return integer;
     }
 
     @RequestMapping("fandId")
-    public DrugItemsVO fandId(Integer diId){
-        DrugItemsVO drugItemsVO = durgItemsService.fandId(diId);
+    @ResponseBody
+    public DrugItemsVO fandId(DrugItemsVO diId){
+        DrugItemsVO drugItemsVO=null;
+        drugItemsVO = durgItemsService.fandId(diId);
+        if (drugItemsVO==null){
+            drugItemsVO=new DrugItemsVO();
+            drugItemsVO.setDiId("0");
+        }
         return drugItemsVO;
     }
 }
