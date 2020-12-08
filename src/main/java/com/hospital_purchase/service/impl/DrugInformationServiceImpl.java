@@ -2,7 +2,7 @@ package com.hospital_purchase.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.hospital_purchase.dao.DictionariesMapper;
+import com.hospital_purchase.dao.drugInformation.DictionariesInfoMapper;
 import com.hospital_purchase.dao.drugInformation.DrugInformationMapper;
 import com.hospital_purchase.dao.drugInformation.DrugMessageInformationMapper;
 import com.hospital_purchase.pojo.Dictionaries;
@@ -22,7 +22,7 @@ public class DrugInformationServiceImpl implements DrugInformationService {
     private DrugInformationMapper drugInformationMapper;
 
     @Autowired
-    private DictionariesMapper dictionariesMapper;
+    private DictionariesInfoMapper dictionariesMapper;
 
     @Autowired
     private DrugMessageInformationMapper drugMessageInformationMapper;
