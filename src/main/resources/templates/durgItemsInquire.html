@@ -43,7 +43,6 @@
                $scope.drug.pageNum=pageNum;
                $scope.drug.pageSize=items;
                var druglist=$scope.drug;
-               console.log(druglist)
                $http({
                    url:"/items/conditionfand",
                    method:"post",
@@ -56,7 +55,16 @@
                })
 
            }
-
+            $scope.amend=function (diId) {
+                $scope.diId = diId;
+                var list = $scope.lists;
+                for (var i = 0; i < list.length; i++) {
+                    if (list[i].diId == diId) {
+                        $scope.dritem = list[i];
+                        break;
+                    }
+                }
+            }
 
        })
 
@@ -80,7 +88,6 @@
 
         var lists;
         function save() {
-            var did = $("[name='diId']").val();
            var commonName=$("[name='commonName']").val();
            var dosageForm=$("[name='dosageForm']").val();
           var  speciflcation=$("[name='speciflcation']").val();
@@ -88,60 +95,32 @@
            var coefficient=$("[name='coefficient']").val();
           var  drugCategoryName=$("[name='drugCategoryName']").val();
            var drugStateName=$("[name='drugStateName']").val();
-            demo = did != null && did != "" && commonName != null && commonName != "" && dosageForm != null && dosageForm != "" && speciflcation != null && speciflcation != "" && unitId != null && unitId != "" && coefficient != null && coefficient != "" && drugCategoryName != null && drugCategoryName != "" && drugStateName != null && drugStateName != "";
-            console.log(demo)
+            demo = commonName != null && commonName != "" && dosageForm != null && dosageForm != "" && speciflcation != null && speciflcation != "" && unitId != null && unitId != "" && coefficient != null && coefficient != "" && drugCategoryName != null && drugCategoryName != "" && drugStateName != null && drugStateName != "";
             if (demo){
-                $.ajax({
-                    url:"/items/fandId",
-                    method:"get",
-                    data:{
-                        "diId":did,
-                        "drugCategoryName":drugCategoryName,
-                        "drugStateName":drugStateName
-                    },
-                    dataType:"json",
-                    success:function (data) {
-                         lists = eval(data);
-                    }
-                })
-                var dem=false;
-                var li=0;
-               if (lists[0]!=0&&lists[0]!=null){
-                   dem=true;
-               }else{
-                   dem=false;
-               }
-
-                if(dem){
-                    $.ajax({
-                        url: "/items/addDrugItems",
-                        dataType: "json",
-                        type: "post",
-                        data: addform,
-                        success: function (data) {
-                            if (data > 0) {
-                                document.getElementById("headline").innerHTML="成功提示信息"
-                                document.getElementById("whether").innerHTML="您的操作成功"
-                                alert("增加成功")
-                            } else {
-                                document.getElementById("headline").innerHTML="失败提示信息"
-                                document.getElementById("whether").innerHTML="您的操作失败,请尝试刷新页面,重新操作"
-                                alert("数据库增加失败")
-                            }
-                        }
-                    })
-                }else {
-                    document.getElementById("headline").innerHTML="失败提示信息"
-                    document.getElementById("whether").innerHTML="您的操作失败,请尝试刷新页面,重新操作"
-                    // document.getElementById("lose").innerHTML=lists[li];
-                    alert("失败-已存在")
-                }
-
-
+              conserve()
             }else {
                 document.getElementById("headline").innerHTML="失败提示信息"
                 document.getElementById("whether").innerHTML="因数据不完整,您的操作失败,请尝试刷新页面,重新操作"
             }
+        }
+        function conserve() {
+            var addform = $("#addForm").serialize();
+            $.ajax({
+                url: "/items/addDrugItems",
+                dataType: "json",
+                type: "post",
+                data: addform,
+                success: function (data) {
+                    if (data > 0) {
+                        document.getElementById("headline").innerHTML="成功提示信息"
+                        document.getElementById("whether").innerHTML="您的操作成功"
+                        document.getElementById("lose").innerHTML="";
+                    } else {
+                        document.getElementById("headline").innerHTML="失败提示信息"
+                        document.getElementById("whether").innerHTML="您的操作失败,请尝试刷新页面,重新操作"
+                    }
+                }
+            })
         }
 
     </script>
@@ -220,8 +199,8 @@
             <td>{{x.coefficient}}</td>
             <td>{{x.drugCategoryName}}</td>
             <td>{{x.drugStateName}}</td>
-            <td><button value="{{x.diId}}" onclick="drugdetail()" data-toggle="modal" data-target="#more">详细</button></td>
-            <td><button value="{{x.diId}}" onclick="amend()">修改</button></td>
+            <td><button value="{{x.diId}}" onclick="drugdetail()" data-toggle="modal" >详细</button></td>
+            <td><button class="btn bg-olive btn-xs" data-toggle="modal" data-target="#more" ng-click="amend(x.diId)">修改</button></td>
             <td><button value="{{x.diId}}" onclick="expurgate()">删除</button></td>
         </tr>
         </tbody>
@@ -241,8 +220,7 @@
                 <table class="table table-bordered table-striped"  >
                     <tr>
                         <td>药品品目号:</td>
-                        <td><input name="diId"  onblur class="form-control">
-                        <span></span></td>
+                        <td><input name="diId" readonly="readonly" onblur class="form-control"></td>
                         <td>通用名:</td>
                         <td><input name="commonName" onblur  class="form-control" >
                         <span></span></td>
@@ -297,7 +275,9 @@
                 <div>
                     <p id="lose" ></p>
                 </div>
-                <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">确定</button>
+                <div style="text-align:center">
+                    <button data-dismiss="modal" aria-hidden="true">确定</button>
+                </div>
             </div>
         </div>
     </div>
@@ -312,52 +292,42 @@
             </div>
             <div class="modal-body">
                 <form id="inserInto">
-                    <table class="table table-bordered table-striped">
+                    <table class="table table-bordered table-striped"  >
                         <tr>
-                            <td>单位名称:</td>
-                            <td><input ng-model="xg.unitName" onblur class="form-control">
-                                <span ></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>组织机构代码:</td>
-                            <td><input ng-model="xg.organizationalCode" name="organizationalCode"  onblur class="form-control"></td>
-                            <td>投诉人姓名:</td>
-                            <td><input  ng-model="xg.nameOfTheComplainant" name="nameOfTheComplainant" onblur class="form-control"></td>
-                            <td>投诉人身份证号:</td>
-                            <td><input ng-model="xg.idCard" name="idCard" onblur  class="form-control">
-                                <span></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>联系电话:</td>
-                            <td><input  ng-model="xg.phone" name="phone" onblur class="form-control">
+                            <td>药品品目号:</td>
+                            <td><input ng-model="dritem.diId" name="diId" readonly="readonly" onblur class="form-control"></td>
+                            <td>通用名:</td>
+                            <td><input ng-model="dritem.commonName" name="commonName"  class="form-control" >
                                 <span></span></td>
-                            <td>接收人:</td>
-                            <td><input  ng-model="xg.nameOfRegistrant" name="nameOfRegistrant"  class="form-control"></td>
-                            <td>户口性质:</td>
-                            <td><select  ng-model="xg.accountCharacter" name="accountCharacter"  class="form-control">
-                                <option  value="0">农业户口</option>
-                                <option  value="1">非农业户口</option>
-                            </select></td>
                         </tr>
                         <tr>
-                            <td>年龄:</td>
-                            <td><input ng-model="xg.age" name="age"  class="form-control">
-                            </td>
-                            <td>性别:</td>
-                            <td><select  name="sex" ng-model="xg.sex"  class="form-control">
-                                <option value="0">男</option>
-                                <option value="1">女</option>
-                            </select></td>
-                            <td>立案人:</td>
-                            <td><input  ng-model="xg.nameOfTheFiler" name="nameOfTheFiler"  class="form-control">
-                            <td>立案月</td>
-                            <td><input ng-model="xg.filingMonth" name="filingMonth"  class="form-control"></td>
+
+                            <td>剂型:</td>
+                            <td><input ng-model="dritem.dosageForm" name="dosageForm"  class="form-control" >
+                                <span></span></td>
+                            <td>规格:</td>
+                            <td><input ng-model="dritem.speciflcation" name="speciflcation"   class="form-control"  >
+                                <span></span></td>
                         </tr>
                         <tr>
-                            <td>投诉内容:</td>
-                            <td><textarea  ng-model="xg.complaintContents" name="complaintContents" ></textarea></td>
+                            <td>单位:</td>
+                            <td><input ng-model="dritem.unitId" name="unitId"  class="form-control" >
+                                <span></span></td>
+                            <td>转换系数:</td>
+                            <td><input ng-model="dritem.coefficient" name="coefficient"    class="form-control" >
+                                <span></span></td>
+
+                        </tr>
+                        <tr>
+                            <td>药品类别:</td>
+                            <td><select ng-model="dritem.drugCategoryName" name="drugCategoryName"  class="form-control" >
+                                <option value="1">儿童用药</option>
+                            </select><span></span></td>
+                            <td>状态:</td>
+                            <td><select ng-model="dritem.drugStateName" name="drugStateName"   class="form-control" >
+                                <option value="2">正常</option>
+                                <option value="3">非正常</option>
+                            </select><span></span></td>
                         </tr>
                     </table>
                 </form>
