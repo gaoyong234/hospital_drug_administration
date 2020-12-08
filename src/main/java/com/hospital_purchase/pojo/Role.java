@@ -11,6 +11,8 @@ public class Role {
 
     private Date modificationTime;
 
+    private Integer delId;
+
     public Integer getRoId() {
         return roId;
     }
@@ -41,5 +43,13 @@ public class Role {
 
     public void setModificationTime(Date modificationTime) {
         this.modificationTime = modificationTime;
+    }
+
+    public Integer getDelId() {
+        return delId;
+    }
+
+    public void setDelId(Integer delId) {
+        this.delId = delId;
     }
 }

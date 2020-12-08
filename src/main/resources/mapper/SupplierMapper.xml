@@ -36,6 +36,7 @@
     <result column="company_remarks" jdbcType="VARCHAR" property="companyRemarks" />
     <result column="creation_time" jdbcType="TIMESTAMP" property="creationTime" />
     <result column="modification_time" jdbcType="TIMESTAMP" property="modificationTime" />
+    <result column="del_id" jdbcType="INTEGER" property="delId" />
   </resultMap>
   <sql id="Base_Column_List">
     sp_id, supplier_name, supplier_site, supplier_linkman, supplier_phone, enterprise_category, 
@@ -44,7 +45,7 @@
     enterprise_register_capital, last_year_money, email_address, enterprise_url, enterprise_code, 
     enterprise_code_time, business_license, business_license_time, is_letter_of_credit, 
     letter_credit_number, letter_credit_time, fixed_assets, company_profile, company_remarks, 
-    creation_time, modification_time
+    creation_time, modification_time, del_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 'true' as QUERYID,
@@ -68,7 +69,8 @@
       business_license, business_license_time, 
       is_letter_of_credit, letter_credit_number, letter_credit_time, 
       fixed_assets, company_profile, company_remarks, 
-      creation_time, modification_time)
+      creation_time, modification_time, del_id
+      )
     values (#{spId,jdbcType=INTEGER}, #{supplierName,jdbcType=VARCHAR}, #{supplierSite,jdbcType=VARCHAR}, 
       #{supplierLinkman,jdbcType=VARCHAR}, #{supplierPhone,jdbcType=VARCHAR}, #{enterpriseCategory,jdbcType=INTEGER}, 
       #{licence,jdbcType=VARCHAR}, #{licenceTime,jdbcType=TIMESTAMP}, #{enterpriseLinkman,jdbcType=VARCHAR}, 
@@ -80,7 +82,8 @@
       #{businessLicense,jdbcType=VARCHAR}, #{businessLicenseTime,jdbcType=TIMESTAMP}, 
       #{isLetterOfCredit,jdbcType=INTEGER}, #{letterCreditNumber,jdbcType=INTEGER}, #{letterCreditTime,jdbcType=TIMESTAMP}, 
       #{fixedAssets,jdbcType=REAL}, #{companyProfile,jdbcType=VARCHAR}, #{companyRemarks,jdbcType=VARCHAR}, 
-      #{creationTime,jdbcType=TIMESTAMP}, #{modificationTime,jdbcType=TIMESTAMP})
+      #{creationTime,jdbcType=TIMESTAMP}, #{modificationTime,jdbcType=TIMESTAMP}, #{delId,jdbcType=INTEGER}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.hospital_purchase.pojo.Supplier">
     insert into supplier
@@ -187,6 +190,9 @@
       <if test="modificationTime != null">
         modification_time,
       </if>
+      <if test="delId != null">
+        del_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="spId != null">
@@ -290,6 +296,9 @@
       </if>
       <if test="modificationTime != null">
         #{modificationTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delId != null">
+        #{delId,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -395,6 +404,9 @@
       <if test="modificationTime != null">
         modification_time = #{modificationTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="delId != null">
+        del_id = #{delId,jdbcType=INTEGER},
+      </if>
     </set>
     where sp_id = #{spId,jdbcType=INTEGER}
   </update>
@@ -432,7 +444,8 @@
       company_profile = #{companyProfile,jdbcType=VARCHAR},
       company_remarks = #{companyRemarks,jdbcType=VARCHAR},
       creation_time = #{creationTime,jdbcType=TIMESTAMP},
-      modification_time = #{modificationTime,jdbcType=TIMESTAMP}
+      modification_time = #{modificationTime,jdbcType=TIMESTAMP},
+      del_id = #{delId,jdbcType=INTEGER}
     where sp_id = #{spId,jdbcType=INTEGER}
   </update>
 </mapper>

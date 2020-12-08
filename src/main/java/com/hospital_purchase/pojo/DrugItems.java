@@ -29,6 +29,8 @@ public class DrugItems {
 
     private Integer drugState;
 
+    private Integer delId;
+
     public Integer getDiId() {
         return diId;
     }
@@ -131,5 +133,13 @@ public class DrugItems {
 
     public void setDrugState(Integer drugState) {
         this.drugState = drugState;
+    }
+
+    public Integer getDelId() {
+        return delId;
+    }
+
+    public void setDelId(Integer delId) {
+        this.delId = delId;
     }
 }

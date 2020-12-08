@@ -25,6 +25,8 @@ public class QuitOrders {
 
     private String remarks;
 
+    private Integer delId;
+
     public Integer getSrId() {
         return srId;
     }
@@ -111,5 +113,13 @@ public class QuitOrders {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks == null ? null : remarks.trim();
+    }
+
+    public Integer getDelId() {
+        return delId;
+    }
+
+    public void setDelId(Integer delId) {
+        this.delId = delId;
     }
 }

@@ -10,7 +10,7 @@
     <result column="quality_level" jdbcType="VARCHAR" property="qualityLevel" />
     <result column="found_time" jdbcType="TIMESTAMP" property="foundTime" />
     <result column="approval_number" jdbcType="VARCHAR" property="approvalNumber" />
-    <result column="is_entrance" jdbcType="BIT" property="isEntrance" />
+    <result column="is_entrance" jdbcType="TINYINT" property="isEntrance" />
     <result column="pack_unit" jdbcType="INTEGER" property="packUnit" />
     <result column="retail_provenance" jdbcType="VARCHAR" property="retailProvenance" />
     <result column="heckout_number" jdbcType="VARCHAR" property="heckoutNumber" />
@@ -23,12 +23,13 @@
     <result column="quality_level_explain" jdbcType="VARCHAR" property="qualityLevelExplain" />
     <result column="product_photo" jdbcType="VARCHAR" property="productPhoto" />
     <result column="modified_time" jdbcType="TIMESTAMP" property="modifiedTime" />
+    <result column="del_id" jdbcType="INTEGER" property="delId" />
   </resultMap>
   <sql id="Base_Column_List">
     dm_id, drug_items_id, company_name, commodity_name, bidding_price, quality_level, 
     found_time, approval_number, is_entrance, pack_unit, retail_provenance, heckout_number, 
     product_explain, approval_time, packaging_texture, newest_price, is_checkout, drug_valid_time, 
-    quality_level_explain, product_photo, modified_time
+    quality_level_explain, product_photo, modified_time, del_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 'true' as QUERYID,
@@ -47,16 +48,16 @@
       pack_unit, retail_provenance, heckout_number, 
       product_explain, approval_time, packaging_texture, 
       newest_price, is_checkout, drug_valid_time, 
-      quality_level_explain, product_photo, modified_time
-      )
+      quality_level_explain, product_photo, modified_time, 
+      del_id)
     values (#{dmId,jdbcType=INTEGER}, #{drugItemsId,jdbcType=INTEGER}, #{companyName,jdbcType=VARCHAR}, 
       #{commodityName,jdbcType=VARCHAR}, #{biddingPrice,jdbcType=DECIMAL}, #{qualityLevel,jdbcType=VARCHAR}, 
-      #{foundTime,jdbcType=TIMESTAMP}, #{approvalNumber,jdbcType=VARCHAR}, #{isEntrance,jdbcType=BIT}, 
+      #{foundTime,jdbcType=TIMESTAMP}, #{approvalNumber,jdbcType=VARCHAR}, #{isEntrance,jdbcType=TINYINT}, 
       #{packUnit,jdbcType=INTEGER}, #{retailProvenance,jdbcType=VARCHAR}, #{heckoutNumber,jdbcType=VARCHAR}, 
       #{productExplain,jdbcType=VARCHAR}, #{approvalTime,jdbcType=TIMESTAMP}, #{packagingTexture,jdbcType=VARCHAR}, 
       #{newestPrice,jdbcType=DECIMAL}, #{isCheckout,jdbcType=TINYINT}, #{drugValidTime,jdbcType=TIMESTAMP}, 
-      #{qualityLevelExplain,jdbcType=VARCHAR}, #{productPhoto,jdbcType=VARCHAR}, #{modifiedTime,jdbcType=TIMESTAMP}
-      )
+      #{qualityLevelExplain,jdbcType=VARCHAR}, #{productPhoto,jdbcType=VARCHAR}, #{modifiedTime,jdbcType=TIMESTAMP}, 
+      #{delId,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.hospital_purchase.pojo.DrugMessage">
     insert into drug_message
@@ -124,6 +125,9 @@
       <if test="modifiedTime != null">
         modified_time,
       </if>
+      <if test="delId != null">
+        del_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="dmId != null">
@@ -151,7 +155,7 @@
         #{approvalNumber,jdbcType=VARCHAR},
       </if>
       <if test="isEntrance != null">
-        #{isEntrance,jdbcType=BIT},
+        #{isEntrance,jdbcType=TINYINT},
       </if>
       <if test="packUnit != null">
         #{packUnit,jdbcType=INTEGER},
@@ -189,6 +193,9 @@
       <if test="modifiedTime != null">
         #{modifiedTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="delId != null">
+        #{delId,jdbcType=INTEGER},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.hospital_purchase.pojo.DrugMessage">
@@ -216,7 +223,7 @@
         approval_number = #{approvalNumber,jdbcType=VARCHAR},
       </if>
       <if test="isEntrance != null">
-        is_entrance = #{isEntrance,jdbcType=BIT},
+        is_entrance = #{isEntrance,jdbcType=TINYINT},
       </if>
       <if test="packUnit != null">
         pack_unit = #{packUnit,jdbcType=INTEGER},
@@ -254,6 +261,9 @@
       <if test="modifiedTime != null">
         modified_time = #{modifiedTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="delId != null">
+        del_id = #{delId,jdbcType=INTEGER},
+      </if>
     </set>
     where dm_id = #{dmId,jdbcType=INTEGER}
   </update>
@@ -266,7 +276,7 @@
       quality_level = #{qualityLevel,jdbcType=VARCHAR},
       found_time = #{foundTime,jdbcType=TIMESTAMP},
       approval_number = #{approvalNumber,jdbcType=VARCHAR},
-      is_entrance = #{isEntrance,jdbcType=BIT},
+      is_entrance = #{isEntrance,jdbcType=TINYINT},
       pack_unit = #{packUnit,jdbcType=INTEGER},
       retail_provenance = #{retailProvenance,jdbcType=VARCHAR},
       heckout_number = #{heckoutNumber,jdbcType=VARCHAR},
@@ -278,7 +288,8 @@
       drug_valid_time = #{drugValidTime,jdbcType=TIMESTAMP},
       quality_level_explain = #{qualityLevelExplain,jdbcType=VARCHAR},
       product_photo = #{productPhoto,jdbcType=VARCHAR},
-      modified_time = #{modifiedTime,jdbcType=TIMESTAMP}
+      modified_time = #{modifiedTime,jdbcType=TIMESTAMP},
+      del_id = #{delId,jdbcType=INTEGER}
     where dm_id = #{dmId,jdbcType=INTEGER}
   </update>
 </mapper>

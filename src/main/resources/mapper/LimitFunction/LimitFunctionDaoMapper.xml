@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hospital_purchase.dao.LimitFunctionDao.LimitFunctionDaoMapper">
+  <resultMap id="BaseResultMap" type="com.hospital_purchase.pojo.LimitFunction">
+    <id column="lf_id" jdbcType="INTEGER" property="lfId" />
+    <result column="limit_name" jdbcType="VARCHAR" property="limitName" />
+    <result column="action_name" jdbcType="VARCHAR" property="actionName" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    <result column="creation_time" jdbcType="TIMESTAMP" property="creationTime" />
+    <result column="modification_time" jdbcType="TIMESTAMP" property="modificationTime" />
+    <result column="del_id" jdbcType="INTEGER" property="delId" />
+  </resultMap>
+  <resultMap id="BaseMap" type="com.hospital_purchase.vo.LimitFunctionVO">
+    <id column="lf_id" jdbcType="INTEGER" property="lfId" />
+    <result column="limit_name" jdbcType="VARCHAR" property="limitName" />
+    <result column="action_name" jdbcType="VARCHAR" property="actionName" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    <result column="parent_name" jdbcType="VARCHAR" property="parentName" />
+    <result column="creation_time" jdbcType="TIMESTAMP" property="creationTime" />
+    <result column="modification_time" jdbcType="TIMESTAMP" property="modificationTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    lf_id, limit_name, action_name, parent_id, creation_time, modification_time, del_id
+  </sql>
+  <select id="selectParentLimit" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from limit_function
+    where parent_id is null
+  </select>
+  <select id="selectAllLimitFunctionVO" resultMap="BaseMap">
+    select
+      lf.lf_id, lf.limit_name , lf.action_name, lim.limit_name parent_name, lf.creation_time, lf.modification_time,lf.parent_id
+    from limit_function lf
+	left join limit_function lim on lim.lf_id=lf.parent_id
+  </select>
+  <select id="selectAllLimitFunction" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from limit_function
+  </select>
+</mapper>

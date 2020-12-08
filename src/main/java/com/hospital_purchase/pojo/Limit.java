@@ -2,12 +2,16 @@ package com.hospital_purchase.pojo;
 
 import java.util.Date;
 
-public class UserRole {
-    private Integer urId;
+public class Limit {
+    private Integer liId;
+
+    private String limitName;
 
     private Integer userId;
 
-    private Integer roleId;
+    private String actionName;
+
+    private Integer parentId;
 
     private Date creationTime;
 
@@ -15,12 +19,20 @@ public class UserRole {
 
     private Integer delId;
 
-    public Integer getUrId() {
-        return urId;
+    public Integer getLiId() {
+        return liId;
     }
 
-    public void setUrId(Integer urId) {
-        this.urId = urId;
+    public void setLiId(Integer liId) {
+        this.liId = liId;
+    }
+
+    public String getLimitName() {
+        return limitName;
+    }
+
+    public void setLimitName(String limitName) {
+        this.limitName = limitName == null ? null : limitName.trim();
     }
 
     public Integer getUserId() {
@@ -31,12 +43,20 @@ public class UserRole {
         this.userId = userId;
     }
 
-    public Integer getRoleId() {
-        return roleId;
+    public String getActionName() {
+        return actionName;
     }
 
-    public void setRoleId(Integer roleId) {
-        this.roleId = roleId;
+    public void setActionName(String actionName) {
+        this.actionName = actionName == null ? null : actionName.trim();
+    }
+
+    public Integer getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
     }
 
     public Date getCreationTime() {

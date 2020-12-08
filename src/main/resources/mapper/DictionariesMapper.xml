@@ -7,16 +7,11 @@
     <result column="dictionaries_id" jdbcType="INTEGER" property="dictionariesId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="modified_time" jdbcType="TIMESTAMP" property="modifiedTime" />
+    <result column="del_id" jdbcType="INTEGER" property="delId" />
   </resultMap>
   <sql id="Base_Column_List">
-    dic_id, dictionaries_name, dictionaries_id, create_time, modified_time
+    dic_id, dictionaries_name, dictionaries_id, create_time, modified_time, del_id
   </sql>
-  <select id="findQualityLevel" resultMap="BaseResultMap">
-    select dic_id,dictionaries_name,dictionaries_id from dictionaries WHERE dictionaries_id = 11
-  </select>
-  <select id="findDrugCategorys" resultMap="BaseResultMap">
-    select dic_id,dictionaries_name,dictionaries_id from dictionaries WHERE dictionaries_id = 19
-  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 'true' as QUERYID,
     <include refid="Base_Column_List" />
@@ -28,10 +23,12 @@
     where dic_id = #{dicId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.hospital_purchase.pojo.Dictionaries">
-    insert into dictionaries (dic_id, dictionaries_name, dictionaries_id,
-      create_time, modified_time)
-    values (#{dicId,jdbcType=INTEGER}, #{dictionariesName,jdbcType=VARCHAR}, #{dictionariesId,jdbcType=INTEGER},
-      #{createTime,jdbcType=TIMESTAMP}, #{modifiedTime,jdbcType=TIMESTAMP})
+    insert into dictionaries (dic_id, dictionaries_name, dictionaries_id, 
+      create_time, modified_time, del_id
+      )
+    values (#{dicId,jdbcType=INTEGER}, #{dictionariesName,jdbcType=VARCHAR}, #{dictionariesId,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{modifiedTime,jdbcType=TIMESTAMP}, #{delId,jdbcType=INTEGER}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.hospital_purchase.pojo.Dictionaries">
     insert into dictionaries
@@ -51,6 +48,9 @@
       <if test="modifiedTime != null">
         modified_time,
       </if>
+      <if test="delId != null">
+        del_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="dicId != null">
@@ -67,6 +67,9 @@
       </if>
       <if test="modifiedTime != null">
         #{modifiedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delId != null">
+        #{delId,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -85,6 +88,9 @@
       <if test="modifiedTime != null">
         modified_time = #{modifiedTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="delId != null">
+        del_id = #{delId,jdbcType=INTEGER},
+      </if>
     </set>
     where dic_id = #{dicId,jdbcType=INTEGER}
   </update>
@@ -93,7 +99,8 @@
     set dictionaries_name = #{dictionariesName,jdbcType=VARCHAR},
       dictionaries_id = #{dictionariesId,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      modified_time = #{modifiedTime,jdbcType=TIMESTAMP}
+      modified_time = #{modifiedTime,jdbcType=TIMESTAMP},
+      del_id = #{delId,jdbcType=INTEGER}
     where dic_id = #{dicId,jdbcType=INTEGER}
   </update>
 </mapper>

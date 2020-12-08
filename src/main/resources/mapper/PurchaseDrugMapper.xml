@@ -13,10 +13,11 @@
     <result column="purchase_state" jdbcType="INTEGER" property="purchaseState" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="modified_time" jdbcType="TIMESTAMP" property="modifiedTime" />
+    <result column="del_id" jdbcType="INTEGER" property="delId" />
   </resultMap>
   <sql id="Base_Column_List">
     pd_id, purchase_id, drug_id, supplier_id, bid_price, deal_price, purchase_quantity, 
-    purchase_total_amount, purchase_state, create_time, modified_time
+    purchase_total_amount, purchase_state, create_time, modified_time, del_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 'true' as QUERYID,
@@ -32,13 +33,13 @@
     insert into purchase_drug (pd_id, purchase_id, drug_id, 
       supplier_id, bid_price, deal_price, 
       purchase_quantity, purchase_total_amount, 
-      purchase_state, create_time, modified_time
-      )
+      purchase_state, create_time, modified_time, 
+      del_id)
     values (#{pdId,jdbcType=INTEGER}, #{purchaseId,jdbcType=INTEGER}, #{drugId,jdbcType=INTEGER}, 
       #{supplierId,jdbcType=INTEGER}, #{bidPrice,jdbcType=DECIMAL}, #{dealPrice,jdbcType=DECIMAL}, 
       #{purchaseQuantity,jdbcType=INTEGER}, #{purchaseTotalAmount,jdbcType=DECIMAL}, 
-      #{purchaseState,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{modifiedTime,jdbcType=TIMESTAMP}
-      )
+      #{purchaseState,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{modifiedTime,jdbcType=TIMESTAMP}, 
+      #{delId,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.hospital_purchase.pojo.PurchaseDrug">
     insert into purchase_drug
@@ -76,6 +77,9 @@
       <if test="modifiedTime != null">
         modified_time,
       </if>
+      <if test="delId != null">
+        del_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="pdId != null">
@@ -110,6 +114,9 @@
       </if>
       <if test="modifiedTime != null">
         #{modifiedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delId != null">
+        #{delId,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -146,6 +153,9 @@
       <if test="modifiedTime != null">
         modified_time = #{modifiedTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="delId != null">
+        del_id = #{delId,jdbcType=INTEGER},
+      </if>
     </set>
     where pd_id = #{pdId,jdbcType=INTEGER}
   </update>
@@ -160,7 +170,8 @@
       purchase_total_amount = #{purchaseTotalAmount,jdbcType=DECIMAL},
       purchase_state = #{purchaseState,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      modified_time = #{modifiedTime,jdbcType=TIMESTAMP}
+      modified_time = #{modifiedTime,jdbcType=TIMESTAMP},
+      del_id = #{delId,jdbcType=INTEGER}
     where pd_id = #{pdId,jdbcType=INTEGER}
   </update>
 </mapper>

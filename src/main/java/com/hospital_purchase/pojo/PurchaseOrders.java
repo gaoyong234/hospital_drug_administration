@@ -31,6 +31,8 @@ public class PurchaseOrders {
 
     private String purchaseNumber;
 
+    private Integer delId;
+
     public Integer getPoId() {
         return poId;
     }
@@ -141,5 +143,13 @@ public class PurchaseOrders {
 
     public void setPurchaseNumber(String purchaseNumber) {
         this.purchaseNumber = purchaseNumber == null ? null : purchaseNumber.trim();
+    }
+
+    public Integer getDelId() {
+        return delId;
+    }
+
+    public void setDelId(Integer delId) {
+        this.delId = delId;
     }
 }

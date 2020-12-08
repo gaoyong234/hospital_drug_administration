@@ -8,7 +8,7 @@
     <result column="user_category" jdbcType="INTEGER" property="userCategory" />
     <result column="user_password" jdbcType="VARCHAR" property="userPassword" />
     <result column="user_state" jdbcType="INTEGER" property="userState" />
-    <result column="user_unit" jdbcType="VARCHAR" property="userUnit" />
+    <result column="hospital_id" jdbcType="VARCHAR" property="hospitalId" />
     <result column="contact_address" jdbcType="VARCHAR" property="contactAddress" />
     <result column="user_postal_code" jdbcType="INTEGER" property="userPostalCode" />
     <result column="user_linkman" jdbcType="VARCHAR" property="userLinkman" />
@@ -18,7 +18,7 @@
     <result column="modification_time" jdbcType="TIMESTAMP" property="modificationTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    us_id, user_account, user_name, user_category, user_password, user_state, user_unit, 
+    us_id, user_account, user_name, user_category, user_password, user_state, hospital_id,
     contact_address, user_postal_code, user_linkman, user_phone, user_email, creation_time, 
     modification_time
   </sql>

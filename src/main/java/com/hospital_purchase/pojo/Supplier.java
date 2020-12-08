@@ -71,6 +71,8 @@ public class Supplier {
 
     private Date modificationTime;
 
+    private Integer delId;
+
     public Integer getSpId() {
         return spId;
     }
@@ -341,5 +343,13 @@ public class Supplier {
 
     public void setModificationTime(Date modificationTime) {
         this.modificationTime = modificationTime;
+    }
+
+    public Integer getDelId() {
+        return delId;
+    }
+
+    public void setDelId(Integer delId) {
+        this.delId = delId;
     }
 }

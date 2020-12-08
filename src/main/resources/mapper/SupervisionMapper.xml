@@ -13,11 +13,12 @@
     <result column="supervision_url" jdbcType="VARCHAR" property="supervisionUrl" />
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+    <result column="del_id" jdbcType="INTEGER" property="delId" />
   </resultMap>
   <sql id="Base_Column_List">
     ss_id, supervision_name, contact_address, supervision_postal_code, supervision_linkman, 
     supervision_phone, supervision_fax, supervision_email, supervision_url, gmt_create, 
-    gmt_modified
+    gmt_modified, del_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 'true' as QUERYID,
@@ -33,13 +34,13 @@
     insert into supervision (ss_id, supervision_name, contact_address, 
       supervision_postal_code, supervision_linkman, 
       supervision_phone, supervision_fax, supervision_email, 
-      supervision_url, gmt_create, gmt_modified
-      )
+      supervision_url, gmt_create, gmt_modified, 
+      del_id)
     values (#{ssId,jdbcType=INTEGER}, #{supervisionName,jdbcType=VARCHAR}, #{contactAddress,jdbcType=VARCHAR}, 
       #{supervisionPostalCode,jdbcType=VARCHAR}, #{supervisionLinkman,jdbcType=VARCHAR}, 
       #{supervisionPhone,jdbcType=VARCHAR}, #{supervisionFax,jdbcType=VARCHAR}, #{supervisionEmail,jdbcType=VARCHAR}, 
-      #{supervisionUrl,jdbcType=VARCHAR}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}
-      )
+      #{supervisionUrl,jdbcType=VARCHAR}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, 
+      #{delId,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.hospital_purchase.pojo.Supervision">
     insert into supervision
@@ -77,6 +78,9 @@
       <if test="gmtModified != null">
         gmt_modified,
       </if>
+      <if test="delId != null">
+        del_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="ssId != null">
@@ -111,6 +115,9 @@
       </if>
       <if test="gmtModified != null">
         #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delId != null">
+        #{delId,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -147,6 +154,9 @@
       <if test="gmtModified != null">
         gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
       </if>
+      <if test="delId != null">
+        del_id = #{delId,jdbcType=INTEGER},
+      </if>
     </set>
     where ss_id = #{ssId,jdbcType=INTEGER}
   </update>
@@ -161,7 +171,8 @@
       supervision_email = #{supervisionEmail,jdbcType=VARCHAR},
       supervision_url = #{supervisionUrl,jdbcType=VARCHAR},
       gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
-      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      del_id = #{delId,jdbcType=INTEGER}
     where ss_id = #{ssId,jdbcType=INTEGER}
   </update>
 </mapper>

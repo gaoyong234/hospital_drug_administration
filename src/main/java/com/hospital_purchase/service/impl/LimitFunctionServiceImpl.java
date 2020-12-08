@@ -2,6 +2,7 @@ package com.hospital_purchase.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hospital_purchase.dao.LimitFunctionDao.LimitFunctionDaoMapper;
 import com.hospital_purchase.dao.LimitFunctionMapper;
 import com.hospital_purchase.pojo.LimitFunction;
 import com.hospital_purchase.service.LimitFunctionService;
@@ -16,6 +17,8 @@ import java.util.List;
 public class LimitFunctionServiceImpl implements LimitFunctionService {
     @Autowired
     private LimitFunctionMapper limitFunctionMapper;
+    @Autowired
+    private LimitFunctionDaoMapper limitFunctionDaoMapper;
 
     /**
      * 添加权限
@@ -35,7 +38,7 @@ public class LimitFunctionServiceImpl implements LimitFunctionService {
 
     @Override
     public List findParentLimit() {
-        return limitFunctionMapper.selectParentLimit();
+        return limitFunctionDaoMapper.selectParentLimit();
     }
 
     @Override
@@ -46,7 +49,7 @@ public class LimitFunctionServiceImpl implements LimitFunctionService {
     @Override
     public PageInfo findAllLimitFunction(Integer pageNum,Integer pageSize) {
         PageHelper.startPage(pageNum,pageSize);
-        List<LimitFunctionVO> list = limitFunctionMapper.selectAllLimitFunctionVO();
+        List<LimitFunctionVO> list = limitFunctionDaoMapper.selectAllLimitFunctionVO();
         PageInfo<LimitFunctionVO> pageInfo = new PageInfo<>(list);
         return pageInfo;
     }
