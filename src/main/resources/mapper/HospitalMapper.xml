@@ -18,11 +18,12 @@
     <result column="last_business_money" jdbcType="REAL" property="lastBusinessMoney" />
     <result column="creation_time" jdbcType="TIMESTAMP" property="creationTime" />
     <result column="modification_time" jdbcType="TIMESTAMP" property="modificationTime" />
+    <result column="del_id" jdbcType="INTEGER" property="delId" />
   </resultMap>
   <sql id="Base_Column_List">
     hp_id, hospital_name, mailing_address, postal_code, affiliating_area, hospital_rank, 
     number_bed, is_profit, dean_phone, dean_fax, medicament_phone, hospital_type, last_drug_money, 
-    last_business_money, creation_time, modification_time
+    last_business_money, creation_time, modification_time, del_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 'true' as QUERYID,
@@ -40,13 +41,13 @@
       number_bed, is_profit, dean_phone, 
       dean_fax, medicament_phone, hospital_type, 
       last_drug_money, last_business_money, creation_time, 
-      modification_time)
+      modification_time, del_id)
     values (#{hpId,jdbcType=INTEGER}, #{hospitalName,jdbcType=VARCHAR}, #{mailingAddress,jdbcType=VARCHAR}, 
       #{postalCode,jdbcType=INTEGER}, #{affiliatingArea,jdbcType=VARCHAR}, #{hospitalRank,jdbcType=INTEGER}, 
       #{numberBed,jdbcType=INTEGER}, #{isProfit,jdbcType=INTEGER}, #{deanPhone,jdbcType=INTEGER}, 
       #{deanFax,jdbcType=VARCHAR}, #{medicamentPhone,jdbcType=INTEGER}, #{hospitalType,jdbcType=INTEGER}, 
       #{lastDrugMoney,jdbcType=REAL}, #{lastBusinessMoney,jdbcType=REAL}, #{creationTime,jdbcType=TIMESTAMP}, 
-      #{modificationTime,jdbcType=TIMESTAMP})
+      #{modificationTime,jdbcType=TIMESTAMP}, #{delId,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.hospital_purchase.pojo.Hospital">
     insert into hospital
@@ -99,6 +100,9 @@
       <if test="modificationTime != null">
         modification_time,
       </if>
+      <if test="delId != null">
+        del_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="hpId != null">
@@ -148,6 +152,9 @@
       </if>
       <if test="modificationTime != null">
         #{modificationTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delId != null">
+        #{delId,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -199,6 +206,9 @@
       <if test="modificationTime != null">
         modification_time = #{modificationTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="delId != null">
+        del_id = #{delId,jdbcType=INTEGER},
+      </if>
     </set>
     where hp_id = #{hpId,jdbcType=INTEGER}
   </update>
@@ -218,7 +228,8 @@
       last_drug_money = #{lastDrugMoney,jdbcType=REAL},
       last_business_money = #{lastBusinessMoney,jdbcType=REAL},
       creation_time = #{creationTime,jdbcType=TIMESTAMP},
-      modification_time = #{modificationTime,jdbcType=TIMESTAMP}
+      modification_time = #{modificationTime,jdbcType=TIMESTAMP},
+      del_id = #{delId,jdbcType=INTEGER}
     where hp_id = #{hpId,jdbcType=INTEGER}
   </update>
 </mapper>

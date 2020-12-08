@@ -29,6 +29,8 @@ public class Payment {
 
     private Date gmtModified;
 
+    private Integer delId;
+
     public Integer getSoId() {
         return soId;
     }
@@ -131,5 +133,13 @@ public class Payment {
 
     public void setGmtModified(Date gmtModified) {
         this.gmtModified = gmtModified;
+    }
+
+    public Integer getDelId() {
+        return delId;
+    }
+
+    public void setDelId(Integer delId) {
+        this.delId = delId;
     }
 }

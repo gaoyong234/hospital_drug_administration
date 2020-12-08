@@ -21,6 +21,8 @@ public class PaymentDrug {
 
     private Date gmtModified;
 
+    private Integer delId;
+
     public Integer getPdId() {
         return pdId;
     }
@@ -91,5 +93,13 @@ public class PaymentDrug {
 
     public void setGmtModified(Date gmtModified) {
         this.gmtModified = gmtModified;
+    }
+
+    public Integer getDelId() {
+        return delId;
+    }
+
+    public void setDelId(Integer delId) {
+        this.delId = delId;
     }
 }

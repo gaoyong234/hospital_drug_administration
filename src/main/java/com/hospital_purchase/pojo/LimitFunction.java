@@ -1,15 +1,10 @@
 package com.hospital_purchase.pojo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
+
 public class LimitFunction {
     private Integer lfId;
 
@@ -24,6 +19,8 @@ public class LimitFunction {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date modificationTime;
+
+    private Integer delId;
 
     public Integer getLfId() {
         return lfId;
@@ -71,5 +68,13 @@ public class LimitFunction {
 
     public void setModificationTime(Date modificationTime) {
         this.modificationTime = modificationTime;
+    }
+
+    public Integer getDelId() {
+        return delId;
+    }
+
+    public void setDelId(Integer delId) {
+        this.delId = delId;
     }
 }

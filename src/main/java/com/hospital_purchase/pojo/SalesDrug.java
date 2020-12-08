@@ -19,6 +19,8 @@ public class SalesDrug {
 
     private Integer salesReturnState;
 
+    private Integer delId;
+
     public Integer getDrId() {
         return drId;
     }
@@ -81,5 +83,13 @@ public class SalesDrug {
 
     public void setSalesReturnState(Integer salesReturnState) {
         this.salesReturnState = salesReturnState;
+    }
+
+    public Integer getDelId() {
+        return delId;
+    }
+
+    public void setDelId(Integer delId) {
+        this.delId = delId;
     }
 }

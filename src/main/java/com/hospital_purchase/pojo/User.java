@@ -21,7 +21,7 @@ public class User {
 
     private Integer userState;
 
-    private String userUnit;
+    private Integer hospitalId;
 
     private String contactAddress;
 
@@ -36,6 +36,8 @@ public class User {
     private Date creationTime;
 
     private Date modificationTime;
+
+    private Integer delLd;
 
     public Integer getUsId() {
         return usId;
@@ -85,12 +87,12 @@ public class User {
         this.userState = userState;
     }
 
-    public String getUserUnit() {
-        return userUnit;
+    public Integer getHospitalId() {
+        return hospitalId;
     }
 
-    public void setUserUnit(String userUnit) {
-        this.userUnit = userUnit == null ? null : userUnit.trim();
+    public void setHospitalId(Integer hospitalId) {
+        this.hospitalId = hospitalId;
     }
 
     public String getContactAddress() {
@@ -147,5 +149,13 @@ public class User {
 
     public void setModificationTime(Date modificationTime) {
         this.modificationTime = modificationTime;
+    }
+
+    public Integer getDelLd() {
+        return delLd;
+    }
+
+    public void setDelLd(Integer delLd) {
+        this.delLd = delLd;
     }
 }

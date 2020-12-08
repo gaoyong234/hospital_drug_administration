@@ -18,7 +18,6 @@ public class DrugMessage {
     private BigDecimal biddingPrice;
 
     private String qualityLevel;
-
     @JsonFormat(pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date foundTime;
@@ -34,7 +33,6 @@ public class DrugMessage {
     private String heckoutNumber;
 
     private String productExplain;
-
     @JsonFormat(pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date approvalTime;
@@ -45,17 +43,16 @@ public class DrugMessage {
 
     private Byte isCheckout;
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date drugValidTime;
 
     private String qualityLevelExplain;
 
     private String productPhoto;
-
     @JsonFormat(pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date modifiedTime;
+
+    private Integer delId;
 
     public Integer getDmId() {
         return dmId;
@@ -223,5 +220,13 @@ public class DrugMessage {
 
     public void setModifiedTime(Date modifiedTime) {
         this.modifiedTime = modifiedTime;
+    }
+
+    public Integer getDelId() {
+        return delId;
+    }
+
+    public void setDelId(Integer delId) {
+        this.delId = delId;
     }
 }

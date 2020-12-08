@@ -1,9 +1,6 @@
 package com.hospital_purchase.dao;
 
 import com.hospital_purchase.pojo.LimitFunction;
-import com.hospital_purchase.vo.LimitFunctionVO;
-
-import java.util.List;
 
 public interface LimitFunctionMapper {
     int deleteByPrimaryKey(Integer lfId);
@@ -17,10 +14,4 @@ public interface LimitFunctionMapper {
     int updateByPrimaryKeySelective(LimitFunction record);
 
     int updateByPrimaryKey(LimitFunction record);
-
-    List selectParentLimit();
-
-    List<LimitFunctionVO> selectAllLimitFunctionVO();
-
-    List<LimitFunction> selectAllLimitFunction();
 }

@@ -1,7 +1,13 @@
 package com.hospital_purchase.pojo;
 
-import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.util.Date;
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class Hospital {
     private Integer hpId;
 
@@ -34,6 +40,8 @@ public class Hospital {
     private Date creationTime;
 
     private Date modificationTime;
+
+    private Integer delId;
 
     public Integer getHpId() {
         return hpId;
@@ -161,5 +169,13 @@ public class Hospital {
 
     public void setModificationTime(Date modificationTime) {
         this.modificationTime = modificationTime;
+    }
+
+    public Integer getDelId() {
+        return delId;
+    }
+
+    public void setDelId(Integer delId) {
+        this.delId = delId;
     }
 }

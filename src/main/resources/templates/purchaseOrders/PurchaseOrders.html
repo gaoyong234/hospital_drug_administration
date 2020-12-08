@@ -25,7 +25,14 @@
     <script>
         var app = angular.module("myApp", ["pagination"]);
         app.controller("myContr", function ($scope, $http) {
-            $scope.purchaseOrders.hospitalId="医院编号";
+
+            $http({
+                url:"/Hospital/findOneHospital",
+                method:"post",
+            }).success(function (response) {
+                console.log(response)
+                $scope.hospital=response;
+            })
             $scope.paginationConf={
                 currentPage: 1,  				//当前页
                 totalItems: 10,					//总记录数
@@ -46,7 +53,7 @@
                 $scope.drug.pageNum=pageNum;
                 $scope.drug.pageSize=items;
                 var druglist=$scope.drug;
-                console.log(druglist)
+                //console.log(druglist)
                 $http({
                     url:"/items/conditionfand",
                     method:"post",
@@ -161,47 +168,40 @@
                 <table class="table table-bordered table-striped">
                     <tr>
                         <td>医院编号:</td>
-                        <td><input  name="hospitalId"
-                                   ng-model="purchaseOrders.hospitalId"  class="form-control" ></td>
+                        <td><input  name="hospitalId" ng-model="hospital.hpId"  class="form-control" disabled="disabled"></td>
                         <td>医院名称:</td>
-                        <td><input ng-blur="count=count+1" ng-init="count=0" name="entity.commonName"
-                                   ng-model="entity.organizationalCode" class="form-control" placeholder="以0开头的八位数字">
+                        <td><input ng-model="hospital.hospitalName" class="form-control" disabled="disabled">
                         </td>
                     </tr>
                     <tr>
 
                         <td>采购单编号:</td>
-                        <td><input ng-blur="count=count+1" ng-init="count=0" name="entity.dosageForm"
-                                   ng-model="entity.nameOfTheComplainant" class="form-control"></td>
+                        <td><input  name="purchaseNumber"
+                                   ng-model="purchaseOrders.purchaseNumber" class="form-control"></td>
                         <td>采购单名称:</td>
                         <td><input ng-blur="count=count+1" ng-init="count=0" name="entity.speciflcation"
                                    ng-model="entity.idCard" class="form-control" placeholder="由十八位数字或者十七位数字末尾加x组成"></td>
                     </tr>
                     <tr>
                         <td>供货时间:</td>
-                        <td><input ng-blur="count=count+1" ng-init="count=0" name="entity.unitId"
+                        <td><input  name="entity.unitId"
                                    ng-model="entity.phone" class="form-control" placeholder="只能以13、15、18开头"></td>
                         <td>建单时间:</td>
-                        <td><input ng-blur="count=count+1" ng-init="count=0" name="entity.coefficient"
+                        <td><input  name="entity.coefficient"
                                    ng-model="entity.nameOfRegistrant" class="form-control"></td>
 
                     </tr>
                     <tr>
                         <td>联系人:</td>
-                        <td><select name="entity.drugStateName" ng-model="entity.drugStateName" class="form-control">
-                            <option value="0">全部</option>
-                            <option value="1">儿童用药</option>
-                        </select></td>
+                        <td><input  name="entity.coefficient"
+                                    ng-model="entity.nameOfRegistrant" class="form-control"></td>
                         <td>联系电话:</td>
-                        <td><select name="entity.drugCategoryName" ng-model="entity.accountCharacter"
-                                    class="form-control">
-                            <option value="2">正常</option>
-                            <option value="3">非正常</option>
-                        </select></td>
+                        <td><input  name="entity.coefficient"
+                                    ng-model="entity.nameOfRegistrant" class="form-control"></td>
                     </tr>
                     <tr>
                         <td>采购单状态:</td>
-                        <td><input ng-blur="count=count+1" ng-init="count=0" name="entity.unitId"
+                        <td><input  name="entity.unitId"
                                    ng-model="entity.phone" class="form-control" placeholder="只能以13、15、18开头"></td>
                         <td>提交时间:</td>
                         <td><input ng-blur="count=count+1" ng-init="count=0" name="entity.coefficient"
@@ -215,16 +215,16 @@
                     </tr>
                     <tr>
                         <td>审核人:</td>
-                        <td><input ng-blur="count=count+1" ng-init="count=0" name="entity.unitId"
+                        <td><input  name="entity.unitId"
                                    ng-model="entity.phone" class="form-control" placeholder=""></td>
                         <td>审核时间:</td>
-                        <td><input ng-blur="count=count+1" ng-init="count=0" name="entity.coefficient"
+                        <td><input  name="entity.coefficient"
                                    ng-model="entity.nameOfRegistrant" class="form-control"></td>
 
                     </tr>
                     <tr>
                         <td>审核意见:</td>
-                        <td><input ng-blur="count=count+1" ng-init="count=0" name="entity.unitId"
+                        <td><input  name="entity.unitId"
                                    ng-model="entity.phone" class="form-control" placeholder="只能以13、15、18开头"></td>
                     </tr>
                 </table>

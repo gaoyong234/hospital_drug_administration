@@ -25,6 +25,8 @@ public class Supervision {
 
     private Date gmtModified;
 
+    private Integer delId;
+
     public Integer getSsId() {
         return ssId;
     }
@@ -111,5 +113,13 @@ public class Supervision {
 
     public void setGmtModified(Date gmtModified) {
         this.gmtModified = gmtModified;
+    }
+
+    public Integer getDelId() {
+        return delId;
+    }
+
+    public void setDelId(Integer delId) {
+        this.delId = delId;
     }
 }

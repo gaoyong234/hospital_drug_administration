@@ -7,6 +7,8 @@ public class LimitRole {
 
     private Integer roleId;
 
+    private Integer delId;
+
     public Integer getLrId() {
         return lrId;
     }
@@ -29,5 +31,13 @@ public class LimitRole {
 
     public void setRoleId(Integer roleId) {
         this.roleId = roleId;
+    }
+
+    public Integer getDelId() {
+        return delId;
+    }
+
+    public void setDelId(Integer delId) {
+        this.delId = delId;
     }
 }

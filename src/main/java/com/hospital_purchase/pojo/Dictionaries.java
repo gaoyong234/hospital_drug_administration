@@ -13,6 +13,8 @@ public class Dictionaries {
 
     private Date modifiedTime;
 
+    private Integer delId;
+
     public Integer getDicId() {
         return dicId;
     }
@@ -51,5 +53,13 @@ public class Dictionaries {
 
     public void setModifiedTime(Date modifiedTime) {
         this.modifiedTime = modifiedTime;
+    }
+
+    public Integer getDelId() {
+        return delId;
+    }
+
+    public void setDelId(Integer delId) {
+        this.delId = delId;
     }
 }

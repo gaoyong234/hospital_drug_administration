@@ -5,9 +5,10 @@
     <id column="sa_id" jdbcType="INTEGER" property="saId" />
     <result column="supplier_id" jdbcType="INTEGER" property="supplierId" />
     <result column="area_id" jdbcType="INTEGER" property="areaId" />
+    <result column="del_id" jdbcType="INTEGER" property="delId" />
   </resultMap>
   <sql id="Base_Column_List">
-    sa_id, supplier_id, area_id
+    sa_id, supplier_id, area_id, del_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 'true' as QUERYID,
@@ -20,10 +21,10 @@
     where sa_id = #{saId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.hospital_purchase.pojo.SupplierArea">
-    insert into supplier_area (sa_id, supplier_id, area_id
-      )
-    values (#{saId,jdbcType=INTEGER}, #{supplierId,jdbcType=INTEGER}, #{areaId,jdbcType=INTEGER}
-      )
+    insert into supplier_area (sa_id, supplier_id, area_id, 
+      del_id)
+    values (#{saId,jdbcType=INTEGER}, #{supplierId,jdbcType=INTEGER}, #{areaId,jdbcType=INTEGER}, 
+      #{delId,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.hospital_purchase.pojo.SupplierArea">
     insert into supplier_area
@@ -37,6 +38,9 @@
       <if test="areaId != null">
         area_id,
       </if>
+      <if test="delId != null">
+        del_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="saId != null">
@@ -47,6 +51,9 @@
       </if>
       <if test="areaId != null">
         #{areaId,jdbcType=INTEGER},
+      </if>
+      <if test="delId != null">
+        #{delId,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -59,13 +66,17 @@
       <if test="areaId != null">
         area_id = #{areaId,jdbcType=INTEGER},
       </if>
+      <if test="delId != null">
+        del_id = #{delId,jdbcType=INTEGER},
+      </if>
     </set>
     where sa_id = #{saId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.hospital_purchase.pojo.SupplierArea">
     update supplier_area
     set supplier_id = #{supplierId,jdbcType=INTEGER},
-      area_id = #{areaId,jdbcType=INTEGER}
+      area_id = #{areaId,jdbcType=INTEGER},
+      del_id = #{delId,jdbcType=INTEGER}
     where sa_id = #{saId,jdbcType=INTEGER}
   </update>
 </mapper>

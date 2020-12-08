@@ -23,6 +23,8 @@ public class Storage {
 
     private Date modifiedTime;
 
+    private Integer delId;
+
     public Integer getStId() {
         return stId;
     }
@@ -101,5 +103,13 @@ public class Storage {
 
     public void setModifiedTime(Date modifiedTime) {
         this.modifiedTime = modifiedTime;
+    }
+
+    public Integer getDelId() {
+        return delId;
+    }
+
+    public void setDelId(Integer delId) {
+        this.delId = delId;
     }
 }

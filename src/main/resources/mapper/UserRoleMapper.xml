@@ -7,9 +7,10 @@
     <result column="role_id" jdbcType="INTEGER" property="roleId" />
     <result column="creation_time" jdbcType="TIMESTAMP" property="creationTime" />
     <result column="modification_time" jdbcType="TIMESTAMP" property="modificationTime" />
+    <result column="del_id" jdbcType="INTEGER" property="delId" />
   </resultMap>
   <sql id="Base_Column_List">
-    ur_id, user_id, role_id, creation_time, modification_time
+    ur_id, user_id, role_id, creation_time, modification_time, del_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 'true' as QUERYID,
@@ -23,9 +24,11 @@
   </delete>
   <insert id="insert" parameterType="com.hospital_purchase.pojo.UserRole">
     insert into user_role (ur_id, user_id, role_id, 
-      creation_time, modification_time)
+      creation_time, modification_time, del_id
+      )
     values (#{urId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER}, 
-      #{creationTime,jdbcType=TIMESTAMP}, #{modificationTime,jdbcType=TIMESTAMP})
+      #{creationTime,jdbcType=TIMESTAMP}, #{modificationTime,jdbcType=TIMESTAMP}, #{delId,jdbcType=INTEGER}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.hospital_purchase.pojo.UserRole">
     insert into user_role
@@ -45,6 +48,9 @@
       <if test="modificationTime != null">
         modification_time,
       </if>
+      <if test="delId != null">
+        del_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="urId != null">
@@ -61,6 +67,9 @@
       </if>
       <if test="modificationTime != null">
         #{modificationTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delId != null">
+        #{delId,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -79,6 +88,9 @@
       <if test="modificationTime != null">
         modification_time = #{modificationTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="delId != null">
+        del_id = #{delId,jdbcType=INTEGER},
+      </if>
     </set>
     where ur_id = #{urId,jdbcType=INTEGER}
   </update>
@@ -87,7 +99,8 @@
     set user_id = #{userId,jdbcType=INTEGER},
       role_id = #{roleId,jdbcType=INTEGER},
       creation_time = #{creationTime,jdbcType=TIMESTAMP},
-      modification_time = #{modificationTime,jdbcType=TIMESTAMP}
+      modification_time = #{modificationTime,jdbcType=TIMESTAMP},
+      del_id = #{delId,jdbcType=INTEGER}
     where ur_id = #{urId,jdbcType=INTEGER}
   </update>
 </mapper>

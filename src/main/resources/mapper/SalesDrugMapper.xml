@@ -10,10 +10,11 @@
     <result column="sales_return_money" jdbcType="DECIMAL" property="salesReturnMoney" />
     <result column="sales_return_cause" jdbcType="VARCHAR" property="salesReturnCause" />
     <result column="sales_return_state" jdbcType="INTEGER" property="salesReturnState" />
+    <result column="del_id" jdbcType="INTEGER" property="delId" />
   </resultMap>
   <sql id="Base_Column_List">
     dr_id, purchase_drug_id, drug_name_id, sales_return_id, sales_return_quantity, sales_return_money, 
-    sales_return_cause, sales_return_state
+    sales_return_cause, sales_return_state, del_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 'true' as QUERYID,
@@ -28,10 +29,12 @@
   <insert id="insert" parameterType="com.hospital_purchase.pojo.SalesDrug">
     insert into sales_drug (dr_id, purchase_drug_id, drug_name_id, 
       sales_return_id, sales_return_quantity, sales_return_money, 
-      sales_return_cause, sales_return_state)
+      sales_return_cause, sales_return_state, del_id
+      )
     values (#{drId,jdbcType=INTEGER}, #{purchaseDrugId,jdbcType=INTEGER}, #{drugNameId,jdbcType=INTEGER}, 
       #{salesReturnId,jdbcType=INTEGER}, #{salesReturnQuantity,jdbcType=INTEGER}, #{salesReturnMoney,jdbcType=DECIMAL}, 
-      #{salesReturnCause,jdbcType=VARCHAR}, #{salesReturnState,jdbcType=INTEGER})
+      #{salesReturnCause,jdbcType=VARCHAR}, #{salesReturnState,jdbcType=INTEGER}, #{delId,jdbcType=INTEGER}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.hospital_purchase.pojo.SalesDrug">
     insert into sales_drug
@@ -60,6 +63,9 @@
       <if test="salesReturnState != null">
         sales_return_state,
       </if>
+      <if test="delId != null">
+        del_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="drId != null">
@@ -85,6 +91,9 @@
       </if>
       <if test="salesReturnState != null">
         #{salesReturnState,jdbcType=INTEGER},
+      </if>
+      <if test="delId != null">
+        #{delId,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -112,6 +121,9 @@
       <if test="salesReturnState != null">
         sales_return_state = #{salesReturnState,jdbcType=INTEGER},
       </if>
+      <if test="delId != null">
+        del_id = #{delId,jdbcType=INTEGER},
+      </if>
     </set>
     where dr_id = #{drId,jdbcType=INTEGER}
   </update>
@@ -123,7 +135,8 @@
       sales_return_quantity = #{salesReturnQuantity,jdbcType=INTEGER},
       sales_return_money = #{salesReturnMoney,jdbcType=DECIMAL},
       sales_return_cause = #{salesReturnCause,jdbcType=VARCHAR},
-      sales_return_state = #{salesReturnState,jdbcType=INTEGER}
+      sales_return_state = #{salesReturnState,jdbcType=INTEGER},
+      del_id = #{delId,jdbcType=INTEGER}
     where dr_id = #{drId,jdbcType=INTEGER}
   </update>
 </mapper>

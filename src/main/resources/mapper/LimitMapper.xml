@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hospital_purchase.dao.LimitFunctionMapper">
-  <resultMap id="BaseResultMap" type="com.hospital_purchase.pojo.LimitFunction">
-    <id column="lf_id" jdbcType="INTEGER" property="lfId" />
+<mapper namespace="com.hospital_purchase.dao.LimitMapper">
+  <resultMap id="BaseResultMap" type="com.hospital_purchase.pojo.Limit">
+    <id column="li_id" jdbcType="INTEGER" property="liId" />
     <result column="limit_name" jdbcType="VARCHAR" property="limitName" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
     <result column="action_name" jdbcType="VARCHAR" property="actionName" />
     <result column="parent_id" jdbcType="INTEGER" property="parentId" />
     <result column="creation_time" jdbcType="TIMESTAMP" property="creationTime" />
@@ -11,34 +12,38 @@
     <result column="del_id" jdbcType="INTEGER" property="delId" />
   </resultMap>
   <sql id="Base_Column_List">
-    lf_id, limit_name, action_name, parent_id, creation_time, modification_time, del_id
+    li_id, limit_name, user_id, action_name, parent_id, creation_time, modification_time, 
+    del_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 'true' as QUERYID,
     <include refid="Base_Column_List" />
-    from limit_function
-    where lf_id = #{lfId,jdbcType=INTEGER}
+    from limit
+    where li_id = #{liId,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from limit_function
-    where lf_id = #{lfId,jdbcType=INTEGER}
+    delete from limit
+    where li_id = #{liId,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.hospital_purchase.pojo.LimitFunction">
-    insert into limit_function (lf_id, limit_name, action_name, 
-      parent_id, creation_time, modification_time, 
-      del_id)
-    values (#{lfId,jdbcType=INTEGER}, #{limitName,jdbcType=VARCHAR}, #{actionName,jdbcType=VARCHAR}, 
-      #{parentId,jdbcType=INTEGER}, #{creationTime,jdbcType=TIMESTAMP}, #{modificationTime,jdbcType=TIMESTAMP}, 
-      #{delId,jdbcType=INTEGER})
+  <insert id="insert" parameterType="com.hospital_purchase.pojo.Limit">
+    insert into limit (li_id, limit_name, user_id, 
+      action_name, parent_id, creation_time, 
+      modification_time, del_id)
+    values (#{liId,jdbcType=INTEGER}, #{limitName,jdbcType=VARCHAR}, #{userId,jdbcType=INTEGER}, 
+      #{actionName,jdbcType=VARCHAR}, #{parentId,jdbcType=INTEGER}, #{creationTime,jdbcType=TIMESTAMP}, 
+      #{modificationTime,jdbcType=TIMESTAMP}, #{delId,jdbcType=INTEGER})
   </insert>
-  <insert id="insertSelective" parameterType="com.hospital_purchase.pojo.LimitFunction">
-    insert into limit_function
+  <insert id="insertSelective" parameterType="com.hospital_purchase.pojo.Limit">
+    insert into limit
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="lfId != null">
-        lf_id,
+      <if test="liId != null">
+        li_id,
       </if>
       <if test="limitName != null">
         limit_name,
+      </if>
+      <if test="userId != null">
+        user_id,
       </if>
       <if test="actionName != null">
         action_name,
@@ -57,11 +62,14 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="lfId != null">
-        #{lfId,jdbcType=INTEGER},
+      <if test="liId != null">
+        #{liId,jdbcType=INTEGER},
       </if>
       <if test="limitName != null">
         #{limitName,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
       </if>
       <if test="actionName != null">
         #{actionName,jdbcType=VARCHAR},
@@ -80,11 +88,14 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.hospital_purchase.pojo.LimitFunction">
-    update limit_function
+  <update id="updateByPrimaryKeySelective" parameterType="com.hospital_purchase.pojo.Limit">
+    update limit
     <set>
       <if test="limitName != null">
         limit_name = #{limitName,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
       </if>
       <if test="actionName != null">
         action_name = #{actionName,jdbcType=VARCHAR},
@@ -102,16 +113,17 @@
         del_id = #{delId,jdbcType=INTEGER},
       </if>
     </set>
-    where lf_id = #{lfId,jdbcType=INTEGER}
+    where li_id = #{liId,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.hospital_purchase.pojo.LimitFunction">
-    update limit_function
+  <update id="updateByPrimaryKey" parameterType="com.hospital_purchase.pojo.Limit">
+    update limit
     set limit_name = #{limitName,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=INTEGER},
       action_name = #{actionName,jdbcType=VARCHAR},
       parent_id = #{parentId,jdbcType=INTEGER},
       creation_time = #{creationTime,jdbcType=TIMESTAMP},
       modification_time = #{modificationTime,jdbcType=TIMESTAMP},
       del_id = #{delId,jdbcType=INTEGER}
-    where lf_id = #{lfId,jdbcType=INTEGER}
+    where li_id = #{liId,jdbcType=INTEGER}
   </update>
 </mapper>

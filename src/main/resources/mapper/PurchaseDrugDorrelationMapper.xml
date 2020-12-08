@@ -8,9 +8,11 @@
     <result column="drug_supplier_id" jdbcType="INTEGER" property="drugSupplierId" />
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+    <result column="del_id" jdbcType="INTEGER" property="delId" />
   </resultMap>
   <sql id="Base_Column_List">
-    dc_id, hospital_id, drug_message_id, drug_supplier_id, gmt_create, gmt_modified
+    dc_id, hospital_id, drug_message_id, drug_supplier_id, gmt_create, gmt_modified, 
+    del_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 'true' as QUERYID,
@@ -24,11 +26,11 @@
   </delete>
   <insert id="insert" parameterType="com.hospital_purchase.pojo.PurchaseDrugDorrelation">
     insert into purchase_drug_correlation (dc_id, hospital_id, drug_message_id, 
-      drug_supplier_id, gmt_create, gmt_modified
-      )
+      drug_supplier_id, gmt_create, gmt_modified, 
+      del_id)
     values (#{dcId,jdbcType=INTEGER}, #{hospitalId,jdbcType=INTEGER}, #{drugMessageId,jdbcType=INTEGER}, 
-      #{drugSupplierId,jdbcType=INTEGER}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}
-      )
+      #{drugSupplierId,jdbcType=INTEGER}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, 
+      #{delId,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.hospital_purchase.pojo.PurchaseDrugDorrelation">
     insert into purchase_drug_correlation
@@ -51,6 +53,9 @@
       <if test="gmtModified != null">
         gmt_modified,
       </if>
+      <if test="delId != null">
+        del_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="dcId != null">
@@ -70,6 +75,9 @@
       </if>
       <if test="gmtModified != null">
         #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delId != null">
+        #{delId,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -91,6 +99,9 @@
       <if test="gmtModified != null">
         gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
       </if>
+      <if test="delId != null">
+        del_id = #{delId,jdbcType=INTEGER},
+      </if>
     </set>
     where dc_id = #{dcId,jdbcType=INTEGER}
   </update>
@@ -100,7 +111,8 @@
       drug_message_id = #{drugMessageId,jdbcType=INTEGER},
       drug_supplier_id = #{drugSupplierId,jdbcType=INTEGER},
       gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
-      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      del_id = #{delId,jdbcType=INTEGER}
     where dc_id = #{dcId,jdbcType=INTEGER}
   </update>
 </mapper>

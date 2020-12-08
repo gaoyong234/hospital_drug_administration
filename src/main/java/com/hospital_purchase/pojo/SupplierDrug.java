@@ -17,6 +17,8 @@ public class SupplierDrug {
 
     private Date gmtModified;
 
+    private Integer delId;
+
     public Integer getSdId() {
         return sdId;
     }
@@ -71,5 +73,13 @@ public class SupplierDrug {
 
     public void setGmtModified(Date gmtModified) {
         this.gmtModified = gmtModified;
+    }
+
+    public Integer getDelId() {
+        return delId;
+    }
+
+    public void setDelId(Integer delId) {
+        this.delId = delId;
     }
 }

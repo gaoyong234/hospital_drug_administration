@@ -26,6 +26,8 @@ public class PurchaseDrug {
 
     private Date modifiedTime;
 
+    private Integer delId;
+
     public Integer getPdId() {
         return pdId;
     }
@@ -112,5 +114,13 @@ public class PurchaseDrug {
 
     public void setModifiedTime(Date modifiedTime) {
         this.modifiedTime = modifiedTime;
+    }
+
+    public Integer getDelId() {
+        return delId;
+    }
+
+    public void setDelId(Integer delId) {
+        this.delId = delId;
     }
 }
