@@ -1,9 +1,14 @@
 package com.hospital_purchase.pojo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
-public class DrugItems {
+public class DrugItems{
     private Integer diId;
+
+    private String serialNumber;
 
     private String commonName;
 
@@ -15,15 +20,17 @@ public class DrugItems {
 
     private Integer coefficient;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone="GMT+8")
     private Date createTime;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone="GMT+8")
     private Date modifiedTime;
 
     private String productionName;
 
     private String commodityName;
-
-    private String serialNumber;
 
     private Integer drugCategory;
 
@@ -141,5 +148,25 @@ public class DrugItems {
 
     public void setDelId(Integer delId) {
         this.delId = delId;
+    }
+
+    @Override
+    public String toString() {
+        return "DrugItems{" +
+                "diId=" + diId +
+                ", commonName='" + commonName + '\'' +
+                ", dosageForm='" + dosageForm + '\'' +
+                ", speciflcation='" + speciflcation + '\'' +
+                ", unitId=" + unitId +
+                ", coefficient=" + coefficient +
+                ", createTime=" + createTime +
+                ", modifiedTime=" + modifiedTime +
+                ", productionName='" + productionName + '\'' +
+                ", commodityName='" + commodityName + '\'' +
+                ", serialNumber='" + serialNumber + '\'' +
+                ", drugCategory=" + drugCategory +
+                ", drugState=" + drugState +
+                ", delId=" + delId +
+                '}';
     }
 }

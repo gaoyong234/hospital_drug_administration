@@ -31,8 +31,8 @@ public class DrugInformationDto {
 
     private String approvalNumber;
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone="GMT+8")
     private Date approvalTime;
 
     private Byte isEntrance;
@@ -53,8 +53,8 @@ public class DrugInformationDto {
 
     private String heckoutNumber;
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone="GMT+8")
     private Date drugValidTime;
 
     private String productExplain;

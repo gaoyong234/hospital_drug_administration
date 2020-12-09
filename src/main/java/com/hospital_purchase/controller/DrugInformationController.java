@@ -2,6 +2,7 @@ package com.hospital_purchase.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.hospital_purchase.common.DrugInformationDto;
+import com.hospital_purchase.common.DrugInformation;
 import com.hospital_purchase.pojo.Dictionaries;
 import com.hospital_purchase.pojo.DrugItems;
 import com.hospital_purchase.pojo.DrugMessage;
@@ -11,6 +12,7 @@ import com.hospital_purchase.vo.DrugInformationVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,9 +21,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.util.ArrayList;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/drugInformation")
@@ -35,7 +41,6 @@ public class DrugInformationController {
     }
 
     /**
-     * 2020/11/30
      * 跳转药品信息页面（drugInformation）
      * @return
      */
@@ -45,7 +50,6 @@ public class DrugInformationController {
     }
 
     /**
-     * 2020/11/30
      * 查询药品信息维护
      * @return
      */
@@ -56,8 +60,7 @@ public class DrugInformationController {
         return list;
     }
 
-    /***
-     * 2020/12/1
+    /**
      * 模糊查询 + 查询药品信息维护
      * @param drugInformationVO
      * @return
@@ -73,7 +76,6 @@ public class DrugInformationController {
     }
 
     /**
-     * 2020/12/1
      * 查询质量层次信息
      * @return
      */
@@ -85,7 +87,6 @@ public class DrugInformationController {
     }
 
     /**
-     * 2020/12/1
      * 查询药品类别信息
      * @return
      */
@@ -96,7 +97,6 @@ public class DrugInformationController {
     }
 
     /**
-     * 2020/12/1
      * 新增药品信息
      * @param drugInformationDto
      * @return
@@ -145,7 +145,6 @@ public class DrugInformationController {
     }
 
     /**
-     * 2020/12/3
      * 修改药品信息
      * @param drugInformationDto
      * @return
@@ -192,7 +191,6 @@ public class DrugInformationController {
     }
 
     /**
-     * 2020/12/3
      * 删除药品信息
      * @param id
      * @return
@@ -210,52 +208,106 @@ public class DrugInformationController {
         return msg;
     }
 
-    /*@ResponseBody
-    @RequestMapping(value = "/ImportExcel",method = RequestMethod.POST,produces = {"application/json;charset=utf-8"})
-    public void ImportExcel(@RequestParam("filename")MultipartFile file,
-                            HttpServletRequest request,HttpServletResponse response) throws Exception {
-        InputStream inputStream = file.getInputStream();
-        EasyExcel easyExcel = new EasyExcel();
-        List<Object> reader = easyExcel.reader(inputStream);
-        for (int i = 0; i <reader.size() ; i++) {
-            System.out.println(reader.get(i));
-        }
-    }*/
+    /**
+     * 导入
+     * @param file
+     * @param response
+     * @param request
+     */
+    @RequestMapping(value = "/uploadFiles",method = RequestMethod.POST,produces = "application/json;charset=utf-8")
     @ResponseBody
-    @RequestMapping(value = "/ImportExcel",method = RequestMethod.POST,produces = {"application/json;charset=utf-8"})
-    public void ImportExcel(@RequestParam("filename")MultipartFile file,
-                            HttpServletRequest request,HttpServletResponse response) {
+    public void uploadFilesToExcel(@RequestParam(value = "uploadFile")MultipartFile file, HttpServletResponse response, HttpServletRequest request){
         InputStream inputStream = null;
-        String originalFilename = file.getOriginalFilename();
         try {
             inputStream = file.getInputStream();
-            inputStream = new BufferedInputStream(file.getInputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
         List<Object> list = excelUploadUtil().reader(inputStream);
+        //------------------------------------------------------------------
         //表头信息
         List<String> s  = (List<String>) list.get(0);
-        System.out.println(s);
-            for (int i = 1; i <list.size() ; i++) {
+        for (int i = 0; i < list.size() ;i++) {
+            //DrugInformation drugInformation = new DrugInformation();
             DrugItems drugItems = new DrugItems();
+            DrugMessage drugMessage = new DrugMessage();
             List<String> tableData = (List<String>) list.get(i);
-            if (tableData.size()<s.size()){
                 //获得每一个单元格数据
-                if (tableData.get(0) != null && !"".equals(tableData.get(0))){
-                    drugItems.setSerialNumber(tableData.get(0).trim());
+                if (tableData.get(0)!=null&&!"".equals(tableData.get(0))) {
+                    drugItems.setSerialNumber(tableData.get(0));
                 }
-                if (tableData.get(1) != null && !"".equals(tableData.get(1))){
-                    drugItems.setCommonName(tableData.get(1).trim());
+                if (tableData.get(1)!=null&&!"".equals(tableData.get(1))) {
+                    drugItems.setCommonName(tableData.get(1));
                 }
-                if (tableData.get(2) != null && !"".equals(tableData.get(2))){
-                    drugItems.setDosageForm(tableData.get(2).trim());
+                if (tableData.get(2)!=null&&!"".equals(tableData.get(2))) {
+                    drugItems.setDosageForm(tableData.get(2));
                 }
-                if (tableData.get(3) != null && !"".equals(tableData.get(3))){
-                    drugItems.setSpeciflcation(tableData.get(3).trim());
+                if (tableData.get(3)!=null&&!"".equals(tableData.get(3))) {
+                    drugItems.setSpeciflcation(tableData.get(3));
+                }
+                if (tableData.get(4)!=null&&!"".equals(tableData.get(4))) {
+                    drugItems.setUnitId(Integer.parseInt(tableData.get(4).trim()));
+                }
+                if (tableData.get(5)!=null&&!"".equals(tableData.get(5))) {
+                    drugItems.setCoefficient(Integer.parseInt(tableData.get(5).trim()));
+                }
+                if (tableData.get(6)!=null&&!"".equals(tableData.get(6))) {
+                    drugItems.setProductionName(tableData.get(6).trim());
+                }
+                if (tableData.get(7)!=null&&!"".equals(tableData.get(7))) {
+                    drugItems.setCommodityName(tableData.get(7).trim());
+                }
+                if (tableData.get(8)!=null&&!"".equals(tableData.get(8))) {
+                    drugMessage.setBiddingPrice(new BigDecimal(tableData.get(8).trim()));
+                }
+                if (tableData.get(9)!=null&&!"".equals(tableData.get(9))) {
+                    drugMessage.setQualityLevel(tableData.get(9).trim());
+                }
+                if (tableData.get(10)!=null&&!"".equals(tableData.get(10))) {
+                    drugMessage.setApprovalNumber(tableData.get(10).trim());
+                }
+                SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy.MM.dd");
+                try {
+                    if (tableData.get(11)!=null&&!"".equals(tableData.get(11))) {
+                        drugMessage.setApprovalTime(simpleDateFormat.parse(tableData.get(11).trim()));
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                if (tableData.get(12)!=null&&!"".equals(tableData.get(12))) {
+                    drugMessage.setIsEntrance(new Byte(tableData.get(12).trim()));
+                }
+                if (tableData.get(13)!=null&&!"".equals(tableData.get(13))) {
+                    drugMessage.setPackagingTexture(tableData.get(13).trim());
+                }
+                if (tableData.get(14)!=null&&!"".equals(tableData.get(14))) {
+                    drugMessage.setPackUnit(Integer.parseInt(tableData.get(14).trim()));
+                }
+                if (tableData.get(15)!=null&&!"".equals(tableData.get(15))) {
+                    drugMessage.setNewestPrice(new BigDecimal(tableData.get(15).trim()));
+                }
+                if (tableData.get(16)!=null&&!"".equals(tableData.get(16))) {
+                    drugMessage.setRetailProvenance(tableData.get(16).trim());
+                }
+                if (tableData.get(17)!=null&&!"".equals(tableData.get(17))) {
+                    drugMessage.setIsCheckout(new Byte(tableData.get(17).trim()));
+                }
+                if (tableData.get(18)!=null&&!"".equals(tableData.get(18))) {
+                    drugMessage.setHeckoutNumber(tableData.get(18).trim());
+                }
+                try {
+                    if (tableData.get(19)!=null&&!"".equals(tableData.get(19))) {
+                        drugMessage.setDrugValidTime(simpleDateFormat.parse(tableData.get(19).trim()));
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                if (tableData.get(20)!=null&&!"".equals(tableData.get(20))) {
+                    drugMessage.setProductExplain(tableData.get(20).trim());
                 }
                 drugInformationService.addDrugInformation(drugItems);
+                drugMessage.setDrugItemsId(drugItems.getDiId());
+                drugInformationService.addDrugMessageInfo(drugMessage);
             }
-        }
     }
 }

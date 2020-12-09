@@ -18,8 +18,9 @@ public class DrugMessage {
     private BigDecimal biddingPrice;
 
     private String qualityLevel;
-    @JsonFormat(pattern = "yyyy-MM-dd")
+
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone="GMT+8")
     private Date foundTime;
 
     private String approvalNumber;
@@ -33,8 +34,9 @@ public class DrugMessage {
     private String heckoutNumber;
 
     private String productExplain;
-    @JsonFormat(pattern = "yyyy-MM-dd")
+
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone="GMT+8")
     private Date approvalTime;
 
     private String packagingTexture;
@@ -43,13 +45,16 @@ public class DrugMessage {
 
     private Byte isCheckout;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone="GMT+8")
     private Date drugValidTime;
 
     private String qualityLevelExplain;
 
     private String productPhoto;
-    @JsonFormat(pattern = "yyyy-MM-dd")
+
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone="GMT+8")
     private Date modifiedTime;
 
     private Integer delId;
