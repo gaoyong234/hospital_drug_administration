@@ -20,9 +20,6 @@
     <script>
        var app= angular.module("myApp",["pagination"]);
        app.controller("myContr",function ($scope,$http) {
-        $scope.addClick=function () {
-
-        }
            $scope.paginationConf={
                currentPage: 1,  				//当前页
                totalItems: 10,					//总记录数
@@ -56,13 +53,72 @@
 
            }
             $scope.amend=function (diId) {
-                $scope.diId = diId;
+                $http({
+                    url:"/items/fandId",
+                    method:"get",
+                    params:{"diId": diId}
+                    ,
+                }).success(function (response) {
+                    $scope.dritem=response;
+                })
+            }
+            $scope.ngsave=function () {
+                var ditereva=$scope.dritem;
+                var list = $scope.lists;
+                for (var i = 0; i < list.length; i++) {
+                    if (list[i].diId == $scope.dritem.diId) {
+                        $scope.pd = list[i];
+                        break;
+                    }
+                }
+                var equ=$scope.pd.commonName==$scope.dritem.commonName&&$scope.pd.dosageForm==$scope.dritem.dosageForm&&$scope.pd.speciflcation==$scope.dritem.speciflcation&&$scope.pd.unitId==$scope.dritem.unitId&&$scope.pd.coefficient==$scope.dritem.coefficient;
+                var dec=$scope.dritem.commonName!=null&&$scope.dritem.dosageForm!=null&&$scope.dritem.speciflcation!=null&&$scope.dritem.unitId!=null&&$scope.dritem.coefficient!=null&&$scope.dritem.commonName!=""&&$scope.dritem.dosageForm!=""&&$scope.dritem.speciflcation!=""&&$scope.dritem.unitId!=""&&$scope.dritem.coefficient!="";
+                if (equ){
+                    alert("请修改后提交")
+                }else {
+                    if (dec){
+                        $http({
+                            url:"/items/revamp",
+                            method:"post",
+                            params: ditereva
+                            ,
+                        }).success(function (response) {
+                            if (response>0){
+                                alert("修改成功")
+                                $scope.find();
+                            }else {
+                                alert("修改失败")
+                            }
+                        })
+                    }else {
+                        alert("请完善信息后保存!")
+                    }
+                }
+            }
+            $scope.chage=function(diId){
                 var list = $scope.lists;
                 for (var i = 0; i < list.length; i++) {
                     if (list[i].diId == diId) {
-                        $scope.dritem = list[i];
+                        $scope.chagedri = list[i];
                         break;
                     }
+                }
+                console.log($scope.chagedri)
+            }
+            $scope.expurgate=function (diId) {
+                if (confirm("是否确认删除?")){
+                    $http({
+                        url: "expurgate",
+                        method: "get",
+                        params: {"diId":diId}
+                    }).success(function (response) {
+                        if (response>0){
+                            console.log(response)
+                            $scope.find();
+                        }else {
+                            alert("删除失败")
+                        }
+                    })
                 }
             }
 
@@ -163,10 +219,11 @@
 </table>
 
 </div>
+
     <div>
         <button type="button" class="btn1" data-toggle="modal" data-target="#addition" ng-click="addClick()">添加
         </button>
-        <button type="button" class="btn1" ng-click="loadlick()">导入
+        <button type="button" class="btn1" data-toggle="modal" data-target="#introduce" ng-click="loadlick()">导入
         </button>
     </div>
          <div>
@@ -199,9 +256,9 @@
             <td>{{x.coefficient}}</td>
             <td>{{x.drugCategoryName}}</td>
             <td>{{x.drugStateName}}</td>
-            <td><button value="{{x.diId}}" onclick="drugdetail()" data-toggle="modal" >详细</button></td>
-            <td><button class="btn bg-olive btn-xs" data-toggle="modal" data-target="#more" ng-click="amend(x.diId)">修改</button></td>
-            <td><button value="{{x.diId}}" onclick="expurgate()">删除</button></td>
+            <td><button class="btn btn-success" data-toggle="modal" data-target="#chage" ng-click="chage(x.diId)" >查看</button></td>
+            <td><button class="btn btn-warning" data-toggle="modal" data-target="#more" ng-click="amend(x.diId)">修改</button></td>
+            <td><button class="btn btn-danger" data-toggle="modal" ng-click="expurgate(x.diId)">删除</button></td>
         </tr>
         </tbody>
     </table>
@@ -283,6 +340,31 @@
     </div>
 </div>
 
+<div class="modal fade" id="introduce" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+    <h4 class="text-primary">药品品目导入</h4>
+                <br>
+       <div class="text-center">
+    下载导入模板文件  <button class="text-primary">点击下载药品品目导入模板</button><br><br>
+        <span style="color: red">提示:请下载后在模板文件中录入药品品目信息,在下面的"选择文件"中选择要导入的文件,点击"导入"</span><br>
+       <div class ="text-center"><input style = "text-align:center"  id="file" type="file">
+           <button>浏览</button>
+           <br>
+       </div>
+     </div>
+                <div class="text-center">
+                    <button type="button" onclick="readAlllick()">导入
+                    </button>
+                    <button>查看导入失败结果</button><button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
 <div class="modal fade" id="more" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog" style="width:80%;">
         <div class="modal-content">
@@ -333,12 +415,62 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-success" ng-click="save()">保存</button>
+                <button class="btn btn-success" data-dismiss="modal" ng-click="ngsave()">保存</button>
                 <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
             </div>
         </div>
     </div>
 </div>
+<div class="modal fade" id="chage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button id="bton" type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h3>修改页面</h3>
+            </div>
+            <div class="modal-body">
+                    <table class="table table-bordered table-striped"  >
+                        <tr>
+                            <td>药品品目号:</td>
+                            <td><input ng-model="chagedri.diId"  readonly="readonly" onblur class="form-control"></td>
+                            <td>通用名:</td>
+                            <td><input ng-model="chagedri.commonName" readonly="readonly"  class="form-control" >
+                                <span></span></td>
+                        </tr>
+                        <tr>
 
+                            <td>剂型:</td>
+                            <td><input ng-model="chagedri.dosageForm" readonly="readonly"  class="form-control" >
+                                <span></span></td>
+                            <td>规格:</td>
+                            <td><input ng-model="chagedri.speciflcation" readonly="readonly"   class="form-control"  >
+                                <span></span></td>
+                        </tr>
+                        <tr>
+                            <td>单位:</td>
+                            <td><input ng-model="chagedri.unitId" readonly="readonly"  class="form-control" >
+                                <span></span></td>
+                            <td>转换系数:</td>
+                            <td><input ng-model="chagedri.coefficient" readonly="readonly"    class="form-control" >
+                                <span></span></td>
+
+                        </tr>
+                        <tr>
+                            <td>药品类别:</td>
+                            <td><input ng-model="chagedri.drugCategoryName" readonly="readonly"  class="form-control" >
+                            </input></td>
+                            <td>状态:</td>
+                            <td><input ng-model="chagedri.drugStateName" readonly="readonly"   class="form-control" >
+                            </input></td>
+                        </tr>
+                    </table>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" data-dismiss="modal" >确定</button>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

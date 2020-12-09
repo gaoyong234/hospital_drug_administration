@@ -13,7 +13,11 @@ public interface DurgItemsService {
 
     Integer addDrugItems(DrugItemsVO drugItems);
 
-    DrugItemsVO fandId(DrugItemsVO diId);
+    DrugItemsVO fandId(Integer diId);
+
+    Integer revampItems(DrugItemsVO drugItemsVO);
+
+    Integer expurgate(Integer diId);
 
 //    Workbook exportExcel(String fileName, String[] arr);
 }
