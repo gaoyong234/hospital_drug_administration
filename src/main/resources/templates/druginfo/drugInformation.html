@@ -45,9 +45,9 @@
 		<div id="page">
 			<div class="btn-container">
 				<button class="layui-btn" onclick="addtr();">添加</button>
-				<!--<button class="layui-btn" onclick="ExportExcel();">导出Excel</button>-->
+				<button class="layui-btn" onclick="ExportExcel();">导出Excel</button>
 				<button class="layui-btn" onclick="getSample();">搜索</button>
-				<input type="file" id="excelUpload"/>
+				<input type="file" id="files"/>
 				<button type="button" class="layui-btn" onclick="excelUpload()">导入</button>
 				<!--<button class="layui-btn" onclick="javascript:$('#excelUpload').click()" >导入</button>
 				<input id="excelUpload" type="file" style="display: none" onchange="excelUpload()">-->
@@ -154,7 +154,7 @@
 		商品名称:<input type="text" name="commodityName" id="commodityNames"/><br/>
 		中标价格:<input type="text" name="biddingPrice" id="biddingPrices"/>
 		批准文号:<input type="text" name="approvalNumber" id="approvalNumbers"/><br/>
-		批准文号有效期:<input type="Date" name="approvalTime" id="approvalTimes"/>
+		批准文号有效期:<input type="date" name="approvalTime" id="approvalTimes"/>
 		是否进口药:<input type="radio" name="isEntrances" value="0"/>是
 				  <input type="radio" name="isEntrances" value="1"/>否<br/>
 		包装材质:<input type="text" name="packagingTexture" id="packagingTextures"/>
@@ -164,7 +164,7 @@
 		有无药品检验报告:<input type="radio" name="isCheckouts" value="0"/>有
 						<input type="radio" name="isCheckouts" value="1"/>无<br/>
 		药品检验报告编码:<input type="text" name="heckoutNumber" id="heckoutNumbers"/><br/>
-		药品检验报告有效期:<input type="Date" name="drugValidTime" id="drugValidTimes"/><br/>
+		药品检验报告有效期:<input type="date" name="drugValidTime" id="drugValidTimes"/><br/>
 		产品说明:<textarea rows="2" cols="40" name="productExplain" id="productExplains">
 
                 </textarea><br/>
@@ -185,18 +185,14 @@
 		findQualityLevels();
 		dataForm(1);
 	})
-	//导出excel文件
-	function ExportExcel() {
-		
-	}
 	//导入excel文件
 	function excelUpload() {
-		var file =  $("#excelUpload")[0].files[0];
+		var file =  $("#files")[0].files[0];
 		var formData = new FormData();
-		formData.append("filename",file);
+		formData.append("uploadFile",file);
 		if (confirm("确定导入？")){
 			$.ajax({
-				url:"/drugInformation/ImportExcel",
+				url:"/drugInformation/uploadFiles",
 				type:"post",
 				dataType:"json",
 				data:formData,
@@ -204,7 +200,7 @@
 				processData: false,   // 用于对参数进行序列化处理，这里必须设为false
 				contentType:false, // 必须
 				success:function (data) {
-
+					console.log(data);
 				},error:function (data) {
 
 				}
@@ -254,7 +250,7 @@
 					"type":"numbers",
 					"colum": [
 						{"field": "diId","title": "id"},
-						{"field": "serialNumber","title": "药品流水号"},
+						{"field": "serialNumber","title": "流水号"},
 						{"field": "commonName","title": "通用名"},
 						{"field": "dosageForm","title": "剂型"},
 						{"field": "speciflcation","title": "规格"},
@@ -262,7 +258,7 @@
 						{"field": "coefficient","title": "转换系数"},
 						{"field": "productionName","title": "生产企业"},
 						{"field": "commodityName","title": "商品名称"},
-						{"field": "biddingPrice","title": "中标价"},
+						{"field": "biddingPrice","title": "中标价格"},
 						{"field": "qualityLevel","title": "质量层次"},
 						{"field": "drugCategorys","title": "药品类别"},
 						{"field": "drugState","title": "交易状态"},
@@ -408,8 +404,7 @@
 			  var dosageForm=$("#dosageForm").val();
 			  var speciflcation=$("#speciflcation").val();
 			  var company=$("#company").val();
-			  if (company == "盒"){company = 6}
-			  if (company == "箱"){company = 7}
+			  if (company == "盒"){company = 7}
 			  if (company == "瓶"){company = 8}
 			  if (company == "支"){company = 9}
 			  if (company == "只"){company = 10}
@@ -556,8 +551,7 @@
 				var dosageForm=$("#dosageForms").val();
 				var speciflcation=$("#speciflcations").val();
 				var company=$("#companys").val();
-				if (company == "盒"){company = 6}
-				if (company == "箱"){company = 7}
+				if (company == "盒"){company = 7}
 				if (company == "瓶"){company = 8}
 				if (company == "支"){company = 9}
 				if (company == "只"){company = 10}
@@ -568,7 +562,7 @@
 				var approvalNumber=$("#approvalNumbers").val();
 				var approvalTime=$("#approvalTimes").val();
 				var isEntrance=$("input[name='isEntrances']:checked").val();
-				console.log(isEntrance);
+				//console.log(isEntrance);
 				var packagingTexture=$("#packagingTextures").val();
 				var packUnit=$("#packUnits").val();
 				var newestPrice=$("#newestPrices").val();
@@ -602,7 +596,6 @@
 					"productExplain":productExplain,
 					"drugState":drugState
 				};
-				//console.log(obj);
 				$.ajax({
 					url:"/drugInformation/updateDrugInformation",
 					type:"post",
@@ -652,15 +645,11 @@
 		reponse.moveDown(tr, "table");
 	}*/
 	//导出Excel
-	/*function ExportExcel() {
+	function ExportExcel() {
 		var tableobj=$("#table").data("tableObj");
 		//console.log(JSON.stringify(tableobj));
 		reponse.JSONToCSVConvertor(tableobj, true,"药品表格");
-	}*/
-    //导入Excel
-	function ImportExcel() {
-        alert("ok")
-    }
+	}
 	function resivetabledata(){
 		var pp=$("#table").data("tableObj").data;
 		alert(JSON.stringify(pp));

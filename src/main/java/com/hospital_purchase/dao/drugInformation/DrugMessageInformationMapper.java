@@ -1,8 +1,10 @@
 package com.hospital_purchase.dao.drugInformation;
 
+import com.hospital_purchase.common.DrugInformation;
 import com.hospital_purchase.pojo.DrugMessage;
 
 public interface DrugMessageInformationMapper {
+
     int deleteByPrimaryKey(Integer dmId);
 
     int insert(DrugMessage record);

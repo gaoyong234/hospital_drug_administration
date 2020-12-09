@@ -1,5 +1,6 @@
 package com.hospital_purchase.dao.drugInformation;
 
+import com.hospital_purchase.common.DrugInformation;
 import com.hospital_purchase.pojo.DrugItems;
 import com.hospital_purchase.pojo.DrugMessage;
 import com.hospital_purchase.vo.DrugInformationVO;
@@ -7,6 +8,7 @@ import com.hospital_purchase.vo.DrugInformationVO;
 import java.util.List;
 
 public interface DrugInformationMapper {
+
     int deleteByPrimaryKey(Integer diId);
 
     int insert(DrugItems record);

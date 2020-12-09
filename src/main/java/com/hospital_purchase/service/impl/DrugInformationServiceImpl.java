@@ -2,6 +2,7 @@ package com.hospital_purchase.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hospital_purchase.common.DrugInformation;
 import com.hospital_purchase.dao.drugInformation.DictionariesInfoMapper;
 import com.hospital_purchase.dao.drugInformation.DrugInformationMapper;
 import com.hospital_purchase.dao.drugInformation.DrugMessageInformationMapper;
@@ -79,4 +80,6 @@ public class DrugInformationServiceImpl implements DrugInformationService {
         }
         return i;
     }
+
+
 }
