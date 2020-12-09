@@ -6,10 +6,13 @@ import com.hospital_purchase.dao.PurchaseOrderDao.PurchaseOrdersDaoMapper;
 import com.hospital_purchase.dao.PurchaseOrdersMapper;
 import com.hospital_purchase.pojo.PurchaseOrders;
 import com.hospital_purchase.service.PurchaseOrdersService;
+import com.hospital_purchase.util.Identities;
 import com.hospital_purchase.vo.Message;
+import com.hospital_purchase.vo.PurchaseOrdersVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 @Service
 public class PurchaseOrdersServiceImpl implements PurchaseOrdersService {
@@ -21,16 +24,18 @@ public class PurchaseOrdersServiceImpl implements PurchaseOrdersService {
     @Override
     public PageInfo findAllPurchaseOrders(Integer pageNum, Integer pageSize, PurchaseOrders purchaseOrders) {
         PageHelper.startPage(pageNum,pageSize);
-        List<PurchaseOrders> purchaseOrdersList =
-                purchaseOrdersDaoMapper.selectPurchaseOrdersList(purchaseOrders);
-        PageInfo<PurchaseOrders> pageInfo = new PageInfo<PurchaseOrders>(purchaseOrdersList);
-
+        List<PurchaseOrdersVO> purchaseOrdersList = purchaseOrdersDaoMapper.selectPurchaseOrdersList(purchaseOrders);
+        PageInfo<PurchaseOrdersVO> pageInfo = new PageInfo<PurchaseOrdersVO>(purchaseOrdersList);
         return pageInfo;
     }
 
     @Override
     public Message addPurchaseOrders(PurchaseOrders purchaseOrders) {
         Message message = new Message();
+        Date date = new Date();
+        purchaseOrders.setFundTime(date);
+        purchaseOrders.setSubmitTime(date);
+        purchaseOrders.setPurchaseNumber(Identities.randomLong("采购单"));
         int num = purchaseOrdersMapper.insertSelective(purchaseOrders);
         if (num>0){
             message.setEstimate(true);

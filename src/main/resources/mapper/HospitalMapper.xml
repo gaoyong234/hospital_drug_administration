@@ -3,6 +3,7 @@
 <mapper namespace="com.hospital_purchase.dao.HospitalMapper">
   <resultMap id="BaseResultMap" type="com.hospital_purchase.pojo.Hospital">
     <id column="hp_id" jdbcType="INTEGER" property="hpId" />
+    <result column="hospital_number" jdbcType="VARCHAR" property="hospitalNumber" />
     <result column="hospital_name" jdbcType="VARCHAR" property="hospitalName" />
     <result column="mailing_address" jdbcType="VARCHAR" property="mailingAddress" />
     <result column="postal_code" jdbcType="INTEGER" property="postalCode" />
@@ -21,9 +22,9 @@
     <result column="del_id" jdbcType="INTEGER" property="delId" />
   </resultMap>
   <sql id="Base_Column_List">
-    hp_id, hospital_name, mailing_address, postal_code, affiliating_area, hospital_rank, 
-    number_bed, is_profit, dean_phone, dean_fax, medicament_phone, hospital_type, last_drug_money, 
-    last_business_money, creation_time, modification_time, del_id
+    hp_id, hospital_number, hospital_name, mailing_address, postal_code, affiliating_area, 
+    hospital_rank, number_bed, is_profit, dean_phone, dean_fax, medicament_phone, hospital_type, 
+    last_drug_money, last_business_money, creation_time, modification_time, del_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 'true' as QUERYID,
@@ -36,24 +37,29 @@
     where hp_id = #{hpId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.hospital_purchase.pojo.Hospital">
-    insert into hospital (hp_id, hospital_name, mailing_address, 
-      postal_code, affiliating_area, hospital_rank, 
-      number_bed, is_profit, dean_phone, 
-      dean_fax, medicament_phone, hospital_type, 
-      last_drug_money, last_business_money, creation_time, 
-      modification_time, del_id)
-    values (#{hpId,jdbcType=INTEGER}, #{hospitalName,jdbcType=VARCHAR}, #{mailingAddress,jdbcType=VARCHAR}, 
-      #{postalCode,jdbcType=INTEGER}, #{affiliatingArea,jdbcType=VARCHAR}, #{hospitalRank,jdbcType=INTEGER}, 
-      #{numberBed,jdbcType=INTEGER}, #{isProfit,jdbcType=INTEGER}, #{deanPhone,jdbcType=INTEGER}, 
-      #{deanFax,jdbcType=VARCHAR}, #{medicamentPhone,jdbcType=INTEGER}, #{hospitalType,jdbcType=INTEGER}, 
-      #{lastDrugMoney,jdbcType=REAL}, #{lastBusinessMoney,jdbcType=REAL}, #{creationTime,jdbcType=TIMESTAMP}, 
-      #{modificationTime,jdbcType=TIMESTAMP}, #{delId,jdbcType=INTEGER})
+    insert into hospital (hp_id, hospital_number, hospital_name, 
+      mailing_address, postal_code, affiliating_area, 
+      hospital_rank, number_bed, is_profit, 
+      dean_phone, dean_fax, medicament_phone, 
+      hospital_type, last_drug_money, last_business_money, 
+      creation_time, modification_time, del_id
+      )
+    values (#{hpId,jdbcType=INTEGER}, #{hospitalNumber,jdbcType=VARCHAR}, #{hospitalName,jdbcType=VARCHAR}, 
+      #{mailingAddress,jdbcType=VARCHAR}, #{postalCode,jdbcType=INTEGER}, #{affiliatingArea,jdbcType=VARCHAR}, 
+      #{hospitalRank,jdbcType=INTEGER}, #{numberBed,jdbcType=INTEGER}, #{isProfit,jdbcType=INTEGER}, 
+      #{deanPhone,jdbcType=INTEGER}, #{deanFax,jdbcType=VARCHAR}, #{medicamentPhone,jdbcType=INTEGER}, 
+      #{hospitalType,jdbcType=INTEGER}, #{lastDrugMoney,jdbcType=REAL}, #{lastBusinessMoney,jdbcType=REAL}, 
+      #{creationTime,jdbcType=TIMESTAMP}, #{modificationTime,jdbcType=TIMESTAMP}, #{delId,jdbcType=INTEGER}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.hospital_purchase.pojo.Hospital">
     insert into hospital
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="hpId != null">
         hp_id,
+      </if>
+      <if test="hospitalNumber != null">
+        hospital_number,
       </if>
       <if test="hospitalName != null">
         hospital_name,
@@ -108,6 +114,9 @@
       <if test="hpId != null">
         #{hpId,jdbcType=INTEGER},
       </if>
+      <if test="hospitalNumber != null">
+        #{hospitalNumber,jdbcType=VARCHAR},
+      </if>
       <if test="hospitalName != null">
         #{hospitalName,jdbcType=VARCHAR},
       </if>
@@ -161,6 +170,9 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.hospital_purchase.pojo.Hospital">
     update hospital
     <set>
+      <if test="hospitalNumber != null">
+        hospital_number = #{hospitalNumber,jdbcType=VARCHAR},
+      </if>
       <if test="hospitalName != null">
         hospital_name = #{hospitalName,jdbcType=VARCHAR},
       </if>
@@ -214,7 +226,8 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.hospital_purchase.pojo.Hospital">
     update hospital
-    set hospital_name = #{hospitalName,jdbcType=VARCHAR},
+    set hospital_number = #{hospitalNumber,jdbcType=VARCHAR},
+      hospital_name = #{hospitalName,jdbcType=VARCHAR},
       mailing_address = #{mailingAddress,jdbcType=VARCHAR},
       postal_code = #{postalCode,jdbcType=INTEGER},
       affiliating_area = #{affiliatingArea,jdbcType=VARCHAR},

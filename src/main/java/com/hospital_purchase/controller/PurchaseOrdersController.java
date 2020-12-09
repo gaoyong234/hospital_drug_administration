@@ -65,6 +65,7 @@ public class PurchaseOrdersController {
         System.out.println(purchaseOrders);
         User admin = (User) httpSession.getAttribute("admin");
         purchaseOrders.setHospitalId(admin.getHospitalId());
+
         return purchaseOrdersService.addPurchaseOrders(purchaseOrders);
     }
 

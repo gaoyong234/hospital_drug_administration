@@ -26,6 +26,7 @@
     <script>
         var app = angular.module("myApp", ["pagination"]);
         app.controller("myContr", function ($scope, $http) {
+            $scope.entity={};
             //获取医院信息
             $http({
                 url:"/Hospital/findOneHospital",
@@ -33,7 +34,7 @@
             }).success(function (response) {
                 var date = new Date();
                 var dateYear = date.getFullYear();             //获取年
-                var dateMonth = date.getMonth();               //获取月
+                var dateMonth = date.getMonth()+1;               //获取月
                 var dateDate = date.getDate();                 //获取当日
                 var dateHours = date.getHours();               //获取小时
                 var dateMinutes = date.getMinutes();           //获取分钟
@@ -43,10 +44,11 @@
                 if (dateHours < 10) dateHours = "0" + dateHours;
                 if (dateMinutes < 10) dateMinutes = "0" + dateMinutes;
                 if (dateSeconds < 10) dateSeconds = "0" + dateSeconds;
+
                 var newTime = dateYear+"-"+dateMonth+"-"+dateDate+" "+dateHours+":"+dateMinutes+":"+dateSeconds;
                 $scope.hospital=response;
-                $("[name='purchaseName']").val(response.hospitalName+newTime+"采购单");
-                console.log($scope.hospital.hpId);
+                $scope.entity.purchaseName=response.hospitalName+newTime+"采购单";
+
             });
             $scope.paginationConf={
                 currentPage: 1,  				//当前页
@@ -70,12 +72,12 @@
                 var druglist=$scope.drug;
                 //console.log(druglist)
                 $http({
-                    url:"/items/conditionfand",
+                    url:"/PurchaseOrders/findAllPurchaseOrders",
                     method:"post",
                     params: druglist
                 }).success(function (response) {
+                    $scope.showLoadingBUtton3();
                     $scope.lists=response.list;
-                    $scope.item=new Date();
                     $scope.paginationConf.totalItems=response.total;
                 })
 
@@ -96,17 +98,73 @@
                     }
                 });
             }
-            $scope.submit = function () {
-                var purchaseOrders=$scope.entity;
-                console.log(purchaseOrders);
-                $http({
-                    url:"/PurchaseOrders/addPurchaseOrders",
-                    method:"post",
-                    params: purchaseOrders
-                }).success(function (response) {
-                    showModalButton1(response.slogan);
-                })
+            $scope.showLoadingBUtton3= function (){
+                showLoading({
+                    title: "数据加载。。。", //提示文字
+                    icon: 'none', // 图标，有效值 "success", "loading", "none"
+                    image: '', // 自定义图标的本地路径，image 的优先级高于 icon
+                    duration: 1000, //提示的延迟时间，单位毫秒，默认：1500
+                    mask: true, // 是否显示透明蒙层，防止触摸穿透，默认：false
+                    success: function(res) { //接口调用成功的回调函数
+
+                    },
+
+                });
             }
+            //添加
+            $scope.submit = function () {
+                var judge = true;
+                var purchaseOrders=$scope.entity;
+                var purchaseName = purchaseOrders.purchaseName;
+                var beginTime = purchaseOrders.beginTime;
+                var endTime = purchaseOrders.endTime;
+                var linkmanName = purchaseOrders.linkmanName;
+                var linkmanPhone = purchaseOrders.linkmanPhone;
+                var postscript =purchaseOrders.postscript;
+                if (purchaseName==null||purchaseName==''){
+                    $scope.showModalButton1("请修改订单名称！");
+                    judge=false;
+                }
+                if (beginTime==null||beginTime==''){
+                    $scope.showModalButton1("请填写订单供货时间！");
+                    judge=false;
+                }
+                if (endTime==null||endTime==''){
+                    $scope.showModalButton1("请填写订单结束供货时间！");
+                    judge=false;
+                }if (linkmanName==null||linkmanName==''){
+                    $scope.showModalButton1("请填写联系人姓名！");
+                    judge=false;
+                }if (linkmanPhone==null||linkmanPhone==''){
+                    $scope.showModalButton1("请填写联系人电话！");
+                    judge=false;
+                }if (postscript==null||postscript==''){
+                    $scope.showModalButton1("请填写备注！");
+                    judge=false;
+                }
+                if (beginTime>endTime){
+                    $scope.showModalButton1("开始时间与结束时间有误！");
+                    judge=false;
+                }
+                if(judge) {
+                    $http({
+                        url: "/PurchaseOrders/addPurchaseOrders",
+                        method: "post",
+                        params: purchaseOrders
+                    }).success(function (response) {
+                        $scope.showModalButton1(response.slogan);
+                        $("#editModal").modal('hide');//此处为添加框，关闭添加框
+                        $scope.find($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
+                    })
+                }
+            }
+
+            $scope.amend = function (poId) {
+
+
+            }
+            //修改
+
         });
 
     </script>
@@ -115,35 +173,9 @@
 </head>
 <body ng-app="myApp" ng-controller="myContr">
 <div>
-    <h5 class="alert alert-infoalert alert-info">药品品目查询</h5>
+    <h5 class="alert alert-infoalert alert-info">采购单管理</h5>
     <table class="table table-bordered table-striped">
-        <tr>
-            <td>药品品目号:<input ng-model="drug.diId"></td>
-            <td>通用名:<input ng-model="drug.commonName"></td>
 
-        </tr>
-        <tr>
-            <td>剂型:<input ng-model="drug.dosageForm"></td>
-            <td>规格:<input ng-model="drug.speciflcation"></td>
-        </tr>
-        <tr>
-            <td>单位:<input ng-model="drug.unitId"></td>
-            <td>转换系数:<input ng-model="drug.coefficient"></td>
-        </tr>
-        <tr>
-            <td>药品类别:<select ng-model="drug.drugCategory">
-                <option value="0">全部</option>
-                <option value="1">儿童用药</option>
-            </select>
-            </td>
-            <td>
-                状态:<select ng-model="drug.drugState">
-                <option value="0">全部</option>
-                <option value="2">正常</option>
-                <option value="3">不正常</option>
-            </select>
-            </td>
-        </tr>
         <tr>
             <td colspan="1" align="right">
                 <button type="button" class="btn1" ng-click="find()">查询</button>
@@ -166,6 +198,7 @@
     <table id="dataList" class="table">
         <thead>
         <tr>
+            <th><input type="checkbox" name="pitchOn" onchange="childrenCheck()"></th>
             <th>医院名称</th>
             <th>采购单编号</th>
             <th>采购单名称</th>
@@ -182,16 +215,20 @@
         </thead>
 
         <tbody id="tbody">
-        <tr ng-repeat="x in lists">
-            <td><input type="checkbox" name="pitchOn" value="{{x.diId}}" onchange="childrenCheck()"></td>
-            <td>{{x.diId}}</td>
-            <td>{{x.commonName}}</td>
-            <td>{{x.dosageForm}}</td>
-            <td>{{x.speciflcation}}</td>
-            <td>{{x.unitId}}</td>
-            <td>{{x.coefficient}}</td>
-            <td>{{x.drugStateName}}</td>
-            <td>{{x.drugCategoryName}}</td>
+        <tr ng-repeat="po in lists">
+            <td><input type="checkbox" name="pitchOn" value="{{po.poId}}" onchange="childrenCheck()"></td>
+            <td>{{po.hospitalName}}</td>
+            <td>{{po.purchaseNumber}}</td>
+            <td>{{po.purchaseName}}</td>
+            <td>{{po.beginTime}}</td>
+            <td>{{po.endTime}}</td>
+            <td>{{po.fundTime}}</td>
+            <td>{{po.submitTime}}</td>
+            <td>{{po.auditTime}}</td>
+            <td>{{po.purchaseState}}</td>
+            <td><button class="btn bg-olive btn-xs" value="{{po.poId}}" onclick="drugdetail()" data-toggle="modal" >详细</button></td>
+            <td><button class="btn bg-olive btn-xs" data-toggle="modal" data-target="#modification" ng-click="amend(po.poId)">修改</button></td>
+            <td><button class="btn bg-olive btn-xs" value="{{x.diId}}" onclick="expurgate()">删除</button></td>
         </tr>
         </tbody>
     </table>
@@ -210,7 +247,7 @@
                 <table class="table table-bordered table-striped">
                     <tr>
                         <td>医院编号:</td>
-                        <td><input  name="postalCode" ng-model="hospital.postalCode"  class="form-control" disabled="disabled"></td>
+                        <td><input  name="hospitalNumber" ng-model="hospital.hospitalNumber"  class="form-control" disabled="disabled"></td>
                         <td>医院名称:</td>
                         <td><input name="hospitalName" ng-model="hospital.hospitalName" class="form-control" disabled="disabled">
                         </td>
@@ -225,8 +262,11 @@
                     </tr>
                     <tr>
                         <td>供货时间:</td>
-                        <td><input  name="submitTime"
-                                   ng-model="entity.submitTime" class="form-control" type="datetime-local"></td>
+                        <td><input  name="beginTime"
+                                   ng-model="entity.beginTime"  type="date">-
+                            <input  name="endTime"
+                                    ng-model="entity.endTime"  type="date">
+                        </td>
                         <td>建单时间:</td>
                         <td><input  name="fundTime"
                                    ng-model="entity.fundTime" class="form-control" disabled="disabled"></td>
@@ -274,6 +314,89 @@
             <div class="modal-footer">
                 <button class="btn btn-primary" ng-click="submit()">提交</button>
                 <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">关闭</button>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modification" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width:80%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button id="bt" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 id="myModalLabe">采购单修改</h3>
+                </div>
+                <div class="modal-body">
+
+                    <table class="table table-bordered table-striped">
+                        <tr>
+                            <td>医院编号:</td>
+                            <td><input  name="hospitalNumber" ng-model="hospital.hospitalNumber"  class="form-control" disabled="disabled"></td>
+                            <td>医院名称:</td>
+                            <td><input name="hospitalName" ng-model="hospital.hospitalName" class="form-control" disabled="disabled">
+                            </td>
+                        </tr>
+                        <tr>
+
+                            <td>采购单编号:</td>
+                            <td><input  name="purchaseNumber"
+                                        ng-model="modification.purchaseNumber" class="form-control" disabled="disabled"></td>
+                            <td>采购单名称:</td>
+                            <td><input  name="purchaseName" ng-model="modification.purchaseName" class="form-control" ></td>
+                        </tr>
+                        <tr>
+                            <td>供货时间:</td>
+                            <td><input  name="beginTime"
+                                        ng-model="modification.beginTime"  type="date">-
+                                <input  name="endTime"
+                                        ng-model="modification.endTime"  type="date">
+                            </td>
+                            <td>建单时间:</td>
+                            <td><input  name="fundTime"
+                                        ng-model="modification.fundTime" class="form-control" disabled="disabled"></td>
+
+                        </tr>
+                        <tr>
+                            <td>联系人:</td>
+                            <td><input  name="linkmanName"
+                                        ng-model="modification.linkmanName" class="form-control"></td>
+                            <td>联系电话:</td>
+                            <td><input  name="linkmanPhone"
+                                        ng-model="modification.linkmanPhone" class="form-control"></td>
+                        </tr>
+                        <tr>
+                            <td>采购单状态:</td>
+                            <td><input  name="purchaseState"
+                                        ng-model="modification.purchaseState" class="form-control" disabled="disabled"></td>
+                            <td>提交时间:</td>
+                            <td><input  name="modifiedTime"
+                                        ng-model="modification.modifiedTime" class="form-control" disabled="disabled"></td>
+
+                        </tr>
+                        <tr>
+                            <td>备注:</td>
+                            <td><input  name="postscript"
+                                        ng-model="modification.postscript" class="form-control" ></td>
+                        </tr>
+                        <tr>
+                            <td>审核人:</td>
+                            <td><input  name="userId"
+                                        ng-model="modification.userId" class="form-control" disabled="disabled"></td>
+                            <td>审核时间:</td>
+                            <td><input  name="auditTime"
+                                        ng-model="modification.auditTime" class="form-control" disabled="disabled"></td>
+
+                        </tr>
+                        <tr>
+                            <td>审核意见:</td>
+                            <td><input  name="auditOpinion"
+                                        ng-model="modification.auditOpinion" class="form-control"  disabled="disabled"></td>
+                        </tr>
+                    </table>
+
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" ng-click="submit()">提交</button>
+                    <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">关闭</button>
+                </div>
             </div>
         </div>
     </div>
