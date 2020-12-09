@@ -17,20 +17,6 @@ public class DrugItemsVO {
 
     private String drugCategoryName;
 
-    @Override
-    public String toString() {
-        return "DrugItemsVO{" +
-                "diId='" + diId + '\'' +
-                ", commonName='" + commonName + '\'' +
-                ", dosageForm='" + dosageForm + '\'' +
-                ", speciflcation='" + speciflcation + '\'' +
-                ", unitId='" + unitId + '\'' +
-                ", coefficient='" + coefficient + '\'' +
-                ", drugStateName='" + drugStateName + '\'' +
-                ", drugCategoryName='" + drugCategoryName + '\'' +
-                '}';
-    }
-
     public String getCommonName() {
         return commonName;
     }

@@ -32,9 +32,17 @@ public class DurgItemsImpl implements DurgItemsService {
     }
 
     @Override
-    public DrugItemsVO fandId(DrugItemsVO diid) {
-        DrugItemsVO drugItemsVO = drugItemsMyMapper.fandId(diid);
-
+    public DrugItemsVO fandId(Integer diid) {
         return drugItemsMyMapper.fandId(diid);
+    }
+
+    @Override
+    public Integer revampItems(DrugItemsVO drugItemsVO) {
+        return drugItemsMyMapper.revamp(drugItemsVO);
+    }
+
+    @Override
+    public Integer expurgate(Integer diId) {
+        return drugItemsMyMapper.expurgate(diId);
     }
 }

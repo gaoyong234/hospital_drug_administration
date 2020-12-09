@@ -66,34 +66,13 @@
   </select>
   <select id="fandId" resultMap="BaseMap">
     SELECT di_id,common_name,dosage_form,speciflcation,
-    unit_id,coefficient,dc.dictionaries_name as drug_category_name,dic.dictionaries_name as drug_state_name
+    unit_id,coefficient,dc.dic_id as drug_category_name,dic.dic_id as drug_state_name
     FROM drug_items di
     LEFT JOIN dictionaries dc on di.drug_category = dc.dic_id
     LEFT JOIN dictionaries dic on di.drug_state = dic.dic_id
     <where>
       <if test="diId != null and diId != ''">
         and di.di_id = #{diId}
-      </if>
-      <if test="commonName != null and commonName != ''">
-        and di.common_name like CONCAT("%",#{commonName},"%")
-      </if>
-      <if test="dosageForm != null and dosageForm != ''">
-        and di.dosage_form like CONCAT("%",#{dosageForm},"%")
-      </if>
-      <if test="speciflcation != null and speciflcation !=''">
-        and di.speciflcation = #{speciflcation}
-      </if>
-      <if test="unitId != null and unitId != ''">
-        and di.unit_id = #{unitId}
-      </if>
-      <if test="coefficient != null and coefficient != ''">
-        and di.coefficient = {coefficient}
-      </if>
-      <if test="drugCategoryName != null and drugCategoryName != ''">
-        and di.drug_category = #{drugCategoryName}
-      </if>
-      <if test="drugStateName != null and drugStateName != ''">
-        and di.drug_state = #{drugStateName}
       </if>
       and di.del_id = 0
     </where>
@@ -148,5 +127,39 @@
     </if>
   </trim>
 </insert>
+
+  <update id="revamp" parameterType="com.hospital_purchase.vo.DrugItemsVO">
+    update drug_items
+    <set>
+      <if test="commonName != null">
+        common_name = #{commonName,jdbcType=VARCHAR},
+      </if>
+      <if test="dosageForm != null">
+        dosage_form = #{dosageForm,jdbcType=VARCHAR},
+      </if>
+      <if test="speciflcation != null">
+        speciflcation = #{speciflcation,jdbcType=VARCHAR},
+      </if>
+      <if test="unitId != null">
+        unit_id = #{unitId,jdbcType=VARCHAR},
+      </if>
+      <if test="coefficient != null">
+        coefficient = #{coefficient,jdbcType=VARCHAR},
+      </if>
+      <if test="drugCategoryName != null">
+        drug_category = #{drugCategoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="drugStateName != null">
+        drug_state = #{drugStateName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where di_id = #{diId,jdbcType=INTEGER}
+  </update>
+
+  <update id="expurgate" parameterType="java.lang.Integer">
+    update drug_items
+    set del_id=1
+    where di_id = #{diId,jdbcType=INTEGER}
+  </update>
 
 </mapper>
