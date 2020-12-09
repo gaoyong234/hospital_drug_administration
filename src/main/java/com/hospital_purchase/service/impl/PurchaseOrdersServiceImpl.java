@@ -6,6 +6,7 @@ import com.hospital_purchase.dao.PurchaseOrderDao.PurchaseOrdersDaoMapper;
 import com.hospital_purchase.dao.PurchaseOrdersMapper;
 import com.hospital_purchase.pojo.PurchaseOrders;
 import com.hospital_purchase.service.PurchaseOrdersService;
+import com.hospital_purchase.vo.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,8 +29,17 @@ public class PurchaseOrdersServiceImpl implements PurchaseOrdersService {
     }
 
     @Override
-    public Integer addPurchaseOrders(PurchaseOrders purchaseOrders) {
-        return purchaseOrdersMapper.insertSelective(purchaseOrders);
+    public Message addPurchaseOrders(PurchaseOrders purchaseOrders) {
+        Message message = new Message();
+        int num = purchaseOrdersMapper.insertSelective(purchaseOrders);
+        if (num>0){
+            message.setEstimate(true);
+            message.setSlogan("添加成功！！");
+        }else {
+            message.setSlogan("添加失败！！");
+            message.setEstimate(false);
+        }
+        return message;
     }
 
     @Override

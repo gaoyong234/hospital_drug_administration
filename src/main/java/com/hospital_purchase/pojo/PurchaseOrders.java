@@ -1,23 +1,23 @@
 package com.hospital_purchase.pojo;
 
-import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.util.Date;
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class PurchaseOrders {
     private Integer poId;
 
-    private Integer auditState;
-
-    private String auditOpinion;
-
     private Integer hospitalId;
+
+    private String purchaseNumber;
 
     private String purchaseName;
 
-    private Date fundTime;
-
-    private Integer purchaseState;
-
-    private Date modifiedTime;
+    private Integer auditState;
 
     private Date submitTime;
 
@@ -25,11 +25,19 @@ public class PurchaseOrders {
 
     private String linkmanPhone;
 
+    private String postscript;
+
     private Integer userId;
 
     private Date auditTime;
 
-    private String purchaseNumber;
+    private String auditOpinion;
+
+    private Integer purchaseState;
+
+    private Date modifiedTime;
+
+    private Date fundTime;
 
     private Integer delId;
 
@@ -41,28 +49,20 @@ public class PurchaseOrders {
         this.poId = poId;
     }
 
-    public Integer getAuditState() {
-        return auditState;
-    }
-
-    public void setAuditState(Integer auditState) {
-        this.auditState = auditState;
-    }
-
-    public String getAuditOpinion() {
-        return auditOpinion;
-    }
-
-    public void setAuditOpinion(String auditOpinion) {
-        this.auditOpinion = auditOpinion == null ? null : auditOpinion.trim();
-    }
-
     public Integer getHospitalId() {
         return hospitalId;
     }
 
     public void setHospitalId(Integer hospitalId) {
         this.hospitalId = hospitalId;
+    }
+
+    public String getPurchaseNumber() {
+        return purchaseNumber;
+    }
+
+    public void setPurchaseNumber(String purchaseNumber) {
+        this.purchaseNumber = purchaseNumber == null ? null : purchaseNumber.trim();
     }
 
     public String getPurchaseName() {
@@ -73,28 +73,12 @@ public class PurchaseOrders {
         this.purchaseName = purchaseName == null ? null : purchaseName.trim();
     }
 
-    public Date getFundTime() {
-        return fundTime;
+    public Integer getAuditState() {
+        return auditState;
     }
 
-    public void setFundTime(Date fundTime) {
-        this.fundTime = fundTime;
-    }
-
-    public Integer getPurchaseState() {
-        return purchaseState;
-    }
-
-    public void setPurchaseState(Integer purchaseState) {
-        this.purchaseState = purchaseState;
-    }
-
-    public Date getModifiedTime() {
-        return modifiedTime;
-    }
-
-    public void setModifiedTime(Date modifiedTime) {
-        this.modifiedTime = modifiedTime;
+    public void setAuditState(Integer auditState) {
+        this.auditState = auditState;
     }
 
     public Date getSubmitTime() {
@@ -121,6 +105,14 @@ public class PurchaseOrders {
         this.linkmanPhone = linkmanPhone == null ? null : linkmanPhone.trim();
     }
 
+    public String getPostscript() {
+        return postscript;
+    }
+
+    public void setPostscript(String postscript) {
+        this.postscript = postscript == null ? null : postscript.trim();
+    }
+
     public Integer getUserId() {
         return userId;
     }
@@ -137,12 +129,36 @@ public class PurchaseOrders {
         this.auditTime = auditTime;
     }
 
-    public String getPurchaseNumber() {
-        return purchaseNumber;
+    public String getAuditOpinion() {
+        return auditOpinion;
     }
 
-    public void setPurchaseNumber(String purchaseNumber) {
-        this.purchaseNumber = purchaseNumber == null ? null : purchaseNumber.trim();
+    public void setAuditOpinion(String auditOpinion) {
+        this.auditOpinion = auditOpinion == null ? null : auditOpinion.trim();
+    }
+
+    public Integer getPurchaseState() {
+        return purchaseState;
+    }
+
+    public void setPurchaseState(Integer purchaseState) {
+        this.purchaseState = purchaseState;
+    }
+
+    public Date getModifiedTime() {
+        return modifiedTime;
+    }
+
+    public void setModifiedTime(Date modifiedTime) {
+        this.modifiedTime = modifiedTime;
+    }
+
+    public Date getFundTime() {
+        return fundTime;
+    }
+
+    public void setFundTime(Date fundTime) {
+        this.fundTime = fundTime;
     }
 
     public Integer getDelId() {

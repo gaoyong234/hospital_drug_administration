@@ -14,6 +14,7 @@
     <script src="../../static/plugins/angularjs/angular.min.js"></script>
     <link rel="stylesheet" href="../../static/plugins/angularjs/pagination.css">
     <script type="text/javascript" src="../../static/plugins/angularjs/pagination.js"></script>
+    <script src="../../static/js/showLoading.js" type="text/javascript" charset="utf-8"></script>
     <style>
         label {
             float: left;
@@ -25,14 +26,28 @@
     <script>
         var app = angular.module("myApp", ["pagination"]);
         app.controller("myContr", function ($scope, $http) {
-
+            //获取医院信息
             $http({
                 url:"/Hospital/findOneHospital",
                 method:"post",
             }).success(function (response) {
-                console.log(response)
+                var date = new Date();
+                var dateYear = date.getFullYear();             //获取年
+                var dateMonth = date.getMonth();               //获取月
+                var dateDate = date.getDate();                 //获取当日
+                var dateHours = date.getHours();               //获取小时
+                var dateMinutes = date.getMinutes();           //获取分钟
+                var dateSeconds = date.getSeconds();           //获取秒
+                if (dateMonth < 10) dateMonth = "0" + dateMonth;
+                if (dateDate < 10) dateDate = "0" + dateDate;
+                if (dateHours < 10) dateHours = "0" + dateHours;
+                if (dateMinutes < 10) dateMinutes = "0" + dateMinutes;
+                if (dateSeconds < 10) dateSeconds = "0" + dateSeconds;
+                var newTime = dateYear+"-"+dateMonth+"-"+dateDate+" "+dateHours+":"+dateMinutes+":"+dateSeconds;
                 $scope.hospital=response;
-            })
+                $("[name='purchaseName']").val(response.hospitalName+newTime+"采购单");
+                console.log($scope.hospital.hpId);
+            });
             $scope.paginationConf={
                 currentPage: 1,  				//当前页
                 totalItems: 10,					//总记录数
@@ -64,6 +79,33 @@
                     $scope.paginationConf.totalItems=response.total;
                 })
 
+            }
+            $scope.showModalButton1 =  function (slogan){
+                showModal({
+                    title: "温馨提示",  //提示的标题
+                    content: slogan,  //提示的内容
+                    showCancel: false,  //是否显示取消按钮，默认为 true
+                    cancelText: '取消',  //取消按钮的文字，默认为"取消"，最多 4 个字符
+                    cancelColor: "#fff",  //取消按钮的文字颜色，默认为"#000000"
+                    cancelBgColor: '#4c4c4c',  //取消按钮的背景颜色
+                    confirmText: '确定',
+                    confirmColor: '#fff',
+                    confirmBgColor: '#ff130a',
+                    success: function() {
+
+                    }
+                });
+            }
+            $scope.submit = function () {
+                var purchaseOrders=$scope.entity;
+                console.log(purchaseOrders);
+                $http({
+                    url:"/PurchaseOrders/addPurchaseOrders",
+                    method:"post",
+                    params: purchaseOrders
+                }).success(function (response) {
+                    showModalButton1(response.slogan);
+                })
             }
         });
 
@@ -168,70 +210,69 @@
                 <table class="table table-bordered table-striped">
                     <tr>
                         <td>医院编号:</td>
-                        <td><input  name="hospitalId" ng-model="hospital.hpId"  class="form-control" disabled="disabled"></td>
+                        <td><input  name="postalCode" ng-model="hospital.postalCode"  class="form-control" disabled="disabled"></td>
                         <td>医院名称:</td>
-                        <td><input ng-model="hospital.hospitalName" class="form-control" disabled="disabled">
+                        <td><input name="hospitalName" ng-model="hospital.hospitalName" class="form-control" disabled="disabled">
                         </td>
                     </tr>
                     <tr>
 
                         <td>采购单编号:</td>
                         <td><input  name="purchaseNumber"
-                                   ng-model="purchaseOrders.purchaseNumber" class="form-control"></td>
+                                   ng-model="entity.purchaseNumber" class="form-control" disabled="disabled"></td>
                         <td>采购单名称:</td>
-                        <td><input ng-blur="count=count+1" ng-init="count=0" name="entity.speciflcation"
-                                   ng-model="entity.idCard" class="form-control" placeholder="由十八位数字或者十七位数字末尾加x组成"></td>
+                        <td><input  name="purchaseName" ng-model="entity.purchaseName" class="form-control" ></td>
                     </tr>
                     <tr>
                         <td>供货时间:</td>
-                        <td><input  name="entity.unitId"
-                                   ng-model="entity.phone" class="form-control" placeholder="只能以13、15、18开头"></td>
+                        <td><input  name="submitTime"
+                                   ng-model="entity.submitTime" class="form-control" type="datetime-local"></td>
                         <td>建单时间:</td>
-                        <td><input  name="entity.coefficient"
-                                   ng-model="entity.nameOfRegistrant" class="form-control"></td>
+                        <td><input  name="fundTime"
+                                   ng-model="entity.fundTime" class="form-control" disabled="disabled"></td>
 
                     </tr>
                     <tr>
                         <td>联系人:</td>
-                        <td><input  name="entity.coefficient"
-                                    ng-model="entity.nameOfRegistrant" class="form-control"></td>
+                        <td><input  name="linkmanName"
+                                    ng-model="entity.linkmanName" class="form-control"></td>
                         <td>联系电话:</td>
-                        <td><input  name="entity.coefficient"
-                                    ng-model="entity.nameOfRegistrant" class="form-control"></td>
+                        <td><input  name="linkmanPhone"
+                                    ng-model="entity.linkmanPhone" class="form-control"></td>
                     </tr>
                     <tr>
                         <td>采购单状态:</td>
-                        <td><input  name="entity.unitId"
-                                   ng-model="entity.phone" class="form-control" placeholder="只能以13、15、18开头"></td>
+                        <td><input  name="purchaseState"
+                                   ng-model="entity.purchaseState" class="form-control" disabled="disabled"></td>
                         <td>提交时间:</td>
-                        <td><input ng-blur="count=count+1" ng-init="count=0" name="entity.coefficient"
-                                   ng-model="entity.nameOfRegistrant" class="form-control"></td>
+                        <td><input  name="modifiedTime"
+                                   ng-model="entity.modifiedTime" class="form-control" disabled="disabled"></td>
 
                     </tr>
                     <tr>
                         <td>备注:</td>
-                        <td><input ng-blur="count=count+1" ng-init="count=0" name="entity.unitId"
-                                   ng-model="entity.phone" class="form-control" placeholder="只能以13、15、18开头"></td>
+                        <td><input  name="postscript"
+                                   ng-model="entity.postscript" class="form-control" ></td>
                     </tr>
                     <tr>
                         <td>审核人:</td>
-                        <td><input  name="entity.unitId"
-                                   ng-model="entity.phone" class="form-control" placeholder=""></td>
+                        <td><input  name="userId"
+                                   ng-model="entity.userId" class="form-control" disabled="disabled"></td>
                         <td>审核时间:</td>
-                        <td><input  name="entity.coefficient"
-                                   ng-model="entity.nameOfRegistrant" class="form-control"></td>
+                        <td><input  name="auditTime"
+                                   ng-model="entity.auditTime" class="form-control" disabled="disabled"></td>
 
                     </tr>
                     <tr>
                         <td>审核意见:</td>
-                        <td><input  name="entity.unitId"
-                                   ng-model="entity.phone" class="form-control" placeholder="只能以13、15、18开头"></td>
+                        <td><input  name="auditOpinion"
+                                   ng-model="entity.auditOpinion" class="form-control"  disabled="disabled"></td>
                     </tr>
                 </table>
 
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" ng-click="baoCun()">提交</button>
+                <button class="btn btn-primary" ng-click="submit()">提交</button>
                 <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">关闭</button>
             </div>
         </div>

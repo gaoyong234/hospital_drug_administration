@@ -14,6 +14,6 @@ public class MyMvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new signinHandlerIntercepter())
                 .addPathPatterns("/**")
-                .excludePathPatterns("/",  "/static/**","/userController/userLogin");
+                .excludePathPatterns("/",  "/static/**","/userController/**","/toRegister");
     }
 }
