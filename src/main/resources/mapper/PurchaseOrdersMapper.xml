@@ -17,12 +17,14 @@
     <result column="purchase_state" jdbcType="INTEGER" property="purchaseState" />
     <result column="modified_time" jdbcType="TIMESTAMP" property="modifiedTime" />
     <result column="fund_time" jdbcType="TIMESTAMP" property="fundTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="begin_time" jdbcType="TIMESTAMP" property="beginTime" />
     <result column="del_id" jdbcType="INTEGER" property="delId" />
   </resultMap>
   <sql id="Base_Column_List">
     po_id, hospital_id, purchase_number, purchase_name, audit_state, submit_time, linkman_name, 
     linkman_phone, postscript, user_id, audit_time, audit_opinion, purchase_state, modified_time, 
-    fund_time, del_id
+    fund_time, end_time, begin_time, del_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 'true' as QUERYID,
@@ -40,13 +42,15 @@
       linkman_name, linkman_phone, postscript, 
       user_id, audit_time, audit_opinion, 
       purchase_state, modified_time, fund_time, 
-      del_id)
+      end_time, begin_time, del_id
+      )
     values (#{poId,jdbcType=INTEGER}, #{hospitalId,jdbcType=INTEGER}, #{purchaseNumber,jdbcType=VARCHAR}, 
       #{purchaseName,jdbcType=VARCHAR}, #{auditState,jdbcType=INTEGER}, #{submitTime,jdbcType=TIMESTAMP}, 
       #{linkmanName,jdbcType=VARCHAR}, #{linkmanPhone,jdbcType=VARCHAR}, #{postscript,jdbcType=VARCHAR}, 
       #{userId,jdbcType=INTEGER}, #{auditTime,jdbcType=TIMESTAMP}, #{auditOpinion,jdbcType=VARCHAR}, 
       #{purchaseState,jdbcType=INTEGER}, #{modifiedTime,jdbcType=TIMESTAMP}, #{fundTime,jdbcType=TIMESTAMP}, 
-      #{delId,jdbcType=INTEGER})
+      #{endTime,jdbcType=TIMESTAMP}, #{beginTime,jdbcType=TIMESTAMP}, #{delId,jdbcType=INTEGER}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.hospital_purchase.pojo.PurchaseOrders">
     insert into purchase_orders
@@ -95,6 +99,12 @@
       </if>
       <if test="fundTime != null">
         fund_time,
+      </if>
+      <if test="endTime != null">
+        end_time,
+      </if>
+      <if test="beginTime != null">
+        begin_time,
       </if>
       <if test="delId != null">
         del_id,
@@ -146,6 +156,12 @@
       <if test="fundTime != null">
         #{fundTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="beginTime != null">
+        #{beginTime,jdbcType=TIMESTAMP},
+      </if>
       <if test="delId != null">
         #{delId,jdbcType=INTEGER},
       </if>
@@ -196,6 +212,12 @@
       <if test="fundTime != null">
         fund_time = #{fundTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="beginTime != null">
+        begin_time = #{beginTime,jdbcType=TIMESTAMP},
+      </if>
       <if test="delId != null">
         del_id = #{delId,jdbcType=INTEGER},
       </if>
@@ -218,6 +240,8 @@
       purchase_state = #{purchaseState,jdbcType=INTEGER},
       modified_time = #{modifiedTime,jdbcType=TIMESTAMP},
       fund_time = #{fundTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      begin_time = #{beginTime,jdbcType=TIMESTAMP},
       del_id = #{delId,jdbcType=INTEGER}
     where po_id = #{poId,jdbcType=INTEGER}
   </update>

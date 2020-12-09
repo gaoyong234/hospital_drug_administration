@@ -1,15 +1,11 @@
 package com.hospital_purchase.pojo;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.util.Date;
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
+
 public class Hospital {
     private Integer hpId;
+
+    private String hospitalNumber;
 
     private String hospitalName;
 
@@ -49,6 +45,14 @@ public class Hospital {
 
     public void setHpId(Integer hpId) {
         this.hpId = hpId;
+    }
+
+    public String getHospitalNumber() {
+        return hospitalNumber;
+    }
+
+    public void setHospitalNumber(String hospitalNumber) {
+        this.hospitalNumber = hospitalNumber == null ? null : hospitalNumber.trim();
     }
 
     public String getHospitalName() {
