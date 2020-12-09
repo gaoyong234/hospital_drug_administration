@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.hospital_purchase.pojo.PurchaseOrders;
 import com.hospital_purchase.pojo.User;
 import com.hospital_purchase.service.PurchaseOrdersService;
+import com.hospital_purchase.vo.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,8 +13,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
 
+
 @Controller
-@RequestMapping("/PurchaseOrdersController")
+@RequestMapping("/PurchaseOrders")
 public class PurchaseOrdersController {
 
     @Autowired
@@ -59,7 +61,10 @@ public class PurchaseOrdersController {
      */
     @RequestMapping("/addPurchaseOrders")
     @ResponseBody
-    public Integer addPurchaseOrders(PurchaseOrders purchaseOrders){
+    public Message addPurchaseOrders(PurchaseOrders purchaseOrders, HttpSession httpSession){
+        System.out.println(purchaseOrders);
+        User admin = (User) httpSession.getAttribute("admin");
+        purchaseOrders.setHospitalId(admin.getHospitalId());
         return purchaseOrdersService.addPurchaseOrders(purchaseOrders);
     }
 
