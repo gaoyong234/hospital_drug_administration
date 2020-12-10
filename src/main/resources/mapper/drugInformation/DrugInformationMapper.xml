@@ -15,6 +15,7 @@
     <result column="serial_number" jdbcType="VARCHAR" property="serialNumber" />
     <result column="drug_category" jdbcType="INTEGER" property="drugCategory" />
     <result column="drug_state" jdbcType="INTEGER" property="drugState" />
+    <result column="del_id" jdbcType="INTEGER" property="delId" />
   </resultMap>
   <resultMap id="BaseResultMapOne" type="com.hospital_purchase.vo.DrugInfoVO">
     <id column="di_id" jdbcType="INTEGER" property="diId" />
@@ -72,10 +73,52 @@
       <result column="product_explain" jdbcType="VARCHAR" property="productExplain" />
     </association>
   </resultMap>
+  <resultMap id="BaseResultMapTwo" type="com.hospital_purchase.vo.DrugInformationExcelVO">
+    <result column="serial_number" jdbcType="VARCHAR" property="serialNumber" />
+    <result column="common_name" jdbcType="VARCHAR" property="commonName" />
+    <result column="dosage_form" jdbcType="VARCHAR" property="dosageForm" />
+    <result column="speciflcation" jdbcType="VARCHAR" property="speciflcation" />
+    <result column="unit_id" jdbcType="VARCHAR" property="unitId" />
+    <result column="coefficient" jdbcType="INTEGER" property="coefficient" />
+    <result column="production_name" jdbcType="VARCHAR" property="productionName" />
+    <result column="commodity_name" jdbcType="VARCHAR" property="commodityName" />
+    <result column="bidding_price" jdbcType="DECIMAL" property="biddingPrice" />
+    <result column="quality_level" jdbcType="VARCHAR" property="qualityLevel" />
+    <result column="approval_number" jdbcType="VARCHAR" property="approvalNumber" />
+    <result column="approval_time" jdbcType="TIMESTAMP" property="approvalTime" />
+    <result column="is_entrance" jdbcType="BIT" property="isEntrance" />
+    <result column="packaging_texture" jdbcType="VARCHAR" property="packagingTexture" />
+    <result column="pack_unit" jdbcType="INTEGER" property="packUnit" />
+    <result column="newest_price" jdbcType="DECIMAL" property="newestPrice" />
+    <result column="retail_provenance" jdbcType="VARCHAR" property="retailProvenance" />
+    <result column="is_checkout" jdbcType="TINYINT" property="isCheckout" />
+    <result column="heckout_number" jdbcType="VARCHAR" property="heckoutNumber" />
+    <result column="drug_valid_time" jdbcType="TIMESTAMP" property="drugValidTime" />
+    <result column="product_explain" jdbcType="VARCHAR" property="productExplain" />
+    <result column="drug_category" jdbcType="VARCHAR" property="drugCategory" />
+  </resultMap>
   <sql id="Base_Column_List">
     di_id, common_name, dosage_form, speciflcation, unit_id, coefficient, create_time,
-    modified_time, production_name, commodity_name, serial_number, drug_category, drug_state
+    modified_time, production_name, commodity_name, serial_number, drug_category, drug_state,
+    del_id
   </sql>
+  <select id="selectAllDrugInformationDataVo" resultMap="BaseResultMapTwo">
+    SELECT di.di_id,di.serial_number,di.common_name,di.dosage_form,di.speciflcation,
+	d.dictionaries_name as unit_id,di.coefficient,di.production_name,di.commodity_name,dm.bidding_price
+	,dic.dictionaries_name as quality_level,dict.dictionaries_name as drug_category,di.drug_state,
+    dm.approval_number,dm.approval_time,dm.is_entrance,dm.packaging_texture,dm.pack_unit,dm.product_explain,
+    dm.newest_price,dm.retail_provenance,dm.is_checkout,dm.heckout_number,dm.drug_valid_time
+	FROM drug_items di
+	LEFT JOIN dictionaries d on di.unit_id = d.dic_id
+	LEFT JOIN drug_message dm on di.di_id = dm.drug_items_id
+	LEFT JOIN dictionaries dic on dm.quality_level = dic.dic_id
+	LEFT JOIN dictionaries dict on di.drug_category = dict.dic_id
+  </select>
+  <update id="delDrugInformation" parameterType="java.lang.Integer">
+    update drug_items
+    set del_id = 1
+    where di_id = #{diId,jdbcType=INTEGER}
+  </update>
   <insert id="addDrugInformation" parameterType="com.hospital_purchase.pojo.DrugItems" useGeneratedKeys="true" keyProperty="diId">
     insert into drug_items (di_id, common_name, dosage_form,
       speciflcation, unit_id, coefficient,
@@ -151,6 +194,7 @@
       <if test="drugState != null and drugState != ''">
             and di.drug_state = #{drugState}
       </if>
+      and di.del_id = 0
     </where>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -168,12 +212,12 @@
       speciflcation, unit_id, coefficient, 
       create_time, modified_time, production_name, 
       commodity_name, serial_number, drug_category, 
-      drug_state)
+      drug_state, del_id)
     values (#{diId,jdbcType=INTEGER}, #{commonName,jdbcType=VARCHAR}, #{dosageForm,jdbcType=VARCHAR}, 
       #{speciflcation,jdbcType=VARCHAR}, #{unitId,jdbcType=INTEGER}, #{coefficient,jdbcType=INTEGER}, 
       #{createTime,jdbcType=TIMESTAMP}, #{modifiedTime,jdbcType=TIMESTAMP}, #{productionName,jdbcType=VARCHAR}, 
       #{commodityName,jdbcType=VARCHAR}, #{serialNumber,jdbcType=VARCHAR}, #{drugCategory,jdbcType=INTEGER}, 
-      #{drugState,jdbcType=INTEGER})
+      #{drugState,jdbcType=INTEGER}, #{delId,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.hospital_purchase.pojo.DrugItems">
     insert into drug_items
@@ -217,6 +261,9 @@
       <if test="drugState != null">
         drug_state,
       </if>
+      <if test="delId != null">
+        del_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="diId != null">
@@ -257,6 +304,9 @@
       </if>
       <if test="drugState != null">
         #{drugState,jdbcType=INTEGER},
+      </if>
+      <if test="delId != null">
+        #{delId,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -299,6 +349,9 @@
       <if test="drugState != null">
         drug_state = #{drugState,jdbcType=INTEGER},
       </if>
+      <if test="delId != null">
+        del_id = #{delId,jdbcType=INTEGER},
+      </if>
     </set>
     where di_id = #{diId,jdbcType=INTEGER}
   </update>
@@ -315,7 +368,8 @@
       commodity_name = #{commodityName,jdbcType=VARCHAR},
       serial_number = #{serialNumber,jdbcType=VARCHAR},
       drug_category = #{drugCategory,jdbcType=INTEGER},
-      drug_state = #{drugState,jdbcType=INTEGER}
+      drug_state = #{drugState,jdbcType=INTEGER},
+      del_id = #{delId,jdbcType=INTEGER}
     where di_id = #{diId,jdbcType=INTEGER}
   </update>
 </mapper>

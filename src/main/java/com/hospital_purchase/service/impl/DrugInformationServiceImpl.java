@@ -2,7 +2,7 @@ package com.hospital_purchase.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.hospital_purchase.common.DrugInformation;
+import com.hospital_purchase.vo.DrugInformationExcelVO;
 import com.hospital_purchase.dao.drugInformation.DictionariesInfoMapper;
 import com.hospital_purchase.dao.drugInformation.DrugInformationMapper;
 import com.hospital_purchase.dao.drugInformation.DrugMessageInformationMapper;
@@ -10,7 +10,9 @@ import com.hospital_purchase.pojo.Dictionaries;
 import com.hospital_purchase.pojo.DrugItems;
 import com.hospital_purchase.pojo.DrugMessage;
 import com.hospital_purchase.service.DrugInformationService;
+import com.hospital_purchase.util.ExcelWriteUtil;
 import com.hospital_purchase.vo.DrugInformationVO;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -76,10 +78,16 @@ public class DrugInformationServiceImpl implements DrugInformationService {
     public int delDrugInformation(Integer id) {
         int i = 0;
         if (id != null && id != 0){
-             //i = drugInformationMapper.deleteByPrimaryKey(id);
+             i = drugInformationMapper.delDrugInformation(id);
         }
         return i;
     }
 
-
+    @Override
+    public Workbook ExportAllDrugInformationDataVo(String fileName,String henders[],String privateMethods[]) {
+        List<DrugInformationExcelVO> drugInformations = drugInformationMapper.selectAllDrugInformationDataVo();
+        ExcelWriteUtil<DrugInformationExcelVO> writeUtil = new ExcelWriteUtil<>();
+        Workbook workBook = writeUtil.getWorkBook(fileName, henders, drugInformations, privateMethods);
+        return workBook;
+    }
 }

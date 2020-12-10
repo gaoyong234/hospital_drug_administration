@@ -1,8 +1,7 @@
 package com.hospital_purchase.dao.drugInformation;
 
-import com.hospital_purchase.common.DrugInformation;
+import com.hospital_purchase.vo.DrugInformationExcelVO;
 import com.hospital_purchase.pojo.DrugItems;
-import com.hospital_purchase.pojo.DrugMessage;
 import com.hospital_purchase.vo.DrugInformationVO;
 
 import java.util.List;
@@ -27,4 +26,8 @@ public interface DrugInformationMapper {
     List<DrugItems> findAllDrugInfoLike(DrugInformationVO drugInformationVO);
     //新增药品信息
     int addDrugInformation(DrugItems drugItems);
+    //删除药品信息
+    int delDrugInformation(Integer id);
+
+    List<DrugInformationExcelVO> selectAllDrugInformationDataVo();
 }

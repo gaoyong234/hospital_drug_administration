@@ -2,32 +2,33 @@ package com.hospital_purchase.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.hospital_purchase.common.DrugInformationDto;
-import com.hospital_purchase.common.DrugInformation;
 import com.hospital_purchase.pojo.Dictionaries;
 import com.hospital_purchase.pojo.DrugItems;
 import com.hospital_purchase.pojo.DrugMessage;
 import com.hospital_purchase.service.DrugInformationService;
 import com.hospital_purchase.util.ExcelUploadUtil;
 import com.hospital_purchase.vo.DrugInformationVO;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.net.URLEncoder;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping("/drugInformation")
@@ -209,7 +210,7 @@ public class DrugInformationController {
     }
 
     /**
-     * 导入
+     * excel导入
      * @param file
      * @param response
      * @param request
@@ -224,7 +225,6 @@ public class DrugInformationController {
             e.printStackTrace();
         }
         List<Object> list = excelUploadUtil().reader(inputStream);
-        //------------------------------------------------------------------
         //表头信息
         List<String> s  = (List<String>) list.get(0);
         for (int i = 0; i < list.size() ;i++) {
@@ -266,7 +266,8 @@ public class DrugInformationController {
                 if (tableData.get(10)!=null&&!"".equals(tableData.get(10))) {
                     drugMessage.setApprovalNumber(tableData.get(10).trim());
                 }
-                SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy.MM.dd");
+                DateFormat simpleDateFormat=new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
+
                 try {
                     if (tableData.get(11)!=null&&!"".equals(tableData.get(11))) {
                         drugMessage.setApprovalTime(simpleDateFormat.parse(tableData.get(11).trim()));
@@ -305,9 +306,38 @@ public class DrugInformationController {
                 if (tableData.get(20)!=null&&!"".equals(tableData.get(20))) {
                     drugMessage.setProductExplain(tableData.get(20).trim());
                 }
+                if (tableData.get(21)!=null&&!"".equals(tableData.get(21))) {
+                    drugItems.setDrugCategory(Integer.parseInt(tableData.get(21).trim()));
+                }
                 drugInformationService.addDrugInformation(drugItems);
                 drugMessage.setDrugItemsId(drugItems.getDiId());
+                drugItems.setDrugState(0);
+                drugItems.setCreateTime(new Date());
                 drugInformationService.addDrugMessageInfo(drugMessage);
             }
+    }
+
+    @ResponseBody
+    @RequestMapping("/ExportExcel")
+    public void ExportExcel(HttpServletResponse response){
+        //导出数据的文件名
+        String fileName = "药品信息.xls";
+        //表头信息
+        String henders[] ={"流水号","通用名","剂型","规格","单位","转换系数","生产企业","商品名称","中标价格","质量层次","批准文号","批准文号有效期","是否进口","包装材质","包装单位","最新零售价","零售价出处","有无药品检验报告","药品检验报告编码","药品检验报告有效期","产品说明","药品类别"};
+        String privateMethods[] ={"serialNumber","commonName","dosageForm","speciflcation","unitId","coefficient","productionName","commodityName","biddingPrice","qualityLevel","approvalNumber","approvalTime","isEntrance","packagingTexture","packUnit","newestPrice","retailProvenance","isCheckout","heckoutNumber","drugValidTime","productExplain","drugCategory"};
+        //属性名
+        Workbook workbook = drugInformationService.ExportAllDrugInformationDataVo(fileName,henders,privateMethods);
+        try {
+            ServletOutputStream outputStream = response.getOutputStream();
+            //文件名编码处理
+            fileName = URLEncoder.encode(fileName, "UTF-8");
+            //设置文件下载头
+            response.addHeader("Content-Disposition", "attachment;filename=" + fileName);
+            //1.设置文件ContentType类型，这样设置，会自动判断下载文件类型  修改文件类型为二进制流  json
+            response.setContentType("multipart/form-data");
+            workbook.write(outputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

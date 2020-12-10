@@ -1,11 +1,11 @@
 package com.hospital_purchase.service;
 
 import com.github.pagehelper.PageInfo;
-import com.hospital_purchase.common.DrugInformation;
 import com.hospital_purchase.pojo.Dictionaries;
 import com.hospital_purchase.pojo.DrugItems;
 import com.hospital_purchase.pojo.DrugMessage;
 import com.hospital_purchase.vo.DrugInformationVO;
+import org.apache.poi.ss.usermodel.Workbook;
 
 import java.util.List;
 
@@ -27,4 +27,7 @@ public interface DrugInformationService {
     int updateDrugMessageInformation(DrugMessage drugMessage);
     //删除药品信息
     int delDrugInformation(Integer id);
+    //导入全部药品信息
+    Workbook ExportAllDrugInformationDataVo(String fileName, String henders[], String privateMethods[]);
+    
 }
