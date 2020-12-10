@@ -2,7 +2,6 @@ package com.hospital_purchase.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.hospital_purchase.common.DrugInformationDto;
-import com.hospital_purchase.common.DrugInformation;
 import com.hospital_purchase.pojo.Dictionaries;
 import com.hospital_purchase.pojo.DrugItems;
 import com.hospital_purchase.pojo.DrugMessage;
