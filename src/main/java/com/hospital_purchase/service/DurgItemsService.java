@@ -3,7 +3,11 @@ package com.hospital_purchase.service;
 import com.github.pagehelper.PageInfo;
 import com.hospital_purchase.pojo.DrugItems;
 import com.hospital_purchase.vo.DrugItemsVO;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 
 @Service
@@ -19,5 +23,7 @@ public interface DurgItemsService {
 
     Integer expurgate(Integer diId);
 
-//    Workbook exportExcel(String fileName, String[] arr);
+    void exportExcel(HttpServletResponse response) throws IOException;
+
+    void loadtemplate(HttpServletResponse response) throws IOException;
 }

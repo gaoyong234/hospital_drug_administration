@@ -108,7 +108,7 @@
             $scope.expurgate=function (diId) {
                 if (confirm("是否确认删除?")){
                     $http({
-                        url: "expurgate",
+                        url: "/items/expurgate",
                         method: "get",
                         params: {"diId":diId}
                     }).success(function (response) {
@@ -121,6 +121,16 @@
                     })
                 }
             }
+           $scope.loadAlllick=function () {
+               if (confirm("是否导出全部数据")) {
+                   window.location.href = "/items/exportExcel";
+               } else {
+                   return false;
+               }
+           }
+           $scope.loadtemplate=function () {
+                window.location.href="/items/loadtemplate";
+           }
 
        })
 
@@ -178,6 +188,20 @@
                 }
             })
         }
+        function readAlllick() {
+            var file = $("#files")[0].files[0];
+            var formData = new FormData;
+            formData.append("filename", file);
+            $.ajax({
+                url: "/items/readfile",     //路径
+                type: "post",        //格式
+                dataType: "josn",    //数据格式
+                data: formData,  //数据
+                cache: false,   //上传文件无需缓存
+                processData: false,   // 用于对参数进行序列化处理，这里必须设为false
+                contentType: false, // 必须
+            })
+        }
 
     </script>
 
@@ -213,7 +237,7 @@
     </tr>
     <tr>
         <td colspan="1" align="right"> <button type="button" class="btn1" ng-click="find()">查询</button></td>
-        <td> <button type="button" class="btn1" onclick="loadlick()">导出</button></td>
+        <td> <button type="button" class="btn1" ng-click="loadAlllick()">导出</button></td>
     </tr>
 
 </table>
@@ -230,7 +254,6 @@
     <table id="dataList" class="table">
         <thead>
         <tr>
-            <th></th>
             <th>药品品目号</th>
             <th>通用名</th>
             <th>剂型</th>
@@ -247,7 +270,6 @@
 
         <tbody id="tbody">
         <tr ng-repeat="x in lists">
-            <td><input type="checkbox" name="pitchOn" value="{{x.diId}}" onchange="childrenCheck()" ></td>
             <td>{{x.diId}}</td>
             <td>{{x.commonName}}</td>
             <td>{{x.dosageForm}}</td>
@@ -347,11 +369,10 @@
     <h4 class="text-primary">药品品目导入</h4>
                 <br>
        <div class="text-center">
-    下载导入模板文件  <button class="text-primary">点击下载药品品目导入模板</button><br><br>
+    下载导入模板文件  <button class="text-primary" ng-click="loadtemplate()">点击下载药品品目导入模板</button><br><br>
         <span style="color: red">提示:请下载后在模板文件中录入药品品目信息,在下面的"选择文件"中选择要导入的文件,点击"导入"</span><br>
-       <div class ="text-center"><input style = "text-align:center"  id="file" type="file">
-           <button>浏览</button>
-           <br>
+       <div class="text-center">
+           <input style="display:block" id="files" type="file">
        </div>
      </div>
                 <div class="text-center">
