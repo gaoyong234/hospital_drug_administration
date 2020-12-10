@@ -208,6 +208,21 @@
 			})
 		}
 	}
+	//导出Excel1
+	function ExportExcel() {
+		/*$.ajax({
+			url:"/drugInformation/ExportExcel",
+			type:"get",
+			dataType:"json",
+			seccess:function (data) {
+				alert("导出成功");
+				console.log(data);
+			},error:function (data) {
+
+			}
+		})*/
+		window.location.href="/drugInformation/ExportExcel";
+	}
 	//查询全部药品信息
 	function dataForm(pageNum){
 		var ser = $("#drugForm").serialize();
@@ -658,21 +673,6 @@
 		//console.log(JSON.stringify(tableobj));
 		reponse.JSONToCSVConvertor(tableobj, true,"药品表格");
 	}*/
-	//导出Excel1
-	function ExportExcel() {
-		/*$.ajax({
-			url:"/drugInformation/ExportExcel",
-			type:"get",
-			dataType:"json",
-			seccess:function (data) {
-				alert("导出成功");
-				console.log(data);
-			},error:function (data) {
-
-			}
-		})*/
-		window.location.href="/drugInformation/ExportExcel";
-	}
 	/*function resivetabledata(){
 		var pp=$("#table").data("tableObj").data;
 		alert(JSON.stringify(pp));

@@ -317,6 +317,10 @@ public class DrugInformationController {
             }
     }
 
+    /**
+     * 药品信息导出
+     * @param response
+     */
     @ResponseBody
     @RequestMapping("/ExportExcel")
     public void ExportExcel(HttpServletResponse response){

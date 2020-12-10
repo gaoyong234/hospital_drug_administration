@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class DrugInformationExcelVO extends BaseRowModel implements Serializable {
-
+    //
     @ExcelProperty(value = "流水号", index = 0)
     private String serialNumber;
 
