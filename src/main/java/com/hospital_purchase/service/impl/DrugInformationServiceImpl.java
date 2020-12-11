@@ -2,6 +2,7 @@ package com.hospital_purchase.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hospital_purchase.util.DrugInformationTemplateUtil;
 import com.hospital_purchase.vo.DrugInformationExcelVO;
 import com.hospital_purchase.dao.drugInformation.DictionariesInfoMapper;
 import com.hospital_purchase.dao.drugInformation.DrugInformationMapper;
@@ -16,6 +17,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -89,5 +92,10 @@ public class DrugInformationServiceImpl implements DrugInformationService {
         ExcelWriteUtil<DrugInformationExcelVO> writeUtil = new ExcelWriteUtil<>();
         Workbook workBook = writeUtil.getWorkBook(fileName, henders, drugInformations, privateMethods);
         return workBook;
+    }
+
+    @Override
+    public void downloadTemplate(HttpServletResponse response) throws IOException {
+        DrugInformationTemplateUtil.loadtemplate(response);
     }
 }

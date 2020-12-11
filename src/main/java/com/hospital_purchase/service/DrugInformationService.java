@@ -7,6 +7,8 @@ import com.hospital_purchase.pojo.DrugMessage;
 import com.hospital_purchase.vo.DrugInformationVO;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 public interface DrugInformationService {
@@ -29,5 +31,6 @@ public interface DrugInformationService {
     int delDrugInformation(Integer id);
     //导入全部药品信息
     Workbook ExportAllDrugInformationDataVo(String fileName, String henders[], String privateMethods[]);
-    
+    //导入下载模板excel
+    void downloadTemplate(HttpServletResponse response) throws IOException;
 }
