@@ -113,7 +113,6 @@
                         params: {"diId":diId}
                     }).success(function (response) {
                         if (response>0){
-                            console.log(response)
                             $scope.find();
                         }else {
                             alert("删除失败")
@@ -165,6 +164,7 @@
             if (demo){
               conserve()
             }else {
+                document.getElementById("headLeft").innerHTML="药品品目添加"
                 document.getElementById("headline").innerHTML="失败提示信息"
                 document.getElementById("whether").innerHTML="因数据不完整,您的操作失败,请尝试刷新页面,重新操作"
             }
@@ -178,18 +178,29 @@
                 data: addform,
                 success: function (data) {
                     if (data > 0) {
+                        document.getElementById("headLeft").innerHTML="药品品目添加"
                         document.getElementById("headline").innerHTML="成功提示信息"
                         document.getElementById("whether").innerHTML="您的操作成功"
                         document.getElementById("lose").innerHTML="";
                     } else {
+                        document.getElementById("headLeft").innerHTML="药品品目添加"
                         document.getElementById("headline").innerHTML="失败提示信息"
                         document.getElementById("whether").innerHTML="您的操作失败,请尝试刷新页面,重新操作"
                     }
                 }
             })
         }
+        var lose=0;
+        var dritlist=null;
         function readAlllick() {
+            dritlist=null;
             var file = $("#files")[0].files[0];
+            if (file==null){
+                document.getElementById("headLeft").innerHTML="药品品目导入"
+                document.getElementById("headline").innerHTML="失败提示信息"
+                document.getElementById("whether").innerHTML="您的操作失败"
+                document.getElementById("lose").innerHTML="请先选择文件,再点击导入按钮";
+            }else {
             var formData = new FormData;
             formData.append("filename", file);
             $.ajax({
@@ -200,7 +211,59 @@
                 cache: false,   //上传文件无需缓存
                 processData: false,   // 用于对参数进行序列化处理，这里必须设为false
                 contentType: false, // 必须
+                success : function (count) {
+                    var con = count.responseText;
+                    if (con>0){
+                        document.getElementById("headLeft").innerHTML="药品品目导入"
+                        document.getElementById("headline").innerHTML="成功提示信息"
+                        document.getElementById("whether").innerHTML="您的操作成功"
+                        document.getElementById("lose").innerHTML="成功导入"+con+"条数据";
+                    }else {
+                        document.getElementById("headLeft").innerHTML="药品品目导入"
+                        document.getElementById("headline").innerHTML="失败提示信息"
+                        document.getElementById("whether").innerHTML="您的操作失败"
+                        document.getElementById("lose").innerHTML="请确认信息符合导入说明";
+                    }
+                },
+                error:function (count) {
+                    var parse = JSON.parse(count.responseText);
+                    var succeed = parse.succeed;
+                    lose = parse.lose;
+                    dritlist=parse.drugItemsList;
+                    if (succeed>0){
+                        document.getElementById("headLeft").innerHTML="药品品目导入"
+                        document.getElementById("headline").innerHTML="成功提示信息"
+                        document.getElementById("whether").innerHTML="您的操作成功"
+                        document.getElementById("lose").innerHTML="成功导入"+succeed+"条数据,导入失败"+lose+"条";
+                    }else {
+                        document.getElementById("headLeft").innerHTML="药品品目导入"
+                        document.getElementById("headline").innerHTML="失败提示信息"
+                        document.getElementById("whether").innerHTML="您的操作失败"
+                        document.getElementById("lose").innerHTML="请确认信息符合导入说明";
+                    }
+                }
             })
+            }
+        }
+        function fandLose() {
+            document.getElementById("headLeft").innerHTML="药品品目导入"
+            document.getElementById("headline").innerHTML="失败信息"
+            document.getElementById("whether").innerHTML="您的操作共失败"+lose+"条"
+            console.log(dritlist)
+            var a=""
+            for (var i = 0; i < dritlist.length; i++) {
+                a+="&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp第"+(i+1)+"条:",
+                a+=dritlist[i].commonName+","
+                a+=dritlist[i].dosageForm+","
+                a+=dritlist[i].speciflcation+","
+                a+=dritlist[i].unitId+","
+                a+=dritlist[i].coefficient+","
+                a+=dritlist[i].drugCategoryName
+                if ((i+1)%2==0){
+                    a+="<br>"
+                }
+            }
+            document.getElementById("lose").innerHTML=a
         }
 
     </script>
@@ -348,7 +411,7 @@
     <div class="modal-dialog" style="width:80%;">
         <div class="modal-content">
             <div class="modal-header">
-                <h4>药品品目添加</h4>
+                <h4 id="headLeft" type="text" ></h4>
                 <h4 id="headline" type="text" style="width: 100%;height: 45px;display: block;line-height: 45px;text-align: center;"></h4>
                 <p id="whether" type="text" style="width: 100%;height: 45px;display: block;line-height: 45px;text-align: center;"></p>
                 <div>
@@ -376,9 +439,10 @@
        </div>
      </div>
                 <div class="text-center">
-                    <button type="button" onclick="readAlllick()">导入
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-dismiss="modal" data-target="#status" onclick="readAlllick()">导入
                     </button>
-                    <button>查看导入失败结果</button><button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
+                    <button class="btn btn-info" data-toggle="modal" data-dismiss="modal" data-target="#status" onclick="fandLose()">查看导入失败结果</button>
+                    <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">关闭</button>
                 </div>
 
             </div>

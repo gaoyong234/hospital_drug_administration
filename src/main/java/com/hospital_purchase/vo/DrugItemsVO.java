@@ -28,6 +28,19 @@ public class DrugItemsVO extends BaseRowModel {
     @ExcelProperty(value = "药品类别" ,index = 7)
     private String drugCategoryName;
 
+    @Override
+    public String toString() {
+        return "DrugItemsVO{" +
+                "diId='" + diId + '\'' +
+                ", commonName='" + commonName + '\'' +
+                ", dosageForm='" + dosageForm + '\'' +
+                ", speciflcation='" + speciflcation + '\'' +
+                ", unitId='" + unitId + '\'' +
+                ", coefficient='" + coefficient + '\'' +
+                ", drugStateName='" + drugStateName + '\'' +
+                ", drugCategoryName='" + drugCategoryName + '\'' +
+                '}';
+    }
 
     public String getCommonName() {
         return commonName;

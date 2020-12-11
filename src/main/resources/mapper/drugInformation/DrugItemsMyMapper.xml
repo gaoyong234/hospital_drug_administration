@@ -26,6 +26,15 @@
     <result column="drug_category_name" jdbcType="VARCHAR" property="drugCategoryName" />
     <result column="drug_state_name" jdbcType="VARCHAR" property="drugStateName" />
   </resultMap>
+  <resultMap id="BaseReadMap" type="com.hospital_purchase.vo.DrugItemsVoRead">
+    <result column="common_name" jdbcType="VARCHAR" property="commonName" />
+    <result column="dosage_form" jdbcType="VARCHAR" property="dosageForm" />
+    <result column="speciflcation" jdbcType="VARCHAR" property="speciflcation" />
+    <result column="unit_id" jdbcType="VARCHAR" property="unitId" />
+    <result column="coefficient" jdbcType="VARCHAR" property="coefficient" />
+    <result column="drug_category_name" jdbcType="VARCHAR" property="drugCategoryName" />
+    <result column="drug_state_name" jdbcType="VARCHAR" property="drugStateName" />
+  </resultMap>
   <sql id="Base_Column_List">
     di_id, common_name, dosage_form, speciflcation, unit_id, coefficient, create_time,
     modified_time, production_name, commodity_name, serial_number, drug_category, drug_state
@@ -161,5 +170,17 @@
     set del_id=1
     where di_id = #{diId,jdbcType=INTEGER}
   </update>
-
+  <insert id="readfile" parameterType="com.hospital_purchase.vo.DrugItemsVoRead">
+    insert into drug_items
+    <set>
+        common_name = #{commonName,jdbcType=VARCHAR},
+        dosage_form = #{dosageForm,jdbcType=VARCHAR},
+        speciflcation = #{speciflcation,jdbcType=VARCHAR},
+        unit_id = #{unitId,jdbcType=VARCHAR},
+        coefficient = #{coefficient,jdbcType=VARCHAR},
+      <if test="drugCategoryName != null">
+        drug_category = #{drugCategoryName,jdbcType=VARCHAR},
+      </if>
+    </set>
+  </insert>
 </mapper>

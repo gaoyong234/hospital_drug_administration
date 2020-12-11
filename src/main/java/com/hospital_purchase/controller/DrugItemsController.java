@@ -7,7 +7,9 @@ import com.github.pagehelper.PageInfo;
 import com.hospital_purchase.pojo.DrugItems;
 import com.hospital_purchase.service.DurgItemsService;
 import com.hospital_purchase.vo.DrugItemsVO;
+import com.hospital_purchase.vo.DrugItemsVoRead;
 import com.hospital_purchase.vo.ExcelListener;
+import com.hospital_purchase.vo.WhetherSucceed;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -127,7 +129,7 @@ public class DrugItemsController {
 
     @RequestMapping("readfile")
     @ResponseBody
-    public DrugItemsVO readfile(@RequestParam("filename") MultipartFile file) {
+    public WhetherSucceed readfile(@RequestParam("filename") MultipartFile file) {
         InputStream inputStream = null;
         try {
             inputStream = file.getInputStream();
@@ -149,20 +151,37 @@ public class DrugItemsController {
         }
 
         //读取信息
-        excelReader.read(new Sheet(2, 1, DrugItemsVO.class));
+        excelReader.read(new Sheet(2, 1, DrugItemsVoRead.class));
 
         //获取数据
         List<Object> list = listener.getDatas();
 
-        List<DrugItemsVO> catagoryList = new ArrayList<DrugItemsVO>();
-        DrugItemsVO catagory = new DrugItemsVO();
-
+        WhetherSucceed whetherSucceed=new WhetherSucceed();
+        DrugItemsVoRead drugitemsvo = new DrugItemsVoRead();
+        Integer county=0;
+        Integer countn=0;
+        whetherSucceed.setDrugItemsList(new ArrayList<>());
         //转换数据类型,并插入到数据库
-        for (int i = 0; i < list.size(); i++) {
-            catagory = (DrugItemsVO) list.get(i);
-            System.out.println(catagory);
+        for (Object o : list) {
+            drugitemsvo = (DrugItemsVoRead) o;
+            boolean strinint=false;
+            try {
+                Integer.valueOf(drugitemsvo.getDrugCategoryName());
+                strinint=true;
+            }catch (Exception e){
+                strinint=false;
+            }
+            if (strinint){
+                Integer readfile = durgItemsService.readfile(drugitemsvo);
+                county+=readfile;
+            }   else {
+                countn+=1;
+                whetherSucceed.getDrugItemsList().add(drugitemsvo);
+            }
         }
-        return null;
+        whetherSucceed.setSucceed(county);
+        whetherSucceed.setLose(countn);
+        return whetherSucceed;
     }
 
 }
