@@ -9,6 +9,7 @@ import com.hospital_purchase.dao.drugitemsmydao.DrugItemsMyMapper;
 import com.hospital_purchase.service.DurgItemsService;
 import com.hospital_purchase.util.EasyExcelUtil;
 import com.hospital_purchase.vo.DrugItemsVO;
+import com.hospital_purchase.vo.DrugItemsVoRead;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -71,5 +72,11 @@ public class DurgItemsImpl implements DurgItemsService {
     @Override
     public void loadtemplate(HttpServletResponse response) throws IOException {
         EasyExcelUtil.loadtemplate(response);
+    }
+
+    @Override
+    public Integer readfile(DrugItemsVoRead drugitemsvo) {
+        Integer readfile = drugItemsMyMapper.readfile(drugitemsvo);
+        return readfile;
     }
 }

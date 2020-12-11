@@ -3,6 +3,7 @@ package com.hospital_purchase.service;
 import com.github.pagehelper.PageInfo;
 import com.hospital_purchase.pojo.DrugItems;
 import com.hospital_purchase.vo.DrugItemsVO;
+import com.hospital_purchase.vo.DrugItemsVoRead;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.stereotype.Service;
 
@@ -26,4 +27,6 @@ public interface DurgItemsService {
     void exportExcel(HttpServletResponse response) throws IOException;
 
     void loadtemplate(HttpServletResponse response) throws IOException;
+
+    Integer readfile(DrugItemsVoRead drugitemsvo);
 }
