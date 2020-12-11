@@ -11,6 +11,7 @@ import com.hospital_purchase.vo.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -26,11 +27,12 @@ public class DictionariesServiceImpl implements DictionariesService {
 
     @Override
     public List findChildByParentId(Integer dictionariesId) {
-        return dictionariesDaoMapper.selectChildbyParentId(dictionariesId);
+        return dictionariesDaoMapper.selectChildByParentId(dictionariesId);
     }
 
     @Override
     public Message addDictionaries(Dictionaries dictionaries) {
+        dictionaries.setCreateTime(new Date());
         Integer num = dictionariesDaoMapper.insertDictionaries(dictionaries);
         Message message = ReturnUtil.returnDataOperation("添加", num);
         return message;
@@ -38,13 +40,21 @@ public class DictionariesServiceImpl implements DictionariesService {
 
     @Override
     public Message removeDictionariesDel(Integer dicId) {
-        Integer num = dictionariesDaoMapper.updateDictionariesDel(dicId);
-        Message message = ReturnUtil.returnDataOperation("删除", num);
+        Message message;
+        Integer count = dictionariesDaoMapper.selectChildCount(dicId);
+        if (count>0) {
+            message = ReturnUtil.returnDataOperation("删除", 0);
+
+        }else {
+            Integer num = dictionariesDaoMapper.updateDictionariesDel(dicId);
+            message = ReturnUtil.returnDataOperation("删除", num);
+        }
         return message;
     }
 
     @Override
     public Message changeDictionaries(Dictionaries dictionaries) {
+        dictionaries.setModifiedTime(new Date());
         Integer num = dictionariesDaoMapper.updateDictionaries(dictionaries);
         Message message = ReturnUtil.returnDataOperation("修改", num);
         return message;
@@ -56,5 +66,10 @@ public class DictionariesServiceImpl implements DictionariesService {
         List list = dictionariesDaoMapper.selectAllDictionaries();
         PageInfo<DictionariesVO> pageInfo = new PageInfo<>(list);
         return pageInfo;
+    }
+
+    @Override
+    public DictionariesVO findDictionariesById(Integer dicId) {
+        return dictionariesDaoMapper.selectDictionariesById(dicId);
     }
 }
