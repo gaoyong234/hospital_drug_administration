@@ -7,7 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
 	<meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
 	<title></title>
-    <link rel="stylesheet" href="../static/plugins/bootstrap/css/bootstrap.min.css">
+	<script src="../../static/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <link rel="stylesheet" href="../../static/plugins/bootstrap/css/bootstrap.min.css">
 	<link rel="stylesheet" href="../../static/renponsetable/layer/theme/default/layer.css">
 	<link rel="stylesheet" type="text/css" href="../../static/renponsetable/css/reponse.css">
 	<style type="text/css">
@@ -33,8 +34,9 @@
 		/*button禁用*/
 		.page_div button:disabled{opacity:.5;cursor:no-drop}
 	</style>
+	<script src="../../static/plugins/bootstrap/js/bootstrap.min.js"></script>
 	<script src="https://cdn.staticfile.org/angular.js/1.4.6/angular.min.js"></script>
-	<script src="https://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+	<!--<script src="https://www.jq22.com/jquery/jquery-1.10.2.js"></script>-->
 	<script type="text/javascript" src="../../static/renponsetable/js/jquery.basictable.min.js"></script>
 	<script type="text/javascript" src="../../static/renponsetable/reponsetable.min.js"></script>
 	<script type="text/javascript" src="../../static/renponsetable/layer/layer.js"></script>
@@ -63,17 +65,17 @@
                         <td>中标价格:<input type="text" name="biddingPriceStart" style="width: 65px"/>至<input type="text" name="biddingPriceEnd" style="width: 65px"/>$</td>
                         <td>质量层次:
                             <select name="qualityLevel" id="qualityLevel">
-                                <option value="">请选择</option>
+                                <option value="">全部</option>
                             </select>
                         </td>
                         <td>药品类别:
                             <select name="drugCategorys" id="drugCategory">
-                                <option value="">请选择</option>
+                                <option value="">全部</option>
                             </select>
                         </td>
                         <td>药品交易状态:
                             <select name="drugState" id="drugState">
-                                <option value="">请选择</option>
+                                <option value="">全部</option>
                                 <option value="0">正常</option>
                                 <option value="1">交易暂停</option>
                             </select>
@@ -85,17 +87,22 @@
 				<button class="layui-btn" onclick="addtr();">添加</button>
 				<button class="layui-btn" onclick="ExportExcel();">导出Excel</button>
 				<!--<input type="file" id="files"/><button type="button" class="layui-btn" onclick="excelUpload()">导入</button>-->
-				<button class="layui-btn" onclick="javascript:$('#excelUpload').click()" >导入</button>
-				<input id="excelUpload" type="file" style="display: none" onchange="excelUpload()">
+				<!--<button class="layui-btn" onclick="javascript:$('#files').click()" >导入</button>
+				<input id="files" type="file" style="display: none" onchange="excelUpload()">-->
+				<button type="button" class="layui-btn" data-toggle="modal" data-target="#introduce" ng-click="loadlick()">导入
+				</button>
 				<button class="layui-btn" onclick="getSample();">搜索</button>
+
 				<!--<button class="layui-btn" onclick="resivetabledata();">获取table数据</button>-->
-				<!--<button class="layui-btn" onclick="reloadtable();">刷新table表格</button>
-				<button class="layui-btn" onclick="coldata();">获取某一列的数据</button>-->
+				<!--<button class="layui-btn" onclick="reloadtable();">刷新table表格</button>-->
+				<!--<button class="layui-btn" onclick="coldata();">获取某一列的数据</button>-->
 			</div>
 			<table id="table" class="reponsetable" ></table>
 			<script type="text/html" id="editer">
+				<a class="layui-btn layui-btn-xs" onclick="rowdata(this)">查看</a>
 				<a class="layui-btn layui-btn-xs" onclick="edittr(this)">编辑</a>
 				<a class="layui-btn layui-btn-xs" onclick="deletetr(this)">删除</a>
+				<input type="checkbox"/>
 				<!--<a class="layui-btn layui-btn-xs" onclick="uptr(this)">上移</a>
 				<a class="layui-btn layui-btn-xs" onclick="downtr(this)">下移</a>-->
 		  </script>
@@ -113,7 +120,7 @@
 			转换系数:<input type="text" name="coefficient" id="coefficient" placeholder="不能为空！！"/><i style="color: red">*</i><br/>
             生产企业:<input type="text" name="productionName" id="productionName" placeholder="不能为空！！"/><i style="color: red">*</i>
             商品名称:<input type="text" name="commodityName" id="commodityName" placeholder="不能为空！！"/><i style="color: red">*</i><br/>
-            中标价格:<input type="text" name="biddingPrice" id="biddingPrice"/>
+            中标价格:<input type="text" name="biddingPrice" id="biddingPrice" placeholder="不能为空！！"/>
 		批准文号:<input type="text" name="approvalNumber" id="approvalNumber"/><br/>
 		批准文号有效期:<input type="date" name="approvalTime" id="approvalTime"/>
 		是否进口药:<input type="radio" name="isEntrance" value="0"/>是
@@ -173,6 +180,57 @@
 						<option value="1">交易暂停</option>
 					</select>
 	</div>
+	<!--导入的模态框-->
+	<div class="modal fade" id="introduce" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog" style="width:80%;">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="text-primary">药品信息导入</h4>
+					<br>
+					<div class="text-center">
+						下载导入模板文件  <button class="text-primary" onclick="downloadTemplate()">点击下载药品信息导入模板</button><br/>
+						<span style="color: red">提示:请下载后在模板文件中录入药品信息,在下面的"选择文件"中选择要导入的文件,点击"导入"</span><br/>
+						<span style="color: red">注意:请下载模板文件后切勿修改excel大单元格格式,导入文件单元格式必须为文本。</span>
+						<div class="text-center">
+							<center><input style="display:block" id="files" type="file"></center>
+						</div>
+					</div>
+					<div class="text-center">
+						<button class="layui-btn" type="button" onclick="excelUpload()">导入</button>
+						<button class="layui-btn">查看导入失败结果</button>
+						<button class="layui-btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--查看的弹框-->
+	<div id="rowdata" class="alertceng">
+		<input type="hidden" name="diId" id="diIdss"/>
+		流 水 号:<input type="text" name="serialNumber" id="serialNumberss" readonly="readonly"/>
+		通 用 名:<input type="text" name="commonName" id="commonNamess" readonly="readonly"/><br/>
+		剂    型:<input type="text" name="dosageForm" id="dosageFormss" readonly="readonly"/>
+		规    格:<input type="text" name="speciflcation" id="speciflcationss" readonly="readonly"/><br/>
+		单    位:<input type="text" name="company" id="companyss" readonly="readonly"/>
+		转换系数:<input type="text" name="coefficient" id="coefficientss" readonly="readonly"/><br/>
+		生产企业:<input type="text" name="productionName" id="productionNamess" readonly="readonly"/>
+		商品名称:<input type="text" name="commodityName" id="commodityNamess" readonly="readonly"/><br/>
+		中标价格:<input type="text" name="biddingPrice" id="biddingPricess" readonly="readonly"/>
+		批准文号:<input type="text" name="approvalNumber" id="approvalNumberss" readonly="readonly"/><br/>
+		批准文号有效期:<input type="date" name="approvalTime" id="approvalTimess" readonly="readonly"/>
+		是否进口药:<input type="radio" name="isEntrances" value="0" disabled/>是
+		<input type="radio" name="isEntrances" value="1" disabled/>否<br/>
+		包装材质:<input type="text" name="packagingTexture" id="packagingTexturess" readonly="readonly"/>
+		包装单位:<input type="text" name="packUnit" id="packUnitss" readonly="readonly"/><br/>
+		最新零售价:<input type="text" name="newestPrice" id="newestPricess" readonly="readonly"/><br/>
+		零售价出处:<input type="text" name="retailProvenance" id="retailProvenancess" readonly="readonly"/><br/>
+		有无药品检验报告:<input type="radio" name="isCheckouts" value="0" disabled/>有
+		<input type="radio" name="isCheckouts" value="1" disabled/>无<br/>
+		药品检验报告编码:<input type="text" name="heckoutNumber" id="heckoutNumberss" readonly="readonly"/><br/>
+		药品检验报告有效期:<input type="date" name="drugValidTime" id="drugValidTimess" readonly="readonly"/><br/>
+		产品说明:<textarea rows="2" cols="40" name="productExplain" id="productExplainss" readonly="readonly"></textarea><br/>
+		药品交易状态:<input type="text" name="drugStatess" id="drugStatesss" readonly="readonly"/>
+	</div>
 </body>
 <script type="text/javascript">
 	$(function(){
@@ -185,11 +243,15 @@
 		findQualityLevels();
 		dataForm(1);
 	})
+	//导入excel下载模板
+	function downloadTemplate() {
+		window.location.href="/drugInformation/downloadTemplate";
+	}
 	//导入excel文件
 	function excelUpload() {
 		var file =  $("#files")[0].files[0];
 		var formData = new FormData();
-		formData.append("uploadFile",file);
+		formData.append("fileName",file);
 		if (confirm("确定导入？")){
 			$.ajax({
 				url:"/drugInformation/uploadFiles",
@@ -198,17 +260,18 @@
 				data:formData,
 				cache: false,   //上传文件无需缓存
 				processData: false,   // 用于对参数进行序列化处理，这里必须设为false
-				contentType:false, // 必须
+				contentType:false,// 必须
 				success:function (data) {
 					alert("导入成功");
 					console.log(data);
+					//window.location.reload();
 				},error:function (data) {
-
+					console.log(data);
 				}
 			})
 		}
 	}
-	//导出Excel1
+	//导出Excel1文件
 	function ExportExcel() {
 		/*$.ajax({
 			url:"/drugInformation/ExportExcel",
@@ -474,16 +537,17 @@
 			  //查询药品品目信息 验证新添加的药品品目信息是否重复
 			  if (confirm("确定添加？")){
 				  $.ajax({
-					  url:"/items/conditionfand",
+					  url:"/drugInformation/findDrugItemsInfo",
 					  type:"get",
 					  datatype:"json",
 					  success:function (data) {
-						  var dataList = data.list;
+						  var dataList = data;
 						  var msg = 0;
 						  $.each(dataList,function (index,item) {
-							  //console.log(dataList[index]);
-							  if (dataList[index].commonName == obj.commonName || dataList[index].dosageForm == obj.dosageForm){
-								  alert("添加失败，药品品目已存在:{"+"通用名:【"+obj.commonName+"】"+"  剂型:"+"【"+obj.dosageForm+"】"+"}");
+							  console.log(dataList[index]);
+							  if (dataList[index].serialNumber == obj.serialNumber){
+								  alert("添加失败，药品品目已存在:{"+"通用名:【"+dataList[index].commonName+"】"+"  剂型:"+"【"+dataList[index].dosageForm+"】"+" 规格:"+"【"+dataList[index].speciflcation+"】"+" 单位:"+"【"+dataList[index].speciflcation+"】"+
+										  "转换系数:【"+dataList[index].commonName+"】"+"}");
 								  msg = 1;
 							  }
 						  });
@@ -658,6 +722,58 @@
 			})
 			reponse.deletetr(tr, e);
 		}
+	}
+	//查看行数据
+	function rowdata(a, e){
+		var tr = $(a).parent().parent();
+		reponse.resiverowdata(tr, "table");
+		var rowdata=$("#table").data("rowdata");
+		//alert(JSON.stringify(rowdata));
+		$("#diIdss").val(rowdata.diId);
+		$("#serialNumberss").val(rowdata.serialNumber);
+		$("#commonNamess").val(rowdata.commonName);
+		$("#dosageFormss").val(rowdata.dosageForm);
+		$("#speciflcationss").val(rowdata.speciflcation);
+		$("#companyss").val(rowdata.company);
+		$("#coefficientss").val(rowdata.coefficient);
+		$("#productionNamess").val(rowdata.productionName);
+		$("#commodityNamess").val(rowdata.commodityName);
+		$("#biddingPricess").val(rowdata.biddingPrice);
+		$("#approvalNumberss").val(rowdata.approvalNumber);
+		$("#approvalTimess").val(rowdata.approvalTime);
+		$("input[name='isEntrances'][value='"+rowdata.isEntrances+"']").prop("checked","checked");
+		$("#packagingTexturess").val(rowdata.packagingTexture);
+		$("#packUnitss").val(rowdata.packUnit);
+		$("#newestPricess").val(rowdata.newestPrice);
+		$("#retailProvenancess").val(rowdata.retailProvenance);
+		$("input[name='isCheckouts'][value='"+rowdata.isCheckouts+"']").prop("checked","checked");
+		$("#heckoutNumberss").val(rowdata.heckoutNumber);
+		$("#drugValidTimess").val(rowdata.drugValidTime);
+		$("#productExplainss").val(rowdata.productExplain);
+		if (rowdata.drugState == 0){
+			rowdata.drugState = "正常"
+		}
+		if (rowdata.drugState == 1){
+			rowdata.drugState = "交易暂停"
+		}
+		$("#drugStatesss").val(rowdata.drugState);
+		layer.open({
+			type: 1,
+			title: '查看药品信息',
+			closeBtn: 1,
+			area: '516px',
+			skin: '#fff', //没有背景色
+			shadeClose: true,
+			content: $('#rowdata'),
+			btn:["关闭"],
+			btn1:function(index,layero){
+				layer.close(index);
+			},btn2:function(index,layero){
+				layer.close(index);
+			}
+		});
+		/*var pp=reponse.Columndata("Name","table");
+		alert(pp);*/
 	}
 	/*function uptr(btn, e) {
 		var tr = $(btn).parent().parent();
