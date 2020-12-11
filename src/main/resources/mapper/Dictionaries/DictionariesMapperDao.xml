@@ -21,11 +21,21 @@
   <sql id="Base_Column_List">
     dic_id, dictionaries_name, dictionaries_id, create_time, modified_time, del_id
   </sql>
+  <select id="selectDictionariesById" resultMap="BaseMap" parameterType="integer">
+    select
+    dic.dic_id, dic.dictionaries_name, dic.dictionaries_id,
+    dic.create_time, dic.modified_time, dic.del_id,d.dictionaries_name parent_name
+    from dictionaries dic
+    left join dictionaries d on d.dic_id=dic.dictionaries_id
+    where dic.del_id=0
+    and dic.dic_id=#{dicId}
+  </select>
   <select id="selectAllDictionaries" resultMap="BaseMap">
     select
     dic.dic_id, dic.dictionaries_name, dic.dictionaries_id, dic.create_time, dic.modified_time, dic.del_id,d.dictionaries_name parent_name
     from dictionaries dic
     left join dictionaries d on d.dic_id=dic.dictionaries_id
+    where dic.del_id=0
   </select>
   <select id="selectParentDictionaries" resultMap="BaseResultMap">
     select 'true' as QUERYID,
@@ -34,9 +44,15 @@
     where del_id = 0
     and dictionaries_id is null
   </select>
-  <select id="selectChildbyParentId" resultMap="BaseResultMap" parameterType="integer">
+  <select id="selectChildByParentId" resultMap="BaseResultMap" parameterType="integer">
     select 'true' as QUERYID,
     <include refid="Base_Column_List" />
+    from dictionaries
+    where del_id = 0
+    and dictionaries_id = #{dictionariesId}
+  </select>
+  <select id="selectChildCount" resultType="integer" parameterType="integer">
+    select count(0)
     from dictionaries
     where del_id = 0
     and dictionaries_id = #{dictionariesId}
@@ -86,17 +102,15 @@
   </insert>
   <update id="updateDictionariesDel" parameterType="integer">
     update dictionaries
-    set del_id = 0
+    set del_id = 1
     where dic_id = #{dicId,jdbcType=INTEGER}
   </update>
   <update id="updateDictionaries" parameterType="com.hospital_purchase.pojo.Dictionaries">
     update dictionaries
     <set>
+      dictionaries_id = #{dictionariesId,jdbcType=INTEGER},
       <if test="dictionariesName != null">
         dictionaries_name = #{dictionariesName,jdbcType=VARCHAR},
-      </if>
-      <if test="dictionariesId != null">
-        dictionaries_id = #{dictionariesId,jdbcType=INTEGER},
       </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},

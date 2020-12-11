@@ -2,6 +2,7 @@ package com.hospital_purchase.service;
 
 import com.github.pagehelper.PageInfo;
 import com.hospital_purchase.pojo.Dictionaries;
+import com.hospital_purchase.vo.DictionariesVO;
 import com.hospital_purchase.vo.Message;
 
 import java.util.List;
@@ -21,5 +22,7 @@ public interface DictionariesService {
     Message changeDictionaries(Dictionaries dictionaries);
 
     PageInfo findAllDictionaries(Integer pageNum,Integer pageSize);
+
+    DictionariesVO findDictionariesById(Integer dicId);
 
 }

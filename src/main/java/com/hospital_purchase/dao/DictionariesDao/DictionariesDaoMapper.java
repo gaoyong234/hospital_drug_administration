@@ -1,6 +1,7 @@
 package com.hospital_purchase.dao.DictionariesDao;
 
 import com.hospital_purchase.pojo.Dictionaries;
+import com.hospital_purchase.vo.DictionariesVO;
 
 import java.util.List;
 
@@ -8,7 +9,7 @@ public interface DictionariesDaoMapper {
     //查所有父
     List selectParentDictionaries();
     //查所有父id下的所有
-    List selectChildbyParentId(Integer dictionariesId);
+    List selectChildByParentId(Integer dictionariesId);
     //添加
     Integer insertDictionaries(Dictionaries dictionaries);
     //删除
@@ -17,5 +18,10 @@ public interface DictionariesDaoMapper {
     Integer updateDictionaries(Dictionaries dictionaries);
     //查所有
     List selectAllDictionaries();
+
+    //查单条
+    DictionariesVO selectDictionariesById(Integer dicId);
+    //查该id下是否有子
+    Integer selectChildCount(Integer dictionariesId);
 
 }

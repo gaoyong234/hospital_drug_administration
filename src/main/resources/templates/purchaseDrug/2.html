@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+	<title></title>
+    <link rel="stylesheet" href="../static/plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../static/renponsetable/layer/theme/default/layer.css">
+	<link rel="stylesheet" type="text/css" href="../../static/renponsetable/css/reponse.css">
+	<style type="text/css">
+		.alertceng{
+			background: #FFFFFF;
+			padding: 10px;
+			display: none;
+		}
+		.alertceng span.title{
+			margin-right: 10px;
+		}
+		/*分页样式*/
+		/* 外面盒子样式---自己定义 */
+		.page_div{margin:20px 10px 20px 0;color:#666}
+		/* 页数按钮样式 */
+		.page_div button{display:inline-block;min-width:30px;height:28px;cursor:pointer;color:#666;font-size:13px;line-height:28px;background-color:#f9f9f9;border:1px solid #dce0e0;text-align:center;margin:0 4px;-webkit-appearance: none;-moz-appearance: none;appearance: none;}
+		#firstPage,#lastPage,#nextPage,#prePage{width:50px;color:#0073A9;border:1px solid #0073A9}
+		#nextPage,#prePage{width:70px}
+		.page_div .current{background-color:#0073A9;border-color:#0073A9;color:#FFF}
+		/* 页面数量 */
+		.totalPages{margin:0 10px}
+		.totalPages span,.totalSize span{color:#0073A9;margin:0 5px}
+		/*button禁用*/
+		.page_div button:disabled{opacity:.5;cursor:no-drop}
+	</style>
+	<script src="https://cdn.staticfile.org/angular.js/1.4.6/angular.min.js"></script>
+	<script src="https://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="../../static/renponsetable/js/jquery.basictable.min.js"></script>
+	<script type="text/javascript" src="../../static/renponsetable/reponsetable.min.js"></script>
+	<script type="text/javascript" src="../../static/renponsetable/layer/layer.js"></script>
+	<script type="text/javascript" src="../../static/renponsetable/js/pageMe.js"></script>
+</head>
+<body>
+	<h5 class="alert alert-infoalert alert-info" style="background-color: #00c0ef; color: #0f0f0f">药品信息查询</h5>
+	<div class="layui-fluid layadmin-homepage-fluid" style="background: #fff;width:99%;margin:0 auto;">
+		<div id="page">
+			<!--模糊查询form表单-->
+			<form id="drugForm">
+                <table class="table table-bordered table-striped">
+                    <tr>
+                        <td>流 水 号:<input type="text" name="serialNumber"/></td>
+                        <td>通 用 名:<input type="text" name="commonName"/></td>
+                        <td>剂    型:<input type="text" name="dosageForm"/></td>
+                        <td>规    格:<input type="text" name="speciflcation"/></td>
+                    </tr>
+                    <tr>
+                        <td>单    位:<input type="text" name="company"/></td>
+                        <td>转换系数:<input type="text" name="coefficient"/></td>
+                        <td>生产企业:<input type="text" name="productionName"/></td>
+                        <td>商品名称:<input type="text" name="commodityName"/></td>
+                    </tr>
+                    <tr>
+                        <td>中标价格:<input type="text" name="biddingPriceStart" style="width: 65px"/>至<input type="text" name="biddingPriceEnd" style="width: 65px"/>$</td>
+                        <td>质量层次:
+                            <select name="qualityLevel" id="qualityLevel">
+                                <option value="">请选择</option>
+                            </select>
+                        </td>
+                        <td>药品类别:
+                            <select name="drugCategorys" id="drugCategory">
+                                <option value="">请选择</option>
+                            </select>
+                        </td>
+                        <td>药品交易状态:
+                            <select name="drugState" id="drugState">
+                                <option value="">请选择</option>
+                                <option value="0">正常</option>
+                                <option value="1">交易暂停</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+			</form>
+			<div class="btn-container">
+				<button class="layui-btn" onclick="addtr();">添加</button>
+				<button class="layui-btn" onclick="ExportExcel();">导出Excel</button>
+				<!--<input type="file" id="files"/><button type="button" class="layui-btn" onclick="excelUpload()">导入</button>-->
+				<button class="layui-btn" onclick="javascript:$('#excelUpload').click()" >导入</button>
+				<input id="excelUpload" type="file" style="display: none" onchange="excelUpload()">
+				<button class="layui-btn" onclick="getSample();">搜索</button>
+				<!--<button class="layui-btn" onclick="resivetabledata();">获取table数据</button>-->
+				<!--<button class="layui-btn" onclick="reloadtable();">刷新table表格</button>
+				<button class="layui-btn" onclick="coldata();">获取某一列的数据</button>-->
+			</div>
+			<table id="table" class="reponsetable" ></table>
+			<script type="text/html" id="editer">
+				<a class="layui-btn layui-btn-xs" onclick="edittr(this)">编辑</a>
+				<a class="layui-btn layui-btn-xs" onclick="deletetr(this)">删除</a>
+				<!--<a class="layui-btn layui-btn-xs" onclick="uptr(this)">上移</a>
+				<a class="layui-btn layui-btn-xs" onclick="downtr(this)">下移</a>-->
+		  </script>
+			<!--分页-->
+			<div id="pages" class="page_div"></div>
+		</div>
+	</div>
+	<!--新增的弹框-->
+	<div id="editcontent" class="alertceng">
+            流 水 号:<input type="text" name="serialNumber" id="serialNumber"/>
+            通 用 名:<input type="text" name="commonName" id="commonName" placeholder="不能为空！！"/><i style="color: red">*</i><br/>
+			剂    型:<input type="text" name="dosageForm" id="dosageForm" placeholder="不能为空！！"/><i style="color: red">*</i>
+			规    格:<input type="text" name="speciflcation" id="speciflcation" placeholder="不能为空！！"/><i style="color: red">*</i><br/>
+			单    位:<input type="text" name="company" id="company" placeholder="不能为空！！"/><i style="color: red">*</i>
+			转换系数:<input type="text" name="coefficient" id="coefficient" placeholder="不能为空！！"/><i style="color: red">*</i><br/>
+            生产企业:<input type="text" name="productionName" id="productionName" placeholder="不能为空！！"/><i style="color: red">*</i>
+            商品名称:<input type="text" name="commodityName" id="commodityName" placeholder="不能为空！！"/><i style="color: red">*</i><br/>
+            中标价格:<input type="text" name="biddingPrice" id="biddingPrice"/>
+		批准文号:<input type="text" name="approvalNumber" id="approvalNumber"/><br/>
+		批准文号有效期:<input type="date" name="approvalTime" id="approvalTime"/>
+		是否进口药:<input type="radio" name="isEntrance" value="0"/>是
+				  <input type="radio" name="isEntrance" value="1"/>否<br/>
+		包装材质:<input type="text" name="packagingTexture" id="packagingTexture"/>
+		包装单位:<input type="text" name="packUnit" id="packUnit"/><br/>
+		最新零售价:<input type="text" name="newestPrice" id="newestPrice"/><br/>
+		零售价出处:<input type="text" name="retailProvenance" id="retailProvenance"/><br/>
+            质量层次:<select name="qualityLevels" id="qualityLevels">
+                        <option value="">请选择</option>
+                    </select>
+		质量层次说明:<input type="text" name="qualityLevelExplain" id="qualityLevelExplain"/><br/>
+		有无药品检验报告:<input type="radio" name="isCheckout" value="0"/>有
+						<input type="radio" name="isCheckout" value="1"/>无<br/>
+		药品检验报告编码:<input type="text" name="heckoutNumber" id="heckoutNumber"/><br/>
+		药品检验报告有效期:<input type="date" name="drugValidTime" id="drugValidTime"/><br/>
+		产品说明:<textarea rows="2" cols="40" name="productExplain" id="productExplain">
+
+                </textarea><br/>
+            药品类别:<select name="drugCategorys" id="drugCategorys">
+						<option value="">请选择</option>
+					</select>
+            药品交易状态:<select name="drugStates" id="drugStates">
+							<option value="0">正常</option>
+							<option value="1">交易暂停</option>
+						</select>
+	</div>
+	<!--修改的弹框-->
+	<div id="editcontent1" class="alertceng">
+				<input type="hidden" name="diId" id="diIds"/>
+		流 水 号:<input type="text" name="serialNumber" id="serialNumbers"/>
+		通 用 名:<input type="text" name="commonName" id="commonNames"/><br/>
+		剂    型:<input type="text" name="dosageForm" id="dosageForms"/>
+		规    格:<input type="text" name="speciflcation" id="speciflcations"/><br/>
+		单    位:<input type="text" name="company" id="companys"/>
+		转换系数:<input type="text" name="coefficient" id="coefficients"/><br/>
+		生产企业:<input type="text" name="productionName" id="productionNames"/>
+		商品名称:<input type="text" name="commodityName" id="commodityNames"/><br/>
+		中标价格:<input type="text" name="biddingPrice" id="biddingPrices"/>
+		批准文号:<input type="text" name="approvalNumber" id="approvalNumbers"/><br/>
+		批准文号有效期:<input type="date" name="approvalTime" id="approvalTimes"/>
+		是否进口药:<input type="radio" name="isEntrances" value="0"/>是
+				  <input type="radio" name="isEntrances" value="1"/>否<br/>
+		包装材质:<input type="text" name="packagingTexture" id="packagingTextures"/>
+		包装单位:<input type="text" name="packUnit" id="packUnits"/><br/>
+		最新零售价:<input type="text" name="newestPrice" id="newestPrices"/><br/>
+		零售价出处:<input type="text" name="retailProvenance" id="retailProvenances"/><br/>
+		有无药品检验报告:<input type="radio" name="isCheckouts" value="0"/>有
+						<input type="radio" name="isCheckouts" value="1"/>无<br/>
+		药品检验报告编码:<input type="text" name="heckoutNumber" id="heckoutNumbers"/><br/>
+		药品检验报告有效期:<input type="date" name="drugValidTime" id="drugValidTimes"/><br/>
+		产品说明:<textarea rows="2" cols="40" name="productExplain" id="productExplains">
+
+                </textarea><br/>
+		药品交易状态:<select name="drugStatess" id="drugStatess">
+						<option value="0">正常</option>
+						<option value="1">交易暂停</option>
+					</select>
+	</div>
+</body>
+<script type="text/javascript">
+	$(function(){
+		$('#table').basictable({
+			breakpoint: 1000
+		});
+		findQualityLevel();
+		findDrugCategory();
+		findDrugCategorys();
+		findQualityLevels();
+		dataForm(1);
+	})
+	//导入excel文件
+	function excelUpload() {
+		var file =  $("#files")[0].files[0];
+		var formData = new FormData();
+		formData.append("uploadFile",file);
+		if (confirm("确定导入？")){
+			$.ajax({
+				url:"/drugInformation/uploadFiles",
+				type:"post",
+				dataType:"json",
+				data:formData,
+				cache: false,   //上传文件无需缓存
+				processData: false,   // 用于对参数进行序列化处理，这里必须设为false
+				contentType:false, // 必须
+				success:function (data) {
+					alert("导入成功");
+					console.log(data);
+				},error:function (data) {
+
+				}
+			})
+		}
+	}
+	//导出Excel1
+	function ExportExcel() {
+		/*$.ajax({
+			url:"/drugInformation/ExportExcel",
+			type:"get",
+			dataType:"json",
+			seccess:function (data) {
+				alert("导出成功");
+				console.log(data);
+			},error:function (data) {
+
+			}
+		})*/
+		window.location.href="/drugInformation/ExportExcel";
+	}
+	//查询全部药品信息
+	function dataForm(pageNum){
+		var ser = $("#drugForm").serialize();
+        ser += "&pageNum="+pageNum;
+        /*$.param(ser);
+        console.log("表单序列化=============="+ser);*/
+        $.ajax({
+			url:"/drugInformation/findAllDrugInfoLike",
+			type:"get",
+			dataType:"json",
+			data:ser,
+			success:function (datas) {
+				//console.log(datas);
+				var data = datas.list;
+				$.each(data,function (index,item) {
+					data[index].biddingPrice=data[index].biddingPrice.biddingPrice;
+					data[index].company=data[index].company.dictionariesName;
+					data[index].qualityLevel=data[index].qualityLevel.dictionariesName;
+					data[index].drugCategorys=data[index].drugCategorys.dictionariesName;
+                    data[index].approvalNumber=data[index].approvalNumber.approvalNumber;
+                    data[index].approvalTime=data[index].approvalTime.approvalTime;
+                    data[index].isEntrances=data[index].isEntrances.isEntrance;
+                    data[index].packagingTexture=data[index].packagingTexture.packagingTexture;
+					data[index].packUnit=data[index].packUnit.packUnit;
+					data[index].newestPrice=data[index].newestPrice.newestPrice;
+					data[index].retailProvenance=data[index].retailProvenance.retailProvenance;
+					data[index].isCheckouts=data[index].isCheckouts.isCheckout;
+					data[index].heckoutNumber=data[index].heckoutNumber.heckoutNumber;
+					data[index].drugValidTime=data[index].drugValidTime.drugValidTime;
+					data[index].productExplain=data[index].productExplain.productExplain;
+					if(data[index].drugState==0){
+						data[index].drugState = "正常";
+					}else {
+						data[index].drugState = "交易暂停";
+					}
+				})
+				$("#table").empty();//模糊查询清楚之前表格数据
+				$("#table").reponsetable({
+					"id":"table",
+					"operation": "editer",
+					"type":"numbers",
+					"colum": [
+						{"field": "diId","title": "id"},
+						{"field": "serialNumber","title": "流水号"},
+						{"field": "commonName","title": "通用名"},
+						{"field": "dosageForm","title": "剂型"},
+						{"field": "speciflcation","title": "规格"},
+						{"field": "company","title": "单位"},
+						{"field": "coefficient","title": "转换系数"},
+						{"field": "productionName","title": "生产企业"},
+						{"field": "commodityName","title": "商品名称"},
+						{"field": "biddingPrice","title": "中标价格"},
+						{"field": "qualityLevel","title": "质量层次"},
+						{"field": "drugCategorys","title": "药品类别"},
+						{"field": "drugState","title": "交易状态"},
+                        {"field": "approvalNumber","title": "批准文号"},
+                        {"field": "approvalTime","title": "批准文号有效期"},
+                        {"field": "isEntrances","title": "是否进口"},
+                        {"field": "packagingTexture","title": "包装材质"},
+						{"field": "packUnit","title": "包装单位"},
+						{"field": "newestPrice","title": "最新零售价"},
+						{"field": "retailProvenance","title": "零售价出处"},
+						{"field": "isCheckouts","title": "有无药品检验报告"},
+						{"field": "heckoutNumber","title": "药品检验报告编码"},
+						{"field": "drugValidTime","title": "药品检验报告有效期"},
+						{"field": "productExplain","title": "产品说明"}
+					],
+					"data": data
+				});
+				//分页
+				// pageMe.js 使用方法
+				$("#pages").paging({
+					pageNum: datas.pageNum, // 当前页面
+					totalNum: datas.pages, // 总页码
+					totalList: datas.total, // 记录总数量
+					callback: function (pageNum) { //回调函数
+                        dataForm(pageNum);
+						//console.log(pageNum);
+					}
+				});
+				//隐藏单元格
+                $("[data-field='diId']").css('display','none');
+                $("[data-field='approvalNumber']").css('display','none');
+                $("[data-field='approvalTime']").css('display','none');
+                $("[data-field='isEntrances']").css('display','none');
+                $("[data-field='packagingTexture']").css('display','none');
+				$("[data-field='packUnit']").css('display','none');
+				$("[data-field='newestPrice']").css('display','none');
+				$("[data-field='retailProvenance']").css('display','none');
+				$("[data-field='isCheckouts']").css('display','none');
+				$("[data-field='heckoutNumber']").css('display','none');
+				$("[data-field='drugValidTime']").css('display','none');
+				$("[data-field='productExplain']").css('display','none');
+			},error:function (data) {
+
+			}
+		})
+	}
+	//模糊查询
+	function getSample() {
+		if (confirm("确定要搜索吗？")){
+			dataForm(1);
+		}
+	}
+	//查询质量层次
+	function findQualityLevel() {
+		var dictionariesId = 11;
+		$.ajax({
+			url:"/drugInformation/findQualityLevel",
+			type:"get",
+			dataType:"json",
+			data:dictionariesId,
+			success:function (data) {
+				//console.log(data);
+				var str = "<option value=''>请选择</option>";
+				for (var i = 0; i <data.length ; i++) {
+					str += '<option value="'+ data[i].dicId +'">'+  data[i].dictionariesName  +'</option>'
+				}
+				$("#qualityLevel").html(str);
+			},error:function (data) {
+
+			}
+		})
+	}
+	//新增的时候查询质量层次
+	function findQualityLevels() {
+		var dictionariesId = 11;
+		$.ajax({
+			url:"/drugInformation/findQualityLevel",
+			type:"get",
+			dataType:"json",
+			data:dictionariesId,
+			success:function (data) {
+				//console.log(data);
+				var str = "<option value=''>请选择</option>";
+				for (var i = 0; i <data.length ; i++) {
+					str += '<option value="'+ data[i].dicId +'">'+  data[i].dictionariesName  +'</option>'
+				}
+				$("#qualityLevels").html(str);
+			},error:function (data) {
+
+			}
+		})
+	}
+	//查询药品类别
+	function findDrugCategory() {
+		$.ajax({
+			url:"/drugInformation/findDrugCategorys",
+			type:"get",
+			dataType:"json",
+			success:function (data) {
+				//console.log(data);
+				var str = "<option value=''>请选择</option>";
+				for (var i = 0; i <data.length ; i++) {
+					str += '<option value="'+ data[i].dicId +'">'+  data[i].dictionariesName  +'</option>'
+				}
+				$("#drugCategory").html(str);
+			},error:function (data) {
+
+			}
+		})
+	}
+	//新增的时候查询药品类别
+	function findDrugCategorys() {
+		$.ajax({
+			url:"/drugInformation/findDrugCategorys",
+			type:"get",
+			dataType:"json",
+			success:function (data) {
+				//console.log(data);
+				var str = "<option value=''>请选择</option>";
+				for (var i = 0; i <data.length ; i++) {
+					str += '<option value="'+ data[i].dicId +'">'+  data[i].dictionariesName  +'</option>'
+				}
+				$("#drugCategorys").html(str);
+			},error:function (data) {
+
+			}
+		})
+	}
+	//新增药品信息
+	function addtr() {
+		layer.open({
+		  type: 1,
+		  title: '添加药品信息',
+		  closeBtn: 1,
+		  area: '516px',
+		  skin: '#fff', //没有背景色
+		  shadeClose: true,
+		  content: $('#editcontent'),
+		  btn:["保存","关闭"],
+		  btn1:function(index,layero){
+			  var serialNumber=$("#serialNumber").val();
+			  var commonName=$("#commonName").val();
+			  var dosageForm=$("#dosageForm").val();
+			  var speciflcation=$("#speciflcation").val();
+			  var company=$("#company").val();
+			  if (company == "盒"){company = 7}
+			  if (company == "瓶"){company = 8}
+			  if (company == "支"){company = 9}
+			  if (company == "只"){company = 10}
+			  var coefficient=$("#coefficient").val();
+			  var productionName=$("#productionName").val();
+			  var commodityName=$("#commodityName").val();
+			  var biddingPrice=$("#biddingPrice").val();
+			  var approvalNumber=$("#approvalNumber").val();
+			  var approvalTime=$("#approvalTime").val();
+			  var isEntrance=$("input[name='isEntrance']:checked").val();
+			  var packagingTexture=$("#packagingTexture").val();
+			  var packUnit=$("#packUnit").val();
+			  var newestPrice=$("#newestPrice").val();
+			  var retailProvenance=$("#retailProvenance").val();
+			  var qualityLevels=$("#qualityLevels").val();
+			  var qualityLevelExplain=$("#qualityLevelExplain").val();
+			  var isCheckout=$("input[name='isCheckout']:checked").val();
+			  var heckoutNumber=$("#heckoutNumber").val();
+			  var drugValidTime=$("#drugValidTime").val();
+			  var productExplain=$("#productExplain").val();
+			  var drugCategory=$("#drugCategorys").val();
+			  var drugState=$("#drugStates").val();
+			  var obj = {
+				  "serialNumber":serialNumber,
+				  "commonName": commonName,
+				  "dosageForm": dosageForm,
+				  "speciflcation": speciflcation,
+				  "unitId":company,
+				  "coefficient":coefficient,
+				  "productionName":productionName,
+				  "commodityName":commodityName,
+				  "biddingPrice":biddingPrice,
+				  "approvalNumber":approvalNumber,
+				  "approvalTime":approvalTime,
+				  "isEntrance":isEntrance,
+				  "packagingTexture":packagingTexture,
+				  "packUnit":packUnit,
+				  "newestPrice":newestPrice,
+				  "retailProvenance":retailProvenance,
+				  "qualityLevel":qualityLevels,
+				  "qualityLevelExplain":qualityLevelExplain,
+				  "isCheckout":isCheckout,
+				  "heckoutNumber":heckoutNumber,
+				  "drugValidTime":drugValidTime,
+				  "productExplain":productExplain,
+				  "drugCategory":drugCategory,
+				  "drugState":drugState
+			  };
+			  //reponse.addtr(obj, "table");
+			  //console.log(obj);
+			  //查询药品品目信息 验证新添加的药品品目信息是否重复
+			  if (confirm("确定添加？")){
+				  $.ajax({
+					  url:"/items/conditionfand",
+					  type:"get",
+					  datatype:"json",
+					  success:function (data) {
+						  var dataList = data.list;
+						  var msg = 0;
+						  $.each(dataList,function (index,item) {
+							  //console.log(dataList[index]);
+							  if (dataList[index].commonName == obj.commonName || dataList[index].dosageForm == obj.dosageForm){
+								  alert("添加失败，药品品目已存在:{"+"通用名:【"+obj.commonName+"】"+"  剂型:"+"【"+obj.dosageForm+"】"+"}");
+								  msg = 1;
+							  }
+						  });
+						  if(msg<=0){
+							  if (obj.commonName !="" && obj.dosageForm !="" && obj.speciflcation !="" &&
+									  obj.unitId !="" && obj.coefficient !="" && obj.productionName !="" &&
+									  obj.commodityName !="" && obj.biddingPrice !=""){
+								  $.ajax({
+									  url:"/drugInformation/addDrugInformation",
+									  type:"post",
+									  datatype:"json",
+									  data:obj,
+									  success:function (data) {
+										  alert("添加成功");
+										  window.location.reload();
+									  },error:function (data) {
+
+									  }
+								  })
+							  }else {
+								  alert("添加失败（通用名，剂型，单位，转换系数，企业名称，商品名，中标价格不能为空）！！")
+							  }
+						  }
+					  },error:function (data) {
+
+					  }
+				  })
+				  //reponse.editsavetr(obj, "table");
+			  }
+			  layer.close(index);
+		  },btn2:function(index,layero){
+			  layer.close(index);
+		  }
+		});
+	};
+	//修改药品信息
+	function edittr(a, e) {
+		var tr = $(a).parent().parent();
+		reponse.resiverowdata(tr, "table");
+		var rowdata=$("#table").data("rowdata");
+		//alert(JSON.stringify(rowdata));
+		$("#diIds").val(rowdata.diId);
+		$("#serialNumbers").val(rowdata.serialNumber);
+		$("#commonNames").val(rowdata.commonName);
+		$("#dosageForms").val(rowdata.dosageForm);
+		$("#speciflcations").val(rowdata.speciflcation);
+		$("#companys").val(rowdata.company);
+		$("#coefficients").val(rowdata.coefficient);
+		$("#productionNames").val(rowdata.productionName);
+		$("#commodityNames").val(rowdata.commodityName);
+		$("#biddingPrices").val(rowdata.biddingPrice);
+		$("#approvalNumbers").val(rowdata.approvalNumber);
+		$("#approvalTimes").val(rowdata.approvalTime);
+		$("input[name='isEntrances'][value='"+rowdata.isEntrances+"']").prop("checked","checked");
+		$("#packagingTextures").val(rowdata.packagingTexture);
+		$("#packUnits").val(rowdata.packUnit);
+		$("#newestPrices").val(rowdata.newestPrice);
+		$("#retailProvenances").val(rowdata.retailProvenance);
+		$("input[name='isCheckouts'][value='"+rowdata.isCheckouts+"']").prop("checked","checked");
+		$("#heckoutNumbers").val(rowdata.heckoutNumber);
+		$("#drugValidTimes").val(rowdata.drugValidTime);
+		$("#productExplains").val(rowdata.productExplain);
+		if (rowdata.drugState == "正常"){
+			rowdata.drugState = 0
+		}else {
+			rowdata.drugState = 1
+		}
+		$("#drugStatess").val(rowdata.drugState);
+		//页面层-佟丽娅
+		layer.open({
+			type: 1,
+			title: '编辑药品信息',
+			closeBtn: 1,
+			area: '516px',
+			skin: '#fff', //没有背景色
+			shadeClose: true,
+			content: $('#editcontent1'),
+			btn:["保存","关闭"],
+			btn1:function(index,layero){
+				var diId=$("#diIds").val();
+				var serialNumber=$("#serialNumbers").val();
+				var commonName=$("#commonNames").val();
+				var dosageForm=$("#dosageForms").val();
+				var speciflcation=$("#speciflcations").val();
+				var company=$("#companys").val();
+				if (company == "盒"){company = 7}
+				if (company == "瓶"){company = 8}
+				if (company == "支"){company = 9}
+				if (company == "只"){company = 10}
+				var coefficient=$("#coefficients").val();
+				var productionName=$("#productionNames").val();
+				var commodityName=$("#commodityNames").val();
+				var biddingPrice=$("#biddingPrices").val();
+				var approvalNumber=$("#approvalNumbers").val();
+				var approvalTime=$("#approvalTimes").val();
+				var isEntrance=$("input[name='isEntrances']:checked").val();
+				//console.log(isEntrance);
+				var packagingTexture=$("#packagingTextures").val();
+				var packUnit=$("#packUnits").val();
+				var newestPrice=$("#newestPrices").val();
+				var retailProvenance=$("#retailProvenances").val();
+				var isCheckout=$("input[name='isEntrances']:checked").val();
+				var heckoutNumber=$("#heckoutNumbers").val();
+				var drugValidTime=$("#drugValidTimes").val();
+				var productExplain=$("#productExplains").val();
+				var drugState=$("#drugStatess").val();
+				var obj = {
+					"diId":diId,
+					"serialNumber":serialNumber,
+					"commonName": commonName,
+					"dosageForm": dosageForm,
+					"speciflcation": speciflcation,
+					"unitId":company,
+					"coefficient":coefficient,
+					"productionName":productionName,
+					"commodityName":commodityName,
+					"biddingPrice":biddingPrice,
+					"approvalNumber":approvalNumber,
+					"approvalTime":approvalTime,
+					"isEntrance":isEntrance,
+					"packagingTexture":packagingTexture,
+					"packUnit":packUnit,
+					"newestPrice":newestPrice,
+					"retailProvenance":retailProvenance,
+					"isCheckout":isCheckout,
+					"heckoutNumber":heckoutNumber,
+					"drugValidTime":drugValidTime,
+					"productExplain":productExplain,
+					"drugState":drugState
+				};
+				if (confirm("确定修改？")){
+					$.ajax({
+						url:"/drugInformation/updateDrugInformation",
+						type:"post",
+						datatype:"json",
+						data:obj,
+						success:function (data) {
+							//console.log(data);
+							alert("修改成功");
+							window.location.reload();
+						},error:function (data) {
+
+						}
+					})
+					//reponse.editsavetr(obj, "table");
+				}
+				layer.close(index);
+			},btn2:function(index,layero){
+				layer.close(index);
+			}
+		});
+	}
+	//删除药品信息
+	function deletetr(a, e) {
+		var tr = $(a).parent().parent();
+		reponse.resiverowdata(tr, "table");
+		var rowdata=$("#table").data("rowdata");
+		//alert(JSON.stringify(rowdata));
+		var id = rowdata.diId
+		if (confirm("确定删除？")){
+			$.ajax({
+				url:"/drugInformation/delDrugInformation",
+				type:"post",
+				dataType:"json",
+				data:{"id":id},
+				success:function (data) {
+					alert("删除成功")
+					console.log(data);
+				},error:function (data) {
+
+				}
+			})
+			reponse.deletetr(tr, e);
+		}
+	}
+	/*function uptr(btn, e) {
+		var tr = $(btn).parent().parent();
+		reponse.moveuptr(tr, "table");
+	}*/
+	/*function downtr(btn, e) {
+		var tr = $(btn).parent().parent();
+		reponse.moveDown(tr, "table");
+	}*/
+	//导出Excel
+	/*function ExportExcel() {
+		var tableobj=$("#table").data("tableObj");
+		//console.log(JSON.stringify(tableobj));
+		reponse.JSONToCSVConvertor(tableobj, true,"药品表格");
+	}*/
+	/*function resivetabledata(){
+		var pp=$("#table").data("tableObj").data;
+		alert(JSON.stringify(pp));
+	}*/
+	/*function reloadtable(){
+		var data=[
+			{"Name": "1111","Age": 15,"Gender": "1","Height": 189,"Province": "1","Sport": "1"},
+			{"Name": "2222","Age": 15,"Gender": "2","Height": 2,"Province": "2","Sport": "2"},
+			{"Name": "3333","Age": 15,"Gender": "4","Height": 189,"Province": "3","Sport": "3"}
+		]
+		reponse.reloadtable(data,"table");
+	}*/
+	/*function coldata(){
+		var pp=reponse.Columndata("Name","table");
+		alert(pp);
+	}*/
+</script>
+</html>

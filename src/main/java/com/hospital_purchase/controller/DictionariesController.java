@@ -3,6 +3,7 @@ package com.hospital_purchase.controller;
 import com.github.pagehelper.PageInfo;
 import com.hospital_purchase.pojo.Dictionaries;
 import com.hospital_purchase.service.DictionariesService;
+import com.hospital_purchase.vo.DictionariesVO;
 import com.hospital_purchase.vo.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -79,6 +80,17 @@ public class DictionariesController {
     @ResponseBody
     public Message changeDictionaries(Dictionaries dictionaries){
         return dictionariesService.changeDictionaries(dictionaries);
+    }
+
+    /**
+     * 查单条
+     * @param dicId 字典id
+     * @return 单条数据
+     */
+    @RequestMapping("/findDictionariesById")
+    @ResponseBody
+    public DictionariesVO findDictionariesById(Integer dicId){
+        return dictionariesService.findDictionariesById(dicId);
     }
 
 }
