@@ -41,20 +41,9 @@
 	<script type="text/javascript" src="../../static/renponsetable/js/pageMe.js"></script>
 </head>
 <body>
+	<h5 class="alert alert-infoalert alert-info" style="background-color: #00c0ef; color: #0f0f0f">药品信息查询</h5>
 	<div class="layui-fluid layadmin-homepage-fluid" style="background: #fff;width:99%;margin:0 auto;">
 		<div id="page">
-			<div class="btn-container">
-				<button class="layui-btn" onclick="addtr();">添加</button>
-				<button class="layui-btn" onclick="ExportExcel();">导出Excel</button>
-				<button class="layui-btn" onclick="getSample();">搜索</button>
-				<input type="file" id="files"/>
-				<button type="button" class="layui-btn" onclick="excelUpload()">导入</button>
-				<!--<button class="layui-btn" onclick="javascript:$('#excelUpload').click()" >导入</button>
-				<input id="excelUpload" type="file" style="display: none" onchange="excelUpload()">-->
-				<!--<button class="layui-btn" onclick="resivetabledata();">获取table数据</button>-->
-				<!--<button class="layui-btn" onclick="reloadtable();">刷新table表格</button>
-				<button class="layui-btn" onclick="coldata();">获取某一列的数据</button>-->
-			</div>
 			<!--模糊查询form表单-->
 			<form id="drugForm">
                 <table class="table table-bordered table-striped">
@@ -92,6 +81,17 @@
                     </tr>
                 </table>
 			</form>
+			<div class="btn-container">
+				<button class="layui-btn" onclick="addtr();">添加</button>
+				<button class="layui-btn" onclick="ExportExcel();">导出Excel</button>
+				<!--<input type="file" id="files"/><button type="button" class="layui-btn" onclick="excelUpload()">导入</button>-->
+				<button class="layui-btn" onclick="javascript:$('#excelUpload').click()" >导入</button>
+				<input id="excelUpload" type="file" style="display: none" onchange="excelUpload()">
+				<button class="layui-btn" onclick="getSample();">搜索</button>
+				<!--<button class="layui-btn" onclick="resivetabledata();">获取table数据</button>-->
+				<!--<button class="layui-btn" onclick="reloadtable();">刷新table表格</button>
+				<button class="layui-btn" onclick="coldata();">获取某一列的数据</button>-->
+			</div>
 			<table id="table" class="reponsetable" ></table>
 			<script type="text/html" id="editer">
 				<a class="layui-btn layui-btn-xs" onclick="edittr(this)">编辑</a>
@@ -200,12 +200,28 @@
 				processData: false,   // 用于对参数进行序列化处理，这里必须设为false
 				contentType:false, // 必须
 				success:function (data) {
+					alert("导入成功");
 					console.log(data);
 				},error:function (data) {
 
 				}
 			})
 		}
+	}
+	//导出Excel1
+	function ExportExcel() {
+		/*$.ajax({
+			url:"/drugInformation/ExportExcel",
+			type:"get",
+			dataType:"json",
+			seccess:function (data) {
+				alert("导出成功");
+				console.log(data);
+			},error:function (data) {
+
+			}
+		})*/
+		window.location.href="/drugInformation/ExportExcel";
 	}
 	//查询全部药品信息
 	function dataForm(pageNum){
@@ -456,45 +472,47 @@
 			  //reponse.addtr(obj, "table");
 			  //console.log(obj);
 			  //查询药品品目信息 验证新添加的药品品目信息是否重复
-			  $.ajax({
-				  url:"/items/conditionfand",
-				  type:"get",
-				  datatype:"json",
-				  success:function (data) {
-					 var dataList = data.list;
-					 var msg = 0;
-					  $.each(dataList,function (index,item) {
-					  	//console.log(dataList[index]);
-					  	if (dataList[index].commonName == obj.commonName || dataList[index].dosageForm == obj.dosageForm){
-							alert("添加失败，药品品目已存在:{"+"通用名:【"+obj.commonName+"】"+"  剂型:"+"【"+obj.dosageForm+"】"+"}");
-						  msg = 1;
-					  	}
-					  });
-					  if(msg<=0){
-					  	if (obj.commonName !="" && obj.dosageForm !="" && obj.speciflcation !="" &&
-							obj.unitId !="" && obj.coefficient !="" && obj.productionName !="" &&
-							obj.commodityName !="" && obj.biddingPrice !=""){
-							$.ajax({
-								url:"/drugInformation/addDrugInformation",
-								type:"post",
-								datatype:"json",
-								data:obj,
-								success:function (data) {
-									alert("添加成功");
-									window.location.reload();
-								},error:function (data) {
+			  if (confirm("确定添加？")){
+				  $.ajax({
+					  url:"/items/conditionfand",
+					  type:"get",
+					  datatype:"json",
+					  success:function (data) {
+						  var dataList = data.list;
+						  var msg = 0;
+						  $.each(dataList,function (index,item) {
+							  //console.log(dataList[index]);
+							  if (dataList[index].commonName == obj.commonName || dataList[index].dosageForm == obj.dosageForm){
+								  alert("添加失败，药品品目已存在:{"+"通用名:【"+obj.commonName+"】"+"  剂型:"+"【"+obj.dosageForm+"】"+"}");
+								  msg = 1;
+							  }
+						  });
+						  if(msg<=0){
+							  if (obj.commonName !="" && obj.dosageForm !="" && obj.speciflcation !="" &&
+									  obj.unitId !="" && obj.coefficient !="" && obj.productionName !="" &&
+									  obj.commodityName !="" && obj.biddingPrice !=""){
+								  $.ajax({
+									  url:"/drugInformation/addDrugInformation",
+									  type:"post",
+									  datatype:"json",
+									  data:obj,
+									  success:function (data) {
+										  alert("添加成功");
+										  window.location.reload();
+									  },error:function (data) {
 
-								}
-							})
-						}else {
-					  		alert("添加失败（通用名，剂型，单位，转换系数，企业名称，商品名，中标价格不能为空）！！")
-						}
+									  }
+								  })
+							  }else {
+								  alert("添加失败（通用名，剂型，单位，转换系数，企业名称，商品名，中标价格不能为空）！！")
+							  }
+						  }
+					  },error:function (data) {
+
 					  }
-				  },error:function (data) {
-
-				  }
-			  })
-			  //reponse.editsavetr(obj, "table");
+				  })
+				  //reponse.editsavetr(obj, "table");
+			  }
 			  layer.close(index);
 		  },btn2:function(index,layero){
 			  layer.close(index);
@@ -596,20 +614,22 @@
 					"productExplain":productExplain,
 					"drugState":drugState
 				};
-				$.ajax({
-					url:"/drugInformation/updateDrugInformation",
-					type:"post",
-					datatype:"json",
-					data:obj,
-					success:function (data) {
-						//console.log(data);
-						reponse.editsavetr(obj, "table");
-						alert("修改成功");
-						window.location.reload();
-					},error:function (data) {
+				if (confirm("确定修改？")){
+					$.ajax({
+						url:"/drugInformation/updateDrugInformation",
+						type:"post",
+						datatype:"json",
+						data:obj,
+						success:function (data) {
+							//console.log(data);
+							alert("修改成功");
+							window.location.reload();
+						},error:function (data) {
 
-					}
-				})
+						}
+					})
+					//reponse.editsavetr(obj, "table");
+				}
 				layer.close(index);
 			},btn2:function(index,layero){
 				layer.close(index);
@@ -623,18 +643,21 @@
 		var rowdata=$("#table").data("rowdata");
 		//alert(JSON.stringify(rowdata));
 		var id = rowdata.diId
-		$.ajax({
-			url:"/drugInformation/delDrugInformation",
-			type:"post",
-			dataType:"json",
-			data:id,
-			success:function (data) {
-				console.log(data);
-			},error:function (data) {
+		if (confirm("确定删除？")){
+			$.ajax({
+				url:"/drugInformation/delDrugInformation",
+				type:"post",
+				dataType:"json",
+				data:{"id":id},
+				success:function (data) {
+					alert("删除成功")
+					console.log(data);
+				},error:function (data) {
 
-			}
-		})
-		reponse.deletetr(tr, e);
+				}
+			})
+			reponse.deletetr(tr, e);
+		}
 	}
 	/*function uptr(btn, e) {
 		var tr = $(btn).parent().parent();
@@ -645,15 +668,15 @@
 		reponse.moveDown(tr, "table");
 	}*/
 	//导出Excel
-	function ExportExcel() {
+	/*function ExportExcel() {
 		var tableobj=$("#table").data("tableObj");
 		//console.log(JSON.stringify(tableobj));
 		reponse.JSONToCSVConvertor(tableobj, true,"药品表格");
-	}
-	function resivetabledata(){
+	}*/
+	/*function resivetabledata(){
 		var pp=$("#table").data("tableObj").data;
 		alert(JSON.stringify(pp));
-	}
+	}*/
 	/*function reloadtable(){
 		var data=[
 			{"Name": "1111","Age": 15,"Gender": "1","Height": 189,"Province": "1","Sport": "1"},

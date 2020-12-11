@@ -35,7 +35,7 @@ public class DrugMessage {
 
     private String productExplain;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd",timezone="GMT+8")
     private Date approvalTime;
 
@@ -45,7 +45,7 @@ public class DrugMessage {
 
     private Byte isCheckout;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd",timezone="GMT+8")
     private Date drugValidTime;
 
