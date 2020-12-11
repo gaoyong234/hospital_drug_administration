@@ -7,6 +7,7 @@ import com.hospital_purchase.dao.PurchaseOrdersMapper;
 import com.hospital_purchase.pojo.PurchaseOrders;
 import com.hospital_purchase.service.PurchaseOrdersService;
 import com.hospital_purchase.util.Identities;
+import com.hospital_purchase.util.ReturnUtil;
 import com.hospital_purchase.vo.Message;
 import com.hospital_purchase.vo.PurchaseOrdersVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,30 +32,32 @@ public class PurchaseOrdersServiceImpl implements PurchaseOrdersService {
 
     @Override
     public Message addPurchaseOrders(PurchaseOrders purchaseOrders) {
-        Message message = new Message();
         Date date = new Date();
         purchaseOrders.setFundTime(date);
         purchaseOrders.setSubmitTime(date);
         purchaseOrders.setPurchaseNumber(Identities.randomLong("采购单"));
         int num = purchaseOrdersMapper.insertSelective(purchaseOrders);
-        if (num>0){
-            message.setEstimate(true);
-            message.setSlogan("添加成功！！");
-        }else {
-            message.setSlogan("添加失败！！");
-            message.setEstimate(false);
-        }
+        Message message = ReturnUtil.returnDataOperation("添加", num);
         return message;
     }
 
     @Override
-    public Integer changePurchaseOrders(PurchaseOrders purchaseOrders) {
-        return purchaseOrdersMapper.updateByPrimaryKeySelective(purchaseOrders);
+    public Message changePurchaseOrders(PurchaseOrders purchaseOrders) {
+        purchaseOrders.setModifiedTime(new Date());
+        Integer num = purchaseOrdersMapper.updateByPrimaryKeySelective(purchaseOrders);
+        Message message = ReturnUtil.returnDataOperation("修改", num);
+        return message;
     }
 
     @Override
-    public Integer removePurchaseOrders(Integer id) {
+    public Message removePurchaseOrders(Integer id) {
+        Integer num = purchaseOrdersDaoMapper.updatePurchaseOrders(id);
+        Message message = ReturnUtil.returnDataOperation("删除", num);
+        return message;
+    }
 
-        return purchaseOrdersMapper.deleteByPrimaryKey(id);
+    @Override
+    public PurchaseOrdersVO getPurchaseOrdersById(Integer id) {
+        return purchaseOrdersDaoMapper.selectPurchaseOrdersById(id);
     }
 }

@@ -1,17 +1,29 @@
 package com.hospital_purchase.controller;
 
+import com.alibaba.excel.ExcelReader;
+import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.excel.support.ExcelTypeEnum;
 import com.github.pagehelper.PageInfo;
 import com.hospital_purchase.pojo.DrugItems;
 import com.hospital_purchase.service.DurgItemsService;
 import com.hospital_purchase.vo.DrugItemsVO;
+import com.hospital_purchase.vo.ExcelListener;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("items")
@@ -89,4 +101,68 @@ public class DrugItemsController {
     public Integer expurgate(Integer diId){
        return durgItemsService.expurgate(diId);
     }
+
+    /**
+     * 导出全部数据
+     * @param response 前端传回来的,可以解析出地址和名字
+     */
+    @RequestMapping("exportExcel")
+    public void exportExcel(HttpServletResponse response){
+        try {
+            durgItemsService.exportExcel(response);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @RequestMapping("loadtemplate")
+    public void loadtemplate(HttpServletResponse response){
+        try {
+            durgItemsService.loadtemplate(response);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @RequestMapping("readfile")
+    @ResponseBody
+    public DrugItemsVO readfile(@RequestParam("filename") MultipartFile file) {
+        InputStream inputStream = null;
+        try {
+            inputStream = file.getInputStream();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String fileName = file.getName();
+        //实例化实现了AnalysisEventListener接口的类
+        ExcelListener listener = new ExcelListener();
+        //传入参数
+        ExcelReader excelReader = null;
+        if (fileName.endsWith(".xls")) {
+            excelReader = new ExcelReader(inputStream, ExcelTypeEnum.XLS, null, listener);
+
+        } else if (fileName.endsWith(".xlsx")) {
+            excelReader = new ExcelReader(inputStream, ExcelTypeEnum.XLSX, null, listener);
+        } else {
+            excelReader = new ExcelReader(inputStream, ExcelTypeEnum.XLSX, null, listener);
+        }
+
+        //读取信息
+        excelReader.read(new Sheet(2, 1, DrugItemsVO.class));
+
+        //获取数据
+        List<Object> list = listener.getDatas();
+
+        List<DrugItemsVO> catagoryList = new ArrayList<DrugItemsVO>();
+        DrugItemsVO catagory = new DrugItemsVO();
+
+        //转换数据类型,并插入到数据库
+        for (int i = 0; i < list.size(); i++) {
+            catagory = (DrugItemsVO) list.get(i);
+            System.out.println(catagory);
+        }
+        return null;
+    }
+
 }

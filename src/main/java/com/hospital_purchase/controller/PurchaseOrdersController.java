@@ -5,6 +5,7 @@ import com.hospital_purchase.pojo.PurchaseOrders;
 import com.hospital_purchase.pojo.User;
 import com.hospital_purchase.service.PurchaseOrdersService;
 import com.hospital_purchase.vo.Message;
+import com.hospital_purchase.vo.PurchaseOrdersVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,7 +51,7 @@ public class PurchaseOrdersController {
      */
     @RequestMapping("/changePurchaseOrders")
     @ResponseBody
-    public Integer changePurchaseOrders(PurchaseOrders purchaseOrders){
+    public Message changePurchaseOrders(PurchaseOrders purchaseOrders){
         return purchaseOrdersService.changePurchaseOrders(purchaseOrders);
     }
 
@@ -71,12 +72,25 @@ public class PurchaseOrdersController {
 
     /**
      *  删除某一采购单信息
-     * @param id
+     * @param poId
      * @return
      */
     @RequestMapping("/removePurchaseOrders")
     @ResponseBody
-    public Integer removePurchaseOrders(Integer id){
-        return purchaseOrdersService.removePurchaseOrders(id);
+    public Message removePurchaseOrders(Integer poId){
+        return purchaseOrdersService.removePurchaseOrders(poId);
+    }
+
+
+    /**
+     *
+     * @param poId 采购单id
+     * @return 单挑采购单
+     */
+    @RequestMapping("/getOnePurchaseOrders")
+    @ResponseBody
+    public PurchaseOrdersVO getOnePurchaseOrders(Integer poId){
+
+        return purchaseOrdersService.getPurchaseOrdersById(poId);
     }
 }
