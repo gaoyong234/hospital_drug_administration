@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../static/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <link rel="stylesheet" href="../static/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/plugins/adminLTE/css/AdminLTE.css">
+    <link rel="stylesheet" href="../static/plugins/adminLTE/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../static/plugins/angularjs/toaster.min.css">
+    <script src="../static/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+    <script src="../static/plugins/angularjs/angular.min.js"></script>
+    <link rel="stylesheet" href="../static/plugins/angularjs/pagination.css">
+    <script type="text/javascript" src="../static/plugins/angularjs/pagination.js"></script>
+    <style>
+        label { float: left; width: 10em; margin-right: 1em; text-align: right; }
+    </style>
+   <!-- <script>
+       var app= angular.module("myApp",["pagination"]);
+       app.controller("myContr",function ($scope,$http) {
+           $scope.paginationConf={
+               currentPage: 1,  				//当前页
+               totalItems: 10,					//总记录数
+               itemsPerPage: 10,				//每页记录数
+               perPageOptions: [5,10, 20, 30, 40, 50], //分页选项，下拉选择一页多少条记录
+               onChange: function () {
+                   $scope.find($scope.paginationConf.currentPage,$scope.paginationConf.itemsPerPage)
+               }
+           }
+           $scope.drug={
+               pageNum:0,
+               pageSize:10
+           }
+           $scope.find=function(pageNum,items) {
+               if (pageNum==null||pageNum==""){
+                   pageNum=1;
+               }
+               $scope.drug.pageNum=pageNum;
+               $scope.drug.pageSize=items;
+               var druglist=$scope.drug;
+               $http({
+                   url:"/items/conditionfand",
+                   method:"post",
+                   params: druglist
+                   ,
+               }).success(function (response) {
+                   $scope.lists=response.list;
+                   $scope.item=new Date();
+                   $scope.paginationConf.totalItems=response.total;
+               })
+
+           }
+            $scope.amend=function (diId) {
+                $http({
+                    url:"/items/fandId",
+                    method:"get",
+                    params:{"diId": diId}
+                    ,
+                }).success(function (response) {
+                    $scope.dritem=response;
+                })
+            }
+            $scope.ngsave=function () {
+                var ditereva=$scope.dritem;
+                var list = $scope.lists;
+                for (var i = 0; i < list.length; i++) {
+                    if (list[i].diId == $scope.dritem.diId) {
+                        $scope.pd = list[i];
+                        break;
+                    }
+                }
+                var equ=$scope.pd.commonName==$scope.dritem.commonName&&$scope.pd.dosageForm==$scope.dritem.dosageForm&&$scope.pd.speciflcation==$scope.dritem.speciflcation&&$scope.pd.unitId==$scope.dritem.unitId&&$scope.pd.coefficient==$scope.dritem.coefficient;
+                var dec=$scope.dritem.commonName!=null&&$scope.dritem.dosageForm!=null&&$scope.dritem.speciflcation!=null&&$scope.dritem.unitId!=null&&$scope.dritem.coefficient!=null&&$scope.dritem.commonName!=""&&$scope.dritem.dosageForm!=""&&$scope.dritem.speciflcation!=""&&$scope.dritem.unitId!=""&&$scope.dritem.coefficient!="";
+                if (equ){
+                    alert("请修改后提交")
+                }else {
+                    if (dec){
+                        $http({
+                            url:"/items/revamp",
+                            method:"post",
+                            params: ditereva
+                            ,
+                        }).success(function (response) {
+                            if (response>0){
+                                alert("修改成功")
+                                $scope.find();
+                            }else {
+                                alert("修改失败")
+                            }
+                        })
+                    }else {
+                        alert("请完善信息后保存!")
+                    }
+                }
+            }
+            $scope.chage=function(diId){
+                var list = $scope.lists;
+                for (var i = 0; i < list.length; i++) {
+                    if (list[i].diId == diId) {
+                        $scope.chagedri = list[i];
+                        break;
+                    }
+                }
+                console.log($scope.chagedri)
+            }
+            $scope.expurgate=function (diId) {
+                if (confirm("是否确认删除?")){
+                    $http({
+                        url: "/items/expurgate",
+                        method: "get",
+                        params: {"diId":diId}
+                    }).success(function (response) {
+                        if (response>0){
+                            $scope.find();
+                        }else {
+                            alert("删除失败")
+                        }
+                    })
+                }
+            }
+           $scope.loadAlllick=function () {
+               if (confirm("是否导出全部数据")) {
+                   window.location.href = "/items/exportExcel";
+               } else {
+                   return false;
+               }
+           }
+           $scope.loadtemplate=function () {
+                window.location.href="/items/loadtemplate";
+           }
+
+       })
+
+
+    </script>
+    <script type="text/javascript">
+        var demo=false;
+        $(function () {
+            $("#addition input").blur(function () {
+                $(this).next().html("");
+                $(this).next().css("color","black");
+                if (this.value!=null&&this.value!=""){
+                    demo=true;
+                }else{
+                    $(this).next().html("不能为空");
+                    $(this).next().css("color","red");
+                    demo=false;
+                }
+            })
+        })
+
+        var lists;
+        function save() {
+           var commonName=$("[name='commonName']").val();
+           var dosageForm=$("[name='dosageForm']").val();
+          var  speciflcation=$("[name='speciflcation']").val();
+           var unitId=$("[name='unitId']").val();
+           var coefficient=$("[name='coefficient']").val();
+          var  drugCategoryName=$("[name='drugCategoryName']").val();
+           var drugStateName=$("[name='drugStateName']").val();
+            demo = commonName != null && commonName != "" && dosageForm != null && dosageForm != "" && speciflcation != null && speciflcation != "" && unitId != null && unitId != "" && coefficient != null && coefficient != "" && drugCategoryName != null && drugCategoryName != "" && drugStateName != null && drugStateName != "";
+            if (demo){
+              conserve()
+            }else {
+                document.getElementById("headLeft").innerHTML="药品品目添加"
+                document.getElementById("headline").innerHTML="失败提示信息"
+                document.getElementById("whether").innerHTML="因数据不完整,您的操作失败,请尝试刷新页面,重新操作"
+            }
+        }
+        function conserve() {
+            var addform = $("#addForm").serialize();
+            $.ajax({
+                url: "/items/addDrugItems",
+                dataType: "json",
+                type: "post",
+                data: addform,
+                success: function (data) {
+                    if (data > 0) {
+                        document.getElementById("headLeft").innerHTML="药品品目添加"
+                        document.getElementById("headline").innerHTML="成功提示信息"
+                        document.getElementById("whether").innerHTML="您的操作成功"
+                        document.getElementById("lose").innerHTML="";
+                    } else {
+                        document.getElementById("headLeft").innerHTML="药品品目添加"
+                        document.getElementById("headline").innerHTML="失败提示信息"
+                        document.getElementById("whether").innerHTML="您的操作失败,请尝试刷新页面,重新操作"
+                    }
+                }
+            })
+        }
+        var lose=0;
+        var dritlist=null;
+        function readAlllick() {
+            dritlist=null;
+            var file = $("#files")[0].files[0];
+            if (file==null){
+                document.getElementById("headLeft").innerHTML="药品品目导入"
+                document.getElementById("headline").innerHTML="失败提示信息"
+                document.getElementById("whether").innerHTML="您的操作失败"
+                document.getElementById("lose").innerHTML="请先选择文件,再点击导入按钮";
+            }else {
+            var formData = new FormData;
+            formData.append("filename", file);
+            $.ajax({
+                url: "/items/readfile",     //路径
+                type: "post",        //格式
+                dataType: "josn",    //数据格式
+                data: formData,  //数据
+                cache: false,   //上传文件无需缓存
+                processData: false,   // 用于对参数进行序列化处理，这里必须设为false
+                contentType: false, // 必须
+                success : function (count) {
+                    var con = count.responseText;
+                    if (con>0){
+                        document.getElementById("headLeft").innerHTML="药品品目导入"
+                        document.getElementById("headline").innerHTML="成功提示信息"
+                        document.getElementById("whether").innerHTML="您的操作成功"
+                        document.getElementById("lose").innerHTML="成功导入"+con+"条数据";
+                    }else {
+                        document.getElementById("headLeft").innerHTML="药品品目导入"
+                        document.getElementById("headline").innerHTML="失败提示信息"
+                        document.getElementById("whether").innerHTML="您的操作失败"
+                        document.getElementById("lose").innerHTML="请确认信息符合导入说明";
+                    }
+                },
+                error:function (count) {
+                    var parse = JSON.parse(count.responseText);
+                    var succeed = parse.succeed;
+                    lose = parse.lose;
+                    dritlist=parse.drugItemsList;
+                    if (succeed>0){
+                        document.getElementById("headLeft").innerHTML="药品品目导入"
+                        document.getElementById("headline").innerHTML="成功提示信息"
+                        document.getElementById("whether").innerHTML="您的操作成功"
+                        document.getElementById("lose").innerHTML="成功导入"+succeed+"条数据,导入失败"+lose+"条";
+                    }else {
+                        document.getElementById("headLeft").innerHTML="药品品目导入"
+                        document.getElementById("headline").innerHTML="失败提示信息"
+                        document.getElementById("whether").innerHTML="您的操作失败"
+                        document.getElementById("lose").innerHTML="请确认信息符合导入说明";
+                    }
+                }
+            })
+            }
+        }
+        function fandLose() {
+            document.getElementById("headLeft").innerHTML="药品品目导入"
+            document.getElementById("headline").innerHTML="失败信息"
+            document.getElementById("whether").innerHTML="您的操作共失败"+lose+"条"
+            console.log(dritlist)
+            var a=""
+            for (var i = 0; i < dritlist.length; i++) {
+                a+="&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp第"+(i+1)+"条:",
+                a+=dritlist[i].commonName+","
+                a+=dritlist[i].dosageForm+","
+                a+=dritlist[i].speciflcation+","
+                a+=dritlist[i].unitId+","
+                a+=dritlist[i].coefficient+","
+                a+=dritlist[i].drugCategoryName
+                if ((i+1)%2==0){
+                    a+="<br>"
+                }
+            }
+            document.getElementById("lose").innerHTML=a
+        }
+
+    </script>-->
+
+</head>
+<body ng-app="myApp" ng-controller="myContr">
+    <div>
+    <h5 class="alert alert-infoalert alert-info">创建退货单</h5>
+    <table class="table table-bordered table-striped">
+        <tr>
+            <td>医院编码:<input ng-model="drug.diId"></td>
+            <td>医院名称:<input ng-model="drug.commonName"></td>
+            <td>退货单编码:<input ng-model="drug.speciflcation"></td>
+            <td>退货单名称:<input ng-model="drug.unitId"></td>
+        </tr>
+        <tr>
+            <td>退货时间:<input type="date" ng-model="drug.coefficient"></td>
+            <td>建单时间:<input type="date" ng-model="drug.unitId"></td>
+            <td>联系人:<input ng-model="drug.coefficient"></td>
+            <td>联系电话:<input ng-model="drug.unitId"></td>
+        </tr>
+        <tr>
+            <td>退货单状态:
+                <select>
+                    <option value="">未提交</option>
+                </select>
+            </td>
+            <td>提交时间:<input type="date" ng-model="drug.unitId"></td>
+            <td>备注:<input ng-model="drug.coefficient"></td>
+        </tr>
+        <tr>
+            <td colspan="1" align="right"> <button type="button" class="btn1" ng-click="find()">保存退货单</button></td>
+        </tr>
+    </table>
+</div>
+    <div>
+        <h5 class="alert alert-infoalert alert-info">退货单管理</h5>
+        <table class="table table-bordered table-striped">
+    <tr>
+        <td>采购单编码:<input ng-model="drug.diId"></td>
+        <td>采购单名称:<input ng-model="drug.commonName"></td>
+        <td>采购状态:
+            <select>
+                <option value=""></option>
+            </select>
+        </td>
+        <td>采购医院:<input ng-model="drug.speciflcation"></td>
+    </tr>
+    <tr>
+        <td>开始采购时间:<input ng-model="drug.unitId"></td>
+        <td>结束采购时间:<input ng-model="drug.coefficient"></td>
+        <td>药品流水号:<input ng-model="drug.unitId"></td>
+        <td>通用名:<input ng-model="drug.coefficient"></td>
+    </tr>
+    <tr>
+        <td>剂型:<input ng-model="drug.unitId"></td>
+        <td>规格:<input ng-model="drug.coefficient"></td>
+        <td>单位:<input ng-model="drug.unitId"></td>
+        <td>转换系数:<input ng-model="drug.coefficient"></td>
+    </tr>
+    <tr>
+        <td>生产企业:<input ng-model="drug.unitId"></td>
+        <td>商品名称:<input ng-model="drug.coefficient"></td>
+        <td>质量层次:
+            <select>
+                <option value="">全部</option>
+            </select>
+        </td>
+        <td>药品类别:
+            <select>
+                <option value="">全部</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td>入库时间:<input type="date" ng-model="drug.unitId">至<input type="date" ng-model="drug.unitId"></td>
+        <td>药品批号:<input ng-model="drug.coefficient"></td>
+        <td>发票号或入库单号:<input ng-model="drug.unitId"></td>
+        <td>供货商:
+            <select>
+                <option value="">全部</option>
+            </select>
+        </td>
+    </tr>
+    <!--<tr>
+        <td>药品类别:<select ng-model="drug.drugCategoryName">
+        <option value="1">儿童用药</option>
+        </select>
+        </td>
+        <td>
+            状态:<select ng-model="drug.drugStateName">
+        <option value="2">正常</option>
+            <option value="3">不正常</option>
+        </select>
+        </td>
+    </tr>-->
+    <tr>
+        <td colspan="1" align="right"> <button type="button" class="btn1" ng-click="find()">查询</button></td>
+        <td> <button type="button" class="btn1" ng-click="loadAlllick()">导出</button></td>
+    </tr>
+</table>
+    </div>
+    <div>
+        <button type="button" class="btn1" data-toggle="modal" data-target="#addition" ng-click="addClick()">添加
+        </button>
+        <button type="button" class="btn1" data-toggle="modal" data-target="#introduce" ng-click="loadlick()">导入
+        </button>
+    </div>
+    <div>
+        <table id="dataList" class="table">
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>选择</th>
+                    <th>采购单编码</th>
+                    <th>采购单名称</th>
+                    <th>采购医院</th>
+                    <th>流水号</th>
+                    <th>通用名</th>
+                    <th>商品名</th>
+                    <th>中标价格</th>
+                    <th>交易价格</th>
+                    <th>采购量</th>
+                    <th>采购金额</th>
+                    <th>入库量</th>
+                    <th>实际交易金额</th>
+                    <th>发票号或入库单号</th>
+                    <th>药品批号</th>
+                    <th>药品有效期</th>
+                    <th>剂型</th>
+                    <th>规格</th>
+                    <th>转换系数</th>
+                    <th>质量层次</th>
+                    <th>生产企业</th>
+                    <th>供货企业</th>
+                    <th>开始采购时间</th>
+                    <th>结束采购时间</th>
+                    <th>采购状态</th>
+                    <th>详情</th>
+                </tr>
+            </thead>
+        <tbody id="tbody">
+            <tr ng-repeat="x in lists">
+                <!--<td>{{x.diId}}</td>
+                <td>{{x.commonName}}</td>
+                <td>{{x.dosageForm}}</td>
+                <td>{{x.speciflcation}}</td>
+                <td>{{x.unitId}}</td>
+                <td>{{x.coefficient}}</td>
+                <td>{{x.drugCategoryName}}</td>
+                <td>{{x.drugStateName}}</td>-->
+                <td><button class="btn btn-success" data-toggle="modal" data-target="#chage" ng-click="chage(x.diId)" >查看</button></td>
+                <td><button class="btn btn-warning" data-toggle="modal" data-target="#more" ng-click="amend(x.diId)">修改</button></td>
+                <td><button class="btn btn-danger" data-toggle="modal" ng-click="expurgate(x.diId)">删除</button></td>
+            </tr>
+        </tbody>
+    </table>
+        <tm-pagination conf="paginationConf"></tm-pagination>
+    </div>
+<div class="modal fade" id="addition" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:80%;">
+        <div class="modal-content" >
+            <div class="modal-header">
+                <button id="bt1" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel">药品品目添加</h3>
+            </div>
+            <div class="modal-body">
+                <form id="addForm">
+                <table class="table table-bordered table-striped"  >
+                    <tr>
+                        <td>药品品目号:</td>
+                        <td><input name="diId" readonly="readonly" onblur class="form-control"></td>
+                        <td>通用名:</td>
+                        <td><input name="commonName" onblur  class="form-control" >
+                        <span></span></td>
+                    </tr>
+                    <tr>
+
+                        <td>剂型:</td>
+                        <td><input name="dosageForm" onblur   class="form-control" >
+                        <span></span></td>
+                        <td>规格:</td>
+                        <td><input name="speciflcation" onblur   class="form-control"  >
+                        <span></span></td>
+                    </tr>
+                    <tr>
+                        <td>单位:</td>
+                        <td><input name="unitId" onblur   class="form-control" >
+                            <span></span></td>
+                        <td>转换系数:</td>
+                        <td><input name="coefficient" onblur   class="form-control" >
+                            <span></span></td>
+                    </tr>
+                    <tr>
+                        <td>药品类别:</td>
+                        <td><select  name="drugCategoryName" onblur class="form-control" >
+                            <option value="1">儿童用药</option>
+                        </select><span></span></td>
+                        <td>状态:</td>
+                        <td><select name="drugStateName" onblur  class="form-control" >
+                            <option value="2">正常</option>
+                            <option value="3">非正常</option>
+                        </select><span></span></td>
+                    </tr>
+                </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-toggle="modal" data-dismiss="modal" data-target="#status" onclick="save()">保存</button>
+                <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="status" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="headLeft" type="text" ></h4>
+                <h4 id="headline" type="text" style="width: 100%;height: 45px;display: block;line-height: 45px;text-align: center;"></h4>
+                <p id="whether" type="text" style="width: 100%;height: 45px;display: block;line-height: 45px;text-align: center;"></p>
+                <div>
+                    <p id="lose" ></p>
+                </div>
+                <div style="text-align:center">
+                    <button data-dismiss="modal" aria-hidden="true">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="introduce" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+    <h4 class="text-primary">药品品目导入</h4>
+                <br>
+       <div class="text-center">
+    下载导入模板文件  <button class="text-primary" ng-click="loadtemplate()">点击下载药品品目导入模板</button><br><br>
+        <span style="color: red">提示:请下载后在模板文件中录入药品品目信息,在下面的"选择文件"中选择要导入的文件,点击"导入"</span><br>
+       <div class="text-center">
+           <input style="display:block" id="files" type="file">
+       </div>
+     </div>
+                <div class="text-center">
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-dismiss="modal" data-target="#status" onclick="readAlllick()">导入
+                    </button>
+                    <button class="btn btn-info" data-toggle="modal" data-dismiss="modal" data-target="#status" onclick="fandLose()">查看导入失败结果</button>
+                    <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">关闭</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="modal fade" id="more" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button id="bt" type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h3 id="myModalLabe">修改页面</h3>
+            </div>
+            <div class="modal-body">
+                <form id="inserInto">
+                    <table class="table table-bordered table-striped"  >
+                        <tr>
+                            <td>药品品目号:</td>
+                            <td><input ng-model="dritem.diId" name="diId" readonly="readonly" onblur class="form-control"></td>
+                            <td>通用名:</td>
+                            <td><input ng-model="dritem.commonName" name="commonName"  class="form-control" >
+                                <span></span></td>
+                        </tr>
+                        <tr>
+
+                            <td>剂型:</td>
+                            <td><input ng-model="dritem.dosageForm" name="dosageForm"  class="form-control" >
+                                <span></span></td>
+                            <td>规格:</td>
+                            <td><input ng-model="dritem.speciflcation" name="speciflcation"   class="form-control"  >
+                                <span></span></td>
+                        </tr>
+                        <tr>
+                            <td>单位:</td>
+                            <td><input ng-model="dritem.unitId" name="unitId"  class="form-control" >
+                                <span></span></td>
+                            <td>转换系数:</td>
+                            <td><input ng-model="dritem.coefficient" name="coefficient"    class="form-control" >
+                                <span></span></td>
+
+                        </tr>
+                        <tr>
+                            <td>药品类别:</td>
+                            <td><select ng-model="dritem.drugCategoryName" name="drugCategoryName"  class="form-control" >
+                                <option value="1">儿童用药</option>
+                            </select><span></span></td>
+                            <td>状态:</td>
+                            <td><select ng-model="dritem.drugStateName" name="drugStateName"   class="form-control" >
+                                <option value="2">正常</option>
+                                <option value="3">非正常</option>
+                            </select><span></span></td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" data-dismiss="modal" ng-click="ngsave()">保存</button>
+                <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="chage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button id="bton" type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h3>修改页面</h3>
+            </div>
+            <div class="modal-body">
+                    <table class="table table-bordered table-striped"  >
+                        <tr>
+                            <td>药品品目号:</td>
+                            <td><input ng-model="chagedri.diId"  readonly="readonly" onblur class="form-control"></td>
+                            <td>通用名:</td>
+                            <td><input ng-model="chagedri.commonName" readonly="readonly"  class="form-control" >
+                                <span></span></td>
+                        </tr>
+                        <tr>
+
+                            <td>剂型:</td>
+                            <td><input ng-model="chagedri.dosageForm" readonly="readonly"  class="form-control" >
+                                <span></span></td>
+                            <td>规格:</td>
+                            <td><input ng-model="chagedri.speciflcation" readonly="readonly"   class="form-control"  >
+                                <span></span></td>
+                        </tr>
+                        <tr>
+                            <td>单位:</td>
+                            <td><input ng-model="chagedri.unitId" readonly="readonly"  class="form-control" >
+                                <span></span></td>
+                            <td>转换系数:</td>
+                            <td><input ng-model="chagedri.coefficient" readonly="readonly"    class="form-control" >
+                                <span></span></td>
+
+                        </tr>
+                        <tr>
+                            <td>药品类别:</td>
+                            <td><input ng-model="chagedri.drugCategoryName" readonly="readonly"  class="form-control" >
+                            </input></td>
+                            <td>状态:</td>
+                            <td><input ng-model="chagedri.drugStateName" readonly="readonly"   class="form-control" >
+                            </input></td>
+                        </tr>
+                    </table>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" data-dismiss="modal" >确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
