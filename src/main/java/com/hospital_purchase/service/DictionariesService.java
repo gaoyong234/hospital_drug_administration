@@ -21,7 +21,7 @@ public interface DictionariesService {
     //修改
     Message changeDictionaries(Dictionaries dictionaries);
 
-    PageInfo findAllDictionaries(Integer pageNum,Integer pageSize);
+    PageInfo findAllDictionaries(Integer pageNum,Integer pageSize,Dictionaries dictionaries);
 
     DictionariesVO findDictionariesById(Integer dicId);
 

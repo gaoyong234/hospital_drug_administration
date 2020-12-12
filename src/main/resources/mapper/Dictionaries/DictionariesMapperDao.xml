@@ -30,12 +30,23 @@
     where dic.del_id=0
     and dic.dic_id=#{dicId}
   </select>
-  <select id="selectAllDictionaries" resultMap="BaseMap">
+  <select id="selectAllDictionaries" resultMap="BaseMap" parameterType="com.hospital_purchase.pojo.Dictionaries">
     select
     dic.dic_id, dic.dictionaries_name, dic.dictionaries_id, dic.create_time, dic.modified_time, dic.del_id,d.dictionaries_name parent_name
     from dictionaries dic
     left join dictionaries d on d.dic_id=dic.dictionaries_id
-    where dic.del_id=0
+    <where>
+      <if test="dictionariesName != null and dictionariesName != ''">
+        and dic.dictionaries_name like CONCAT("%",#{dictionariesName},"%")
+      </if>
+
+      <if test="dictionariesId != null and dictionariesId != ''">
+        and dic.dictionaries_id = #{dictionariesId}
+      </if>
+      and dic.del_id = 0
+    </where>
+
+
   </select>
   <select id="selectParentDictionaries" resultMap="BaseResultMap">
     select 'true' as QUERYID,

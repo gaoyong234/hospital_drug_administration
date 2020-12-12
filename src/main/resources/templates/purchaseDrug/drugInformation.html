@@ -33,30 +33,6 @@
         var app = angular.module("myApp", ["pagination"]);
         app.controller("myContr", function ($scope, $http) {
             $scope.entity = {};
-            //获取医院信息
-            $http({
-                url: "/Hospital/findOneHospital",
-                method: "post",
-            }).success(function (response) {
-                var date = new Date();
-                var dateYear = date.getFullYear();             //获取年
-                var dateMonth = date.getMonth() + 1;               //获取月
-                var dateDate = date.getDate();                 //获取当日
-                var dateHours = date.getHours();               //获取小时
-                var dateMinutes = date.getMinutes();           //获取分钟
-                var dateSeconds = date.getSeconds();           //获取秒
-                if (dateMonth < 10) dateMonth = "0" + dateMonth;
-                if (dateDate < 10) dateDate = "0" + dateDate;
-                if (dateHours < 10) dateHours = "0" + dateHours;
-                if (dateMinutes < 10) dateMinutes = "0" + dateMinutes;
-                if (dateSeconds < 10) dateSeconds = "0" + dateSeconds;
-
-                var newTime = dateYear + "-" + dateMonth + "-" + dateDate + " " + dateHours + ":" + dateMinutes + ":" + dateSeconds;
-                $scope.hospital = response;
-                $scope.entity.purchaseName = response.hospitalName + newTime + "采购单";
-
-            });
-
             $scope.paginationConf = {
                 currentPage: 1,  				//当前页
                 totalItems: 10,					//总记录数
@@ -304,40 +280,42 @@
             </td>
         </tr>
         <tr>
+            <td></td>
             <td colspan="1" align="right">
-                <button type="button" class="btn1" ng-click="find()">查询</button>
+                <button type="button" class="btn btn-success" ng-click="find()">查询</button>
             </td>
-            <td>
-                <button type="button" class="btn1" ng-click="loadAlllick()">导出</button>
-            </td>
+            <td></td>
+            <td></td>
         </tr>
 
     </table>
 
 </div>
-
-<div>
-    <button type="button" class="btn btn-primary" style="margin-left: 35px" data-toggle="modal" data-target="#editModal"
-            ng-click="addClick()">添加
-    </button>
-</div>
 <div>
     <table id="dataList" class="table">
         <thead>
+       <div style="margin-top: 20px">
+           <input type="checkbox" name="pitchOn" onchange="childrenCheck()">全选
+           <input type="checkbox" name="pitchOn" onchange="childrenCheck()">反选
+           <button style="margin-left: 10px" type="button" class="btn btn-primary btn-sm">确认选择</button>
+       </div>
+
         <tr>
-            <th><input type="checkbox" name="pitchOn" onchange="childrenCheck()"></th>
-            <th>医院名称</th>
-            <th>采购单编号</th>
-            <th>采购单名称</th>
-            <th>开始时间</th>
-            <th>结束时间</th>
-            <th>建单时间</th>
-            <th>提交时间</th>
-            <th>审核时间</th>
-            <th>采购单状态</th>
-            <th>查看</th>
-            <th>修改</th>
-            <th>删除</th>
+            <th>选择药品</th>
+            <th>药品流水号</th>
+            <th>通用名</th>
+            <th>剂型</th>
+            <th>规格</th>
+            <th>单位</th>
+            <th>转换系数</th>
+            <th>生产企业</th>
+            <th>商品名称</th>
+            <th>中标价</th>
+            <th>药品类别</th>
+            <th>药品交易状态</th>
+            <th>供货商</th>
+            <th>供货状态</th>
+            <th>详细</th>
         </tr>
         </thead>
 
@@ -353,16 +331,12 @@
             <td>{{po.submitTime}}</td>
             <td>{{po.auditTime}}</td>
             <td>{{po.purchaseState}}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
             <td>
                 <button class="btn btn-success" ng-click="detailedOne(po.poId)" data-toggle="modal">详细</button>
-            </td>
-            <td>
-                <button class="btn btn-warning" data-toggle="modal" data-target="#modification"
-                        ng-click="reviseMassage(po.poId)">修改
-                </button>
-            </td>
-            <td>
-                <button class="btn btn-danger" ng-click="removeOne(po.poId)">删除</button>
             </td>
         </tr>
         </tbody>

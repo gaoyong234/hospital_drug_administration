@@ -42,7 +42,7 @@
                     $scope.find($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage)
                 }
             }
-            $scope.drug = {
+            $scope.dictionaries = {
                 pageNum: 0,
                 pageSize: 10
             }
@@ -50,14 +50,14 @@
                 if (pageNum == null || pageNum == "") {
                     pageNum = 1;
                 }
-                $scope.drug.pageNum = pageNum;
-                $scope.drug.pageSize = items;
-                var druglist = $scope.drug;
-                //console.log(druglist)
+                $scope.dictionaries.pageNum = pageNum;
+                $scope.dictionaries.pageSize = items;
+                var dictionariesMessage = $scope.dictionaries;
+                console.log(dictionariesMessage)
                 $http({
                     url: "/Dictionaries/findAllDictionaries",
                     method: "post",
-                    params: druglist
+                    params: dictionariesMessage
                 }).success(function (response) {
                     $scope.lists = response.list;
                     $scope.paginationConf.totalItems = response.total;
@@ -207,18 +207,26 @@
     <h5 class="alert alert-infoalert alert-info">字典详情页</h5>
     <table class="table table-bordered table-striped">
         <tr>
-        <td class="introduce">字典名称:</td>
-        <td class="contents"><input ng-model="dictionaries.serialNumber"  class="form-control"/></td>
-        <td class="introduce">父级字典:</td>
-        <td class="contents">
-            <select ng-model="dictionaries.drugCategorys" class="form-control">
-                <option value="">无</option>
-                <option ng-repeat="ParentDictionaries in ParentDictionariesList"
-                        ng-value="ParentDictionaries.dicId">{{ParentDictionaries.dictionariesName}}
-                </option>
-            </select>
-        </td>
-    </tr>
+            <td class="introduce">字典名称:</td>
+            <td class="contents"><input ng-model="dictionaries.dictionariesName"  class="form-control"/></td>
+            <td class="introduce">父级字典:</td>
+            <td class="contents">
+                <select ng-model="dictionaries.dictionariesId" class="form-control">
+                    <option value="">无</option>
+                    <option ng-repeat="ParentDictionaries in ParentDictionariesList"
+                            ng-value="ParentDictionaries.dicId">{{ParentDictionaries.dictionariesName}}
+                    </option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td colspan="1" align="right">
+                <button type="button" class="btn btn-info" ng-click="find()">查询</button>
+            </td>
+            <td></td>
+            <td></td>
+        </tr>
     </table>
 </div>
 <div>
