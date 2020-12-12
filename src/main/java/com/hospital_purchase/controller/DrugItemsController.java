@@ -6,10 +6,7 @@ import com.alibaba.excel.support.ExcelTypeEnum;
 import com.github.pagehelper.PageInfo;
 import com.hospital_purchase.pojo.DrugItems;
 import com.hospital_purchase.service.DurgItemsService;
-import com.hospital_purchase.vo.DrugItemsVO;
-import com.hospital_purchase.vo.DrugItemsVoRead;
-import com.hospital_purchase.vo.ExcelListener;
-import com.hospital_purchase.vo.WhetherSucceed;
+import com.hospital_purchase.vo.*;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -117,7 +114,10 @@ public class DrugItemsController {
         }
     }
 
-
+    /**
+     * 导出方法
+     * @param response 前端传回的HTTP
+     */
     @RequestMapping("loadtemplate")
     public void loadtemplate(HttpServletResponse response){
         try {
@@ -127,6 +127,11 @@ public class DrugItemsController {
         }
     }
 
+    /**
+     * 导入的方法
+     * @param file 前端传回的文件
+     * @return 传回前端的正确条数,以及错误条数及错误的信息
+     */
     @RequestMapping("readfile")
     @ResponseBody
     public WhetherSucceed readfile(@RequestParam("filename") MultipartFile file) {
@@ -182,6 +187,12 @@ public class DrugItemsController {
         whetherSucceed.setSucceed(county);
         whetherSucceed.setLose(countn);
         return whetherSucceed;
+    }
+
+    @RequestMapping("itemsdiction")
+    @ResponseBody
+    public List itemsdiCtion(){
+        return durgItemsService.itemsdiCtion();
     }
 
 }
