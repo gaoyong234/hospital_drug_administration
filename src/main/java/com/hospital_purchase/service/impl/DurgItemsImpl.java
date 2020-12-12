@@ -5,6 +5,7 @@ import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.Sheet;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hospital_purchase.dao.DictionariesDao.DictionariesDaoMapper;
 import com.hospital_purchase.dao.drugitemsmydao.DrugItemsMyMapper;
 import com.hospital_purchase.service.DurgItemsService;
 import com.hospital_purchase.util.EasyExcelUtil;
@@ -24,6 +25,9 @@ import java.util.List;
 public class DurgItemsImpl implements DurgItemsService {
     @Autowired
     private DrugItemsMyMapper drugItemsMyMapper;
+
+    @Autowired
+    private DictionariesDaoMapper dictionariesDaoMapper;
 
     @Override
     public PageInfo<DrugItemsVO> conditionfand(Integer pageNum, Integer pageSize, DrugItemsVO druglist) {
@@ -78,5 +82,10 @@ public class DurgItemsImpl implements DurgItemsService {
     public Integer readfile(DrugItemsVoRead drugitemsvo) {
         Integer readfile = drugItemsMyMapper.readfile(drugitemsvo);
         return readfile;
+    }
+
+    @Override
+    public List itemsdiCtion() {
+        return dictionariesDaoMapper.selectAllDictionaries();
     }
 }

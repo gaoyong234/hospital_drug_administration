@@ -150,7 +150,24 @@
                 }
             })
         })
-
+        var dictarr1=new Array()
+        var dictarr2=new Array()
+        var dictarr3=new Array()
+        function neonw() {
+            $.ajax({
+                url: "/items/itemsdiction",
+                dataType: "json",
+                type: "post",
+                data: "",
+                success : function (diction) {
+                    var dict=diction;
+                    for (var i = 0; i < dict.length; i++) {
+                        if (dict[i].dictionariesId==1){}
+                        dictarr1=dict[i].dictionariesId
+                    }
+                }
+            })
+        }
         var lists;
         function save() {
            var commonName=$("[name='commonName']").val();
@@ -269,7 +286,7 @@
     </script>
 
 </head>
-<body ng-app="myApp" ng-controller="myContr">
+<body ng-app="myApp" ng-controller="myContr" onload="neonw()">
 <div>
    <h5 class="alert alert-infoalert alert-info">药品品目查询</h5>
 <table class="table table-bordered table-striped">

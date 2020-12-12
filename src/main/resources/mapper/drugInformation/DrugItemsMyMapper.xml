@@ -41,10 +41,11 @@
   </sql>
   <select id="conditionfand" resultMap="BaseMap">
     SELECT di_id,common_name,dosage_form,speciflcation,
-	unit_id,coefficient,dc.dictionaries_name as drug_category_name,dic.dictionaries_name as drug_state_name
+	coefficient,dc.dictionaries_name as drug_category_name,dic.dictionaries_name as drug_state_name,dict.dictionaries_name as unit_id
 	FROM drug_items di
 	LEFT JOIN dictionaries dc on di.drug_category = dc.dic_id
 	LEFT JOIN dictionaries dic on di.drug_state = dic.dic_id
+    LEFT JOIN dictionaries dict on di.unit_id = dict.dic_id
     <where>
       <if test="diId != null and diId != ''">
         and di.di_id = #{diId}
