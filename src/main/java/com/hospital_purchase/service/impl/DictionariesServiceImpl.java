@@ -61,9 +61,9 @@ public class DictionariesServiceImpl implements DictionariesService {
     }
 
     @Override
-    public PageInfo findAllDictionaries(Integer pageNum,Integer pageSize) {
+    public PageInfo findAllDictionaries(Integer pageNum,Integer pageSize,Dictionaries dictionaries) {
         PageHelper.startPage(pageNum,pageSize);
-        List list = dictionariesDaoMapper.selectAllDictionaries();
+        List list = dictionariesDaoMapper.selectAllDictionaries(dictionaries);
         PageInfo<DictionariesVO> pageInfo = new PageInfo<>(list);
         return pageInfo;
     }

@@ -17,7 +17,7 @@ public interface DictionariesDaoMapper {
     //修改
     Integer updateDictionaries(Dictionaries dictionaries);
     //查所有
-    List selectAllDictionaries();
+    List selectAllDictionaries(Dictionaries dictionaries);
 
     //查单条
     DictionariesVO selectDictionariesById(Integer dicId);
