@@ -400,7 +400,7 @@
 			data:dictionariesId,
 			success:function (data) {
 				//console.log(data);
-				var str = "<option value=''>请选择</option>";
+				var str = "<option value=''>全部</option>";
 				for (var i = 0; i <data.length ; i++) {
 					str += '<option value="'+ data[i].dicId +'">'+  data[i].dictionariesName  +'</option>'
 				}
@@ -438,7 +438,7 @@
 			dataType:"json",
 			success:function (data) {
 				//console.log(data);
-				var str = "<option value=''>请选择</option>";
+				var str = "<option value=''>全部</option>";
 				for (var i = 0; i <data.length ; i++) {
 					str += '<option value="'+ data[i].dicId +'">'+  data[i].dictionariesName  +'</option>'
 				}
@@ -547,7 +547,7 @@
 							  console.log(dataList[index]);
 							  if (dataList[index].serialNumber == obj.serialNumber){
 								  alert("添加失败，药品品目已存在:{"+"通用名:【"+dataList[index].commonName+"】"+"  剂型:"+"【"+dataList[index].dosageForm+"】"+" 规格:"+"【"+dataList[index].speciflcation+"】"+" 单位:"+"【"+dataList[index].speciflcation+"】"+
-										  "转换系数:【"+dataList[index].commonName+"】"+"}");
+										  "转换系数:【"+dataList[index].coefficient+"】"+" 生产企业名称:【"+dataList[index].productionName+"】"+" 商品名称:【"+dataList[index].commodityName+"】"+"}");
 								  msg = 1;
 							  }
 						  });
