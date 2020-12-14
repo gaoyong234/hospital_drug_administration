@@ -37,7 +37,7 @@ public class User {
 
     private Date modificationTime;
 
-    private Integer delLd;
+    private Integer delId;
 
     public Integer getUsId() {
         return usId;
@@ -151,11 +151,11 @@ public class User {
         this.modificationTime = modificationTime;
     }
 
-    public Integer getDelLd() {
-        return delLd;
+    public Integer getDelId() {
+        return delId;
     }
 
-    public void setDelLd(Integer delLd) {
-        this.delLd = delLd;
+    public void setDelId(Integer delLd) {
+        this.delId = delLd;
     }
 }
