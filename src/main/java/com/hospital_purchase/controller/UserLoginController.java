@@ -1,12 +1,15 @@
 package com.hospital_purchase.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.hospital_purchase.pojo.User;
 import com.hospital_purchase.service.UserService;
 import com.hospital_purchase.util.MD5Util;
 import com.hospital_purchase.vo.Message;
+import com.hospital_purchase.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
@@ -64,9 +67,84 @@ public class UserLoginController {
      * @param user 用户信息
      * @return 返回信息
      */
+    @RequestMapping("/loginUser")
+    @ResponseBody
+    public Message loginUser(User user){
+        return userService.loginUser(user);
+    }
+    @RequestMapping("/manageUser")
+    public String manageUser(){
+        return "user/User";
+    }
+
+    /**
+     * 查所有
+     * @param pageNum
+     * @param pageSize
+     * @param user
+     * @return
+     */
+    @RequestMapping("/findAllUser")
+    @ResponseBody
+    public PageInfo findAllUser(Integer pageNum,Integer pageSize,User user){
+        return userService.findUserList(pageNum,pageSize,user);
+    }
+
+    /**
+     * 添加用户
+     * @param user 用户信息
+     * @return 成功与否信息
+     */
     @RequestMapping("/addUser")
     @ResponseBody
     public Message addUser(User user){
         return userService.addUser(user);
     }
+
+    /**
+     * 修改用户
+     * @param user 用户信息
+     * @return 修改成功与否信息
+     */
+    @RequestMapping("/changeUser")
+    @ResponseBody
+    public Message changeUser(User user){
+        return userService.changeUser(user);
+    }
+
+    /**
+     * 删除用户
+     * @param usId 用户id
+     * @return 删除成功信息
+     */
+    @RequestMapping("/removeUser")
+    @ResponseBody
+    public Message removeUser(Integer usId){
+        return userService.removeUser(usId);
+    }
+
+    /**
+     * 查vo类
+     * @param usId
+     * @return
+     */
+    @RequestMapping("/findOneUserVOById")
+    @ResponseBody
+    public UserVO findOneUserVOById(Integer usId){
+
+        return userService.findOneUserVOById(usId);
+    }
+
+    /**
+     * 查实体类
+     * @param usId
+     * @return
+     */
+    @RequestMapping("/findOneUserById")
+    @ResponseBody
+    public User findOneUserById(Integer usId){
+
+        return userService.findOneUserById(usId);
+    }
+
 }

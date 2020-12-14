@@ -13,7 +13,7 @@ public class PurchaseDrugController {
     @RequestMapping("/toDrugInformation")
     public String toDrugInformation(Integer puId,Model model){
         model.addAttribute("puId",puId);
-        return "/purchaseDrug/drugInformation";
+        return "/purchaseDrug/AddPurchaseDrug";
     }
 
 }
