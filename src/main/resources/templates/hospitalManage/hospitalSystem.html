@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../static/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <link rel="stylesheet" href="../static/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/plugins/adminLTE/css/AdminLTE.css">
+    <link rel="stylesheet" href="../static/plugins/adminLTE/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../static/plugins/angularjs/toaster.min.css">
+    <script src="../static/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+    <script src="../static/plugins/angularjs/angular.min.js"></script>
+    <link rel="stylesheet" href="../static/plugins/angularjs/pagination.css">
+    <script type="text/javascript" src="../static/plugins/angularjs/pagination.js"></script>
+    <script type="text/javascript" src="../../static/renponsetable/js/pageMe.js"></script>
+    <style>
+        label { float: left; width: 10em; margin-right: 1em; text-align: right; }
+        /*分页样式*/
+        /* 外面盒子样式---自己定义 */
+        .page_div{margin:20px 10px 20px 0;color:#666}
+        /* 页数按钮样式 */
+        .page_div button{display:inline-block;min-width:30px;height:28px;cursor:pointer;color:#666;font-size:13px;line-height:28px;background-color:#f9f9f9;border:1px solid #dce0e0;text-align:center;margin:0 4px;-webkit-appearance: none;-moz-appearance: none;appearance: none;}
+        #firstPage,#lastPage,#nextPage,#prePage{width:50px;color:#0073A9;border:1px solid #0073A9}
+        #nextPage,#prePage{width:70px}
+        .page_div .current{background-color:#0073A9;border-color:#0073A9;color:#FFF}
+        /* 页面数量 */
+        .totalPages{margin:0 10px}
+        .totalPages span,.totalSize span{color:#0073A9;margin:0 5px}
+        /*button禁用*/
+        .page_div button:disabled{opacity:.5;cursor:no-drop}
+    </style>
+    <script>
+        var app = angular.module("myApp",[]);
+        app.controller("myContr",function ($scope,$http) {
+        var demo=false;
+        $(function () {
+            $scope.query(1);
+            //判断添加的信息不能为空
+            $("#addition input").blur(function () {
+                $(this).next().html("");
+                $(this).next().css("color","black");
+                if (this.value!=null&&this.value!=""){
+                    demo=true;
+                }else{
+                    $(this).next().html("不能为空");
+                    $(this).next().css("color","red");
+                    demo=false;
+                }
+            })
+        })
+        //模糊查询list
+        $scope.fuzzyQuery  ={
+            pageNum:0,
+            pageSize:5
+        }
+
+        //查询全部数据
+        $scope.query = function(pageNum){
+            $scope.fuzzyQuery.pageNum = pageNum;
+            var dataList = $scope.fuzzyQuery;
+            $http({
+                url:"/hospitalManage/findHospital",
+                method:"get",
+                params:dataList
+            }).then(function successCallback(response) {
+                //console.log(response.data);
+                $scope.lists = response.data.list;
+                //分页// pageMe.js 使用方法
+                $("#pages").paging({
+                    pageNum: response.data.pageNum, // 当前页面
+                    totalNum: response.data.pages, // 总页码
+                    totalList: response.data.total, // 记录总数量
+                    callback: function (pageNum) { //回调函数
+                        //console.log(pageNum);
+                        $scope.query(pageNum);
+                    }
+                });
+            },function errorCallback(response) {
+
+            });
+        }
+        //添加医院信息
+        $scope.addHospitalInfo = function () {
+            var hospitalName=$("[name='hospitalName']").val();
+            var hospitalNumber=$("[name='hospitalNumber']").val();
+            var mailingAddress=$("[name='mailingAddress']").val();
+            var postalCode=$("[name='postalCode']").val();
+            var affiliatingArea=$("[name='affiliatingArea']").val();
+            var hospitalRank=$("[name='hospitalRank']").val();
+            var numberBed=$("[name='numberBed']").val();
+            var isProfit=$("[name='isProfit']").val();
+            var deanPhone=$("[name='deanPhone']").val();
+            var deanFax=$("[name='deanFax']").val();
+            var medicamentPhone=$("[name='medicamentPhone']").val();
+            var hospitalType=$("[name='hospitalType']").val();
+            var lastDrugMoney=$("[name='lastDrugMoney']").val();
+            var lastBusinessMoney=$("[name='lastBusinessMoney']").val();
+            demo = hospitalName != null && hospitalName != '' && hospitalNumber != null && hospitalNumber != '' && mailingAddress != null && mailingAddress != '' &&
+                    postalCode != null && postalCode != '' && affiliatingArea != null && affiliatingArea != '' && hospitalRank != null && hospitalRank != '' &&
+                    numberBed != null && numberBed != '' && isProfit != null && isProfit != '' && deanPhone != null && deanPhone != '' && deanFax != null &&
+                    deanFax != '' && medicamentPhone != null && medicamentPhone != '' && hospitalType != null && hospitalType != '' && lastDrugMoney != null &&
+                    lastDrugMoney != '' && lastBusinessMoney != null && lastBusinessMoney != '';
+            if (demo){
+                $scope.conserve();
+            }else {
+                document.getElementById("headLeft").innerHTML="药品品目添加"
+                document.getElementById("headline").innerHTML="失败提示信息"
+                document.getElementById("whether").innerHTML="因数据不完整,您的操作失败,请尝试刷新页面,重新操作"
+            }
+        }
+        $scope.conserve = function () {
+           var addform = $("#addForm").serialize();
+           $.ajax({
+               url: "/hospitalManage/addHospitaInfo",
+               dataType: "json",
+               type: "post",
+               data: addform,
+               success: function (data) {
+                   if (data > 0) {
+                       document.getElementById("headLeft").innerHTML="医院信息添加"
+                       document.getElementById("headline").innerHTML="成功提示信息"
+                       document.getElementById("whether").innerHTML="您的操作成功"
+                       document.getElementById("lose").innerHTML="";
+                       document.getElementById("addForm").reset();
+                   } else {
+                       document.getElementById("headLeft").innerHTML="药品品目添加"
+                       document.getElementById("headline").innerHTML="失败提示信息"
+                       document.getElementById("whether").innerHTML="您的操作失败,请尝试刷新页面,重新操作"
+                   }
+               }
+           })
+        }
+        //修改根据主键id查询数据
+        $scope.updateHospitalInfo=function (hpId) {
+            $http({
+                url:"/hospitalManage/queryHospitalInfoById",
+                method:"get",
+                params:{"hpId": hpId}
+            }).success(function (response) {
+                $scope.dritem=response;
+            })
+        }
+        //修改
+        $scope.updateSave = function () {
+            var updateList=$scope.dritem;
+            var list = $scope.lists;
+            for (var i = 0; i < list.length; i++) {
+                if (list[i].hpId == $scope.dritem.hpId) {
+                    $scope.list = list[i];
+                    break;
+                }
+            }
+            if ($scope.list.hospitalName==updateList.hospitalName && $scope.list.hospitalNumber==updateList.hospitalNumber && $scope.list.mailingAddress==updateList.mailingAddress &&
+                $scope.list.postalCode==updateList.postalCode && $scope.list.affiliatingArea==updateList.affiliatingArea && $scope.list.hospitalRank==updateList.hospitalRank &&
+                $scope.list.numberBed==updateList.numberBed && $scope.list.isProfit==updateList.isProfit && $scope.list.deanPhone==updateList.deanPhone &&
+                $scope.list.deanFax==updateList.deanFax && $scope.list.medicamentPhone==updateList.medicamentPhone && $scope.list.hospitalType==updateList.hospitalType &&
+                $scope.list.lastDrugMoney==updateList.lastDrugMoney && $scope.list.lastBusinessMoney==updateList.lastBusinessMoney){
+                alert("请修改后提交");
+            }else{
+                if (updateList.hospitalName != null && updateList.hospitalNumber != null && updateList.mailingAddress != null &&
+                    updateList.postalCode != null && updateList.affiliatingArea != null && updateList.hospitalRank != null &&
+                    updateList.numberBed != null && updateList.isProfit != null && updateList.deanPhone != null && updateList.deanFax != null &&
+                    updateList.medicamentPhone != null && updateList.hospitalType != null && updateList.lastDrugMoney != null &&
+                    updateList.lastBusinessMoney != null){
+                    console.log(updateList);
+                    $http({
+                        url:"/hospitalManage/updateHospitalInfo",
+                        method:"post",
+                        params: updateList,
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        transformRequest: function(obj) {
+                            var str = [];
+                            for (var s in obj) {
+                                str.push(encodeURIComponent(s) + "=" + encodeURIComponent(obj[s]));
+                            }
+                            return str.join("&");
+                        }
+                    }).then(function successCallback(response) {
+                        console.log(response);
+                        if (response.data>0){
+                            alert("修改成功")
+                            $scope.query(1);
+                        }else {
+                            alert("修改失败")
+                        }
+                    })
+                }else {
+                    alert("请完善信息后保存!")
+                }
+            }
+        }
+    })
+</script>
+</head>
+<body ng-app="myApp" ng-controller="myContr">
+    <!--模糊查询的table-->
+    <div>
+        <h5 class="alert alert-infoalert alert-info">医院管理</h5>
+        <table class="table table-bordered table-striped" id="drugForm">
+            <tr>
+                <td>医院名称:<input ng-model="fuzzyQuery.hospitalName"></td>
+                <td>医院编号:<input ng-model="fuzzyQuery.hospitalNumber"></td>
+                <td>通讯地址:<input ng-model="fuzzyQuery.mailingAddress"></td>
+                <td>邮政编码:<input ng-model="fuzzyQuery.postalCode"></td>
+            </tr>
+            <tr>
+                <td>所属地区:<input ng-model="fuzzyQuery.affiliatingArea"></td>
+                <td>医院级别:<input ng-model="fuzzyQuery.hospitalRank"></td>
+                <td>床位数:<input ng-model="fuzzyQuery.numberBed"></td>
+                <td>是否非营利性医疗机构:<input ng-model="fuzzyQuery.isProfit"></td>
+            </tr>
+            <tr>
+                <td>院办电话:<input ng-model="fuzzyQuery.deanPhone"></td>
+                <td>院办传真:<input ng-model="fuzzyQuery.deanFax"></td>
+                <td>药剂科电话:<input ng-model="fuzzyQuery.medicamentPhone"></td>
+                <td>医院类型:<input ng-model="fuzzyQuery.hospitalType"></td>
+            </tr>
+            <tr>
+                <td>上年度药品收入:<input ng-model="fuzzyQuery.lastDrugMoney"></td>
+                <td>上年度业务收入:<input ng-model="fuzzyQuery.lastBusinessMoney"></td>
+            </tr>
+            <tr>
+                <td colspan="1" align="left"><button type="button" class="btn1" data-toggle="modal" data-target="#addition" ng-click="addClick()">添加</button></td>
+                <td colspan="1" align="left"> <button type="button" class="btn1" ng-click="query()">查询</button></td>
+            </tr>
+        </table>
+    </div>
+    <!--<div>
+        <button type="button" class="btn1" ng-click="loadAlllick()">导出</button>
+        <button type="button" class="btn1" data-toggle="modal" data-target="#introduce" ng-click="loadlick()">导入
+        </button>
+    </div>-->
+    <!--查询的table-->
+    <div>
+        <table id="dataList" class="table">
+            <thead>
+                <tr>
+                    <th>医院名称</th>
+                    <th>医院编号</th>
+                    <th>通讯地址</th>
+                    <th>邮政编码</th>
+                    <th>所属地区</th>
+                    <th>医院级别</th>
+                    <th>床位数</th>
+                    <th>是否非营利性医疗机构</th>
+                    <th>院办电话</th>
+                    <th>院办传真</th>
+                    <th>药剂科电话</th>
+                    <th>医院类型</th>
+                    <th>上年度药品收入</th>
+                    <th>上年度业务收入</th>
+                    <th>修改</th>
+                    <th>删除</th>
+                </tr>
+            </thead>
+        <tbody id="tbody">
+            <tr ng-repeat="x in lists">
+                <th>{{x.hospitalName}}</th>
+                <th>{{x.hospitalNumber}}</th>
+                <th>{{x.mailingAddress}}</th>
+                <th>{{x.postalCode}}</th>
+                <th>{{x.affiliatingArea}}</th>
+                <th>{{x.hospitalRank}}</th>
+                <th>{{x.numberBed}}</th>
+                <th>{{x.isProfit}}</th>
+                <th>{{x.deanPhone}}</th>
+                <th>{{x.deanFax}}</th>
+                <th>{{x.medicamentPhone}}</th>
+                <th>{{x.hospitalType}}</th>
+                <th>{{x.lastDrugMoney}}</th>
+                <th>{{x.lastBusinessMoney}}</th>
+                <!--<button class="btn btn-success" data-toggle="modal" data-target="#chage" ng-click="chage(x.diId)" >查看</button>-->
+                <td><button class="btn btn-warning" data-toggle="modal" data-target="#more" ng-click="updateHospitalInfo(x.hpId)">修改</button></td>
+                <td><button class="btn btn-danger" data-toggle="modal" ng-click="expurgate(x.diId)">删除</button></td>
+            </tr>
+        </tbody>
+    </table>
+        <tm-pagination conf="paginationConf"></tm-pagination>
+    </div>
+    <!--分页-->
+    <div id="pages" class="page_div"></div>
+<div class="modal fade" id="addition" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:80%;">
+        <div class="modal-content" >
+            <div class="modal-header">
+                <button id="bt1" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel">医院信息添加</h3>
+            </div>
+            <div class="modal-body">
+                <form id="addForm">
+                <table class="table table-bordered table-striped"  >
+                    <tr>
+                        <td>医院名称:</td>
+                        <td><input name="hospitalName" onblur class="form-control">
+                        <span></span></td>
+                        <td>医院编号:</td>
+                        <td><input name="hospitalNumber" onblur  class="form-control" >
+                        <span></span></td>
+                    </tr>
+                    <tr>
+
+                        <td>通讯地址:</td>
+                        <td><input name="mailingAddress" onblur   class="form-control" >
+                        <span></span></td>
+                        <td>邮政编码:</td>
+                        <td><input name="postalCode" onblur   class="form-control"  >
+                        <span></span></td>
+                    </tr>
+                    <tr>
+                        <td>所属地区:</td>
+                        <td><input name="affiliatingArea" onblur   class="form-control" >
+                            <span></span></td>
+                        <td>医院级别:</td>
+                        <td><input name="hospitalRank" onblur   class="form-control" >
+                            <span></span></td>
+                    </tr>
+                    <tr>
+                        <td>床位数:</td>
+                        <td><input name="numberBed" onblur   class="form-control" >
+                            <span></span></td>
+                        <td>是否非营利性医疗机构:</td>
+                        <td><select name="isProfit" onblur  class="form-control" >
+                            <option value="1">是</option>
+                            <option value="2">否</option>
+                        </select><span></span></td>
+                    </tr>
+                    <tr>
+                        <td>院办电话:</td>
+                        <td><input name="deanPhone" onblur   class="form-control" >
+                            <span></span></td>
+                        <td>院办传真:</td>
+                        <td><input name="deanFax" onblur   class="form-control" >
+                            <span></span></td>
+                    </tr>
+                    <tr>
+                        <td>药剂科电话:</td>
+                        <td><input name="medicamentPhone" onblur   class="form-control" >
+                            <span></span></td>
+                        <td>医院类型:</td>
+                        <td><input name="hospitalType" onblur   class="form-control" >
+                            <span></span></td>
+                    </tr>
+                    <tr>
+                        <td>上年度药品收入:</td>
+                        <td><input name="lastDrugMoney" onblur   class="form-control" >
+                            <span></span></td>
+                        <td>上年度业务收入:</td>
+                        <td><input name="lastBusinessMoney" onblur   class="form-control" >
+                            <span></span></td>
+                    </tr>
+                </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-toggle="modal" data-dismiss="modal" data-target="#status" ng-click="addHospitalInfo()">保存</button>
+                <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="status" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="headLeft" type="text" ></h4>
+                <h4 id="headline" type="text" style="width: 100%;height: 45px;display: block;line-height: 45px;text-align: center;"></h4>
+                <p id="whether" type="text" style="width: 100%;height: 45px;display: block;line-height: 45px;text-align: center;"></p>
+                <div>
+                    <p id="lose" ></p>
+                </div>
+                <div style="text-align:center">
+                    <button data-dismiss="modal" aria-hidden="true">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="introduce" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+    <h4 class="text-primary">药品品目导入</h4>
+                <br>
+       <div class="text-center">
+    下载导入模板文件  <button class="text-primary" ng-click="loadtemplate()">点击下载药品品目导入模板</button><br><br>
+        <span style="color: red">提示:请下载后在模板文件中录入药品品目信息,在下面的"选择文件"中选择要导入的文件,点击"导入"</span><br>
+       <div class="text-center">
+           <input style="display:block" id="files" type="file">
+       </div>
+     </div>
+                <div class="text-center">
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-dismiss="modal" data-target="#status" onclick="readAlllick()">导入
+                    </button>
+                    <button class="btn btn-info" data-toggle="modal" data-dismiss="modal" data-target="#status" onclick="fandLose()">查看导入失败结果</button>
+                    <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">关闭</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="modal fade" id="more" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button id="bt" type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h3 id="myModalLabe">信息修改页面</h3>
+            </div>
+            <div class="modal-body">
+                <form id="inserInto">
+                    <table class="table table-bordered table-striped"  >
+                        <tr>
+                            <td>医院名称:</td>
+                            <td><input ng-model="dritem.hospitalName" name="hospitalName" onblur class="form-control">
+                                <span></span></td>
+                            <td>医院编号:</td>
+                            <td><input ng-model="dritem.hospitalNumber" name="hospitalNumber" onblur  class="form-control" >
+                                <span></span></td>
+                        </tr>
+                        <tr>
+
+                            <td>通讯地址:</td>
+                            <td><input ng-model="dritem.mailingAddress" name="mailingAddress" onblur   class="form-control" >
+                                <span></span></td>
+                            <td>邮政编码:</td>
+                            <td><input ng-model="dritem.postalCode" name="postalCode" onblur   class="form-control"  >
+                                <span></span></td>
+                        </tr>
+                        <tr>
+                            <td>所属地区:</td>
+                            <td><input ng-model="dritem.affiliatingArea" name="affiliatingArea" onblur   class="form-control" >
+                                <span></span></td>
+                            <td>医院级别:</td>
+                            <td><input ng-model="dritem.hospitalRank" name="hospitalRank" onblur   class="form-control" >
+                                <span></span></td>
+                        </tr>
+                        <tr>
+                            <td>床位数:</td>
+                            <td><input ng-model="dritem.numberBed" name="numberBed" onblur   class="form-control" >
+                                <span></span></td>
+                            <td>是否非营利性医疗机构:</td>
+                            <td><select ng-model="dritem.isProfit" name="isProfit" onblur  class="form-control" >
+                                <option value="1">是</option>
+                                <option value="2">否</option>
+                            </select><span></span></td>
+                        </tr>
+                        <tr>
+                            <td>院办电话:</td>
+                            <td><input ng-model="dritem.deanPhone" name="deanPhone" onblur   class="form-control" >
+                                <span></span></td>
+                            <td>院办传真:</td>
+                            <td><input ng-model="dritem.deanFax" name="deanFax" onblur   class="form-control" >
+                                <span></span></td>
+                        </tr>
+                        <tr>
+                            <td>药剂科电话:</td>
+                            <td><input ng-model="dritem.medicamentPhone" name="medicamentPhone" onblur   class="form-control" >
+                                <span></span></td>
+                            <td>医院类型:</td>
+                            <td><input ng-model="dritem.hospitalType" name="hospitalType" onblur   class="form-control" >
+                                <span></span></td>
+                        </tr>
+                        <tr>
+                            <td>上年度药品收入:</td>
+                            <td><input ng-model="dritem.lastDrugMoney" name="lastDrugMoney" onblur   class="form-control" >
+                                <span></span></td>
+                            <td>上年度业务收入:</td>
+                            <td><input ng-model="dritem.lastBusinessMoney" name="lastBusinessMoney" onblur   class="form-control" >
+                                <span></span></td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" data-dismiss="modal" ng-click="updateSave()">保存</button>
+                <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="chage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button id="bton" type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h3>修改页面</h3>
+            </div>
+            <div class="modal-body">
+                    <table class="table table-bordered table-striped"  >
+                        <tr>
+                            <td>药品品目号:</td>
+                            <td><input ng-model="chagedri.diId"  readonly="readonly" onblur class="form-control"></td>
+                            <td>通用名:</td>
+                            <td><input ng-model="chagedri.commonName" readonly="readonly"  class="form-control" >
+                                <span></span></td>
+                        </tr>
+                        <tr>
+
+                            <td>剂型:</td>
+                            <td><input ng-model="chagedri.dosageForm" readonly="readonly"  class="form-control" >
+                                <span></span></td>
+                            <td>规格:</td>
+                            <td><input ng-model="chagedri.speciflcation" readonly="readonly"   class="form-control"  >
+                                <span></span></td>
+                        </tr>
+                        <tr>
+                            <td>单位:</td>
+                            <td><input ng-model="chagedri.unitId" readonly="readonly"  class="form-control" >
+                                <span></span></td>
+                            <td>转换系数:</td>
+                            <td><input ng-model="chagedri.coefficient" readonly="readonly"    class="form-control" >
+                                <span></span></td>
+
+                        </tr>
+                        <tr>
+                            <td>药品类别:</td>
+                            <td><input ng-model="chagedri.drugCategoryName" readonly="readonly"  class="form-control" >
+                            </input></td>
+                            <td>状态:</td>
+                            <td><input ng-model="chagedri.drugStateName" readonly="readonly"   class="form-control" >
+                            </input></td>
+                        </tr>
+                    </table>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" data-dismiss="modal" >确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
