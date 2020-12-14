@@ -7,6 +7,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hospital_purchase.dao.DictionariesDao.DictionariesDaoMapper;
 import com.hospital_purchase.dao.drugitemsmydao.DrugItemsMyMapper;
+import com.hospital_purchase.pojo.Dictionaries;
 import com.hospital_purchase.service.DurgItemsService;
 import com.hospital_purchase.util.EasyExcelUtil;
 import com.hospital_purchase.vo.DrugItemsVO;
@@ -86,6 +87,6 @@ public class DurgItemsImpl implements DurgItemsService {
 
     @Override
     public List itemsdiCtion() {
-        return dictionariesDaoMapper.selectAllDictionaries();
+        return dictionariesDaoMapper.selectAllDictionaries(new Dictionaries());
     }
 }

@@ -189,6 +189,10 @@ public class DrugItemsController {
         return whetherSucceed;
     }
 
+    /**
+     * 查询字典表信息
+     * @return 返回所有字典表
+     */
     @RequestMapping("itemsdiction")
     @ResponseBody
     public List itemsdiCtion(){
