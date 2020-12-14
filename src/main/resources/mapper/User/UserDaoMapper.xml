@@ -16,11 +16,32 @@
     <result column="user_email" jdbcType="VARCHAR" property="userEmail" />
     <result column="creation_time" jdbcType="TIMESTAMP" property="creationTime" />
     <result column="modification_time" jdbcType="TIMESTAMP" property="modificationTime" />
+    <result column="del_id" jdbcType="INTEGER" property="delId" />
+  </resultMap>
+  <resultMap id="BaseMap" type="com.hospital_purchase.vo.UserVO">
+    <id column="us_id" jdbcType="INTEGER" property="usId" />
+    <result column="user_account" jdbcType="INTEGER" property="userAccount" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="user_category" jdbcType="INTEGER" property="userCategory" />
+    <result column="user_password" jdbcType="VARCHAR" property="userPassword" />
+    <result column="user_state" jdbcType="INTEGER" property="userState" />
+    <result column="hospital_id" jdbcType="VARCHAR" property="hospitalId" />
+    <result column="contact_address" jdbcType="VARCHAR" property="contactAddress" />
+    <result column="user_postal_code" jdbcType="INTEGER" property="userPostalCode" />
+    <result column="user_linkman" jdbcType="VARCHAR" property="userLinkman" />
+    <result column="user_phone" jdbcType="INTEGER" property="userPhone" />
+    <result column="user_email" jdbcType="VARCHAR" property="userEmail" />
+    <result column="creation_time" jdbcType="TIMESTAMP" property="creationTime" />
+    <result column="modification_time" jdbcType="TIMESTAMP" property="modificationTime" />
+    <result column="del_id" jdbcType="INTEGER" property="delId" />
+    <result column="hospital_name" jdbcType="VARCHAR" property="hospitalName" />
+    <result column="state_name" jdbcType="VARCHAR" property="stateName" />
+    <result column="category_name" jdbcType="VARCHAR" property="categoryName" />
   </resultMap>
   <sql id="Base_Column_List">
     us_id, user_account, user_name, user_category, user_password, user_state, hospital_id,
     contact_address, user_postal_code, user_linkman, user_phone, user_email, creation_time, 
-    modification_time
+    modification_time,del_id
   </sql>
   <select id="selectOneUser" resultMap="BaseResultMap">
     select
@@ -28,17 +49,210 @@
     from user
     where user_account = #{userAccount}
     and user_password=#{userPassword}
+    and del_id=0
+  </select>
+  <select id="selectOneUserVOById" resultMap="BaseMap" parameterType="integer">
+   select us_id, user_account, user_name, user_category, user_password, user_state, hospital_id,
+    contact_address, user_postal_code, user_linkman, user_phone, user_email, u.creation_time,
+    u.modification_time,u.del_id,h.hospital_name hospital_name,
+    dic.dictionaries_name category_name,di.dictionaries_name state_name
+    from user u
+    left join hospital h on u.hospital_id = h.hp_id
+    LEFT JOIN dictionaries dic on dic.dic_id=u.user_category
+    LEFT JOIN dictionaries di on di.dic_id = u.user_state
+    where us_id=#{usId}
+    and u.del_id=0
+  </select>
+  <select id="selectOneUserById" resultMap="BaseResultMap" parameterType="integer">
+    select
+    <include refid="Base_Column_List"/>
+    from user
+    where us_id=#{usId}
+    and del_id=0
   </select>
   <select id="countUserByAccountPassword" resultType="integer">
     select count(0)
     from user
     where user_account = #{userAccount}
+    and del_id=0
   </select>
   <select id="selectUserByAccount" resultMap="BaseResultMap" parameterType="integer">
     select
     <include refid="Base_Column_List"/>
     from user
     where user_account = #{userAccount}
+    and del_id=0
   </select>
+  <select id="selectUserList" resultMap="BaseMap"  parameterType="com.hospital_purchase.pojo.User">
+    select us_id, user_account, user_name, user_category, user_password, user_state, hospital_id,
+    contact_address, user_postal_code, user_linkman, user_phone, user_email, u.creation_time,
+    u.modification_time,u.del_id,h.hospital_name hospital_name,
+    dic.dictionaries_name category_name,di.dictionaries_name state_name
+    from user u
+    left join hospital h on u.hospital_id = h.hp_id
+    LEFT JOIN dictionaries dic on dic.dic_id=u.user_category
+    LEFT JOIN dictionaries di on di.dic_id = u.user_state
+    <where>
+      <if test="userName != null and userName != ''">
+        and u.user_name like CONCAT("%",#{userName},"%")
+      </if>
+
+      <if test="userAccount != null and userAccount != ''">
+        and u.user_account = #{userAccount}
+      </if>
+      and u.del_id=0
+    </where>
+
+  </select>
+  <update id="updateUser"  parameterType="com.hospital_purchase.pojo.User">
+    update user
+    <set>
+      <if test="userAccount != null">
+        user_account = #{userAccount,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userCategory != null">
+        user_category = #{userCategory,jdbcType=INTEGER},
+      </if>
+      <if test="userPassword != null">
+        user_password = #{userPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="userState != null">
+        user_state = #{userState,jdbcType=INTEGER},
+      </if>
+      <if test="hospitalId != null">
+        hospital_id = #{hospitalId,jdbcType=INTEGER},
+      </if>
+      <if test="contactAddress != null">
+        contact_address = #{contactAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="userPostalCode != null">
+        user_postal_code = #{userPostalCode,jdbcType=INTEGER},
+      </if>
+      <if test="userLinkman != null">
+        user_linkman = #{userLinkman,jdbcType=VARCHAR},
+      </if>
+      <if test="userPhone != null">
+        user_phone = #{userPhone,jdbcType=INTEGER},
+      </if>
+      <if test="userEmail != null">
+        user_email = #{userEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="creationTime != null">
+        creation_time = #{creationTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modificationTime != null">
+        modification_time = #{modificationTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delId != null">
+        del_id = #{delId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where us_id = #{usId,jdbcType=INTEGER}
+  </update>
+  <update id="updateUserDel" parameterType="integer">
+    update user
+    set del_id=1
+    where us_id = #{usId,jdbcType=INTEGER}
+  </update>
+  <insert id="insertUser" parameterType="com.hospital_purchase.pojo.User">
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="usId != null">
+        us_id,
+      </if>
+      <if test="userAccount != null">
+        user_account,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="userCategory != null">
+        user_category,
+      </if>
+      <if test="userPassword != null">
+        user_password,
+      </if>
+      <if test="userState != null">
+        user_state,
+      </if>
+      <if test="hospitalId != null">
+        hospital_id,
+      </if>
+      <if test="contactAddress != null">
+        contact_address,
+      </if>
+      <if test="userPostalCode != null">
+        user_postal_code,
+      </if>
+      <if test="userLinkman != null">
+        user_linkman,
+      </if>
+      <if test="userPhone != null">
+        user_phone,
+      </if>
+      <if test="userEmail != null">
+        user_email,
+      </if>
+      <if test="creationTime != null">
+        creation_time,
+      </if>
+      <if test="modificationTime != null">
+        modification_time,
+      </if>
+      <if test="delId != null">
+        del_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="usId != null">
+        #{usId,jdbcType=INTEGER},
+      </if>
+      <if test="userAccount != null">
+        #{userAccount,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userCategory != null">
+        #{userCategory,jdbcType=INTEGER},
+      </if>
+      <if test="userPassword != null">
+        #{userPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="userState != null">
+        #{userState,jdbcType=INTEGER},
+      </if>
+      <if test="hospitalId != null">
+        #{hospitalId,jdbcType=INTEGER},
+      </if>
+      <if test="contactAddress != null">
+        #{contactAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="userPostalCode != null">
+        #{userPostalCode,jdbcType=INTEGER},
+      </if>
+      <if test="userLinkman != null">
+        #{userLinkman,jdbcType=VARCHAR},
+      </if>
+      <if test="userPhone != null">
+        #{userPhone,jdbcType=INTEGER},
+      </if>
+      <if test="userEmail != null">
+        #{userEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="creationTime != null">
+        #{creationTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modificationTime != null">
+        #{modificationTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delId != null">
+        #{delid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
 
 </mapper>
