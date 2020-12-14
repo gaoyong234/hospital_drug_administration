@@ -86,6 +86,7 @@ public class DurgItemsImpl implements DurgItemsService {
 
     @Override
     public List itemsdiCtion() {
-        return dictionariesDaoMapper.selectAllDictionaries();
+        /*dictionariesDaoMapper.selectAllDictionaries();*/
+        return null;
     }
 }
