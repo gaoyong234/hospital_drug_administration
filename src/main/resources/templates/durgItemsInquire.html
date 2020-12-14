@@ -61,9 +61,11 @@
                 }).success(function (response) {
                     $scope.dritem=response;
                 })
+
             }
             $scope.ngsave=function () {
                 var ditereva=$scope.dritem;
+                console.log(ditereva)
                 var list = $scope.lists;
                 for (var i = 0; i < list.length; i++) {
                     if (list[i].diId == $scope.dritem.diId) {
@@ -80,8 +82,8 @@
                         $http({
                             url:"/items/revamp",
                             method:"post",
-                            params: ditereva
-                            ,
+                            data:ditereva,
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
                         }).success(function (response) {
                             if (response>0){
                                 alert("修改成功")
@@ -130,6 +132,58 @@
            $scope.loadtemplate=function () {
                 window.location.href="/items/loadtemplate";
            }
+           $scope.itemsdiction=function () {
+               $http({
+                   url:"/items/itemsdiction",
+                   method:"get",
+                   params:{},
+               }).success(function (response) {
+                   $scope.dictarr1=[]
+                   $scope.dictarr2=[]
+                   $scope.dictarr3=[]
+
+                   for (var i = 0; i < response.length; i++) {
+                       if (response[i].dictionariesId==1){
+                           $scope.dictarr1.push(response[i])
+                       }else if(response[i].dictionariesId==2){
+                           $scope.dictarr2.push(response[i])
+                       }else if(response[i].dictionariesId==3){
+                           $scope.dictarr3.push(response[i])
+                       }
+                   }
+               })
+           }
+           $scope.save=function () {
+                var indru=$scope.indrug;
+               $http({
+                   url:"/items/addDrugItems",
+                   method:"post",
+                   data:indru,
+                   headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+               }).then(function successCallback(response) {
+                   if (response > 0) {
+                       document.getElementById("headLeft").innerHTML="药品品目添加"
+                       document.getElementById("headline").innerHTML="成功提示信息"
+                       document.getElementById("whether").innerHTML="您的操作成功"
+                       document.getElementById("lose").innerHTML="";
+                   } else {
+                       document.getElementById("headLeft").innerHTML="药品品目添加"
+                       document.getElementById("headline").innerHTML="失败提示信息"
+                       document.getElementById("whether").innerHTML="您的操作失败,请尝试刷新页面,重新操作"
+                   }
+               }, function errorCallback(response) {
+                   if (response > 0) {
+                       document.getElementById("headLeft").innerHTML="药品品目添加"
+                       document.getElementById("headline").innerHTML="成功提示信息"
+                       document.getElementById("whether").innerHTML="您的操作成功"
+                       document.getElementById("lose").innerHTML="";
+                   } else {
+                       document.getElementById("headLeft").innerHTML="药品品目添加"
+                       document.getElementById("headline").innerHTML="失败提示信息"
+                       document.getElementById("whether").innerHTML="您的操作失败,请尝试刷新页面,重新操作"
+                   }
+               })
+           }
 
        })
 
@@ -137,56 +191,8 @@
     </script>
     <script type="text/javascript">
         var demo=false;
-        $(function () {
-            $("#addition input").blur(function () {
-                $(this).next().html("");
-                $(this).next().css("color","black");
-                if (this.value!=null&&this.value!=""){
-                    demo=true;
-                }else{
-                    $(this).next().html("不能为空");
-                    $(this).next().css("color","red");
-                    demo=false;
-                }
-            })
-        })
-        var dictarr1=new Array()
-        var dictarr2=new Array()
-        var dictarr3=new Array()
-        function neonw() {
-            $.ajax({
-                url: "/items/itemsdiction",
-                dataType: "json",
-                type: "post",
-                data: "",
-                success : function (diction) {
-                    var dict=diction;
-                    for (var i = 0; i < dict.length; i++) {
-                        if (dict[i].dictionariesId==1){}
-                        dictarr1=dict[i].dictionariesId
-                    }
-                }
-            })
-        }
         var lists;
         function save() {
-           var commonName=$("[name='commonName']").val();
-           var dosageForm=$("[name='dosageForm']").val();
-          var  speciflcation=$("[name='speciflcation']").val();
-           var unitId=$("[name='unitId']").val();
-           var coefficient=$("[name='coefficient']").val();
-          var  drugCategoryName=$("[name='drugCategoryName']").val();
-           var drugStateName=$("[name='drugStateName']").val();
-            demo = commonName != null && commonName != "" && dosageForm != null && dosageForm != "" && speciflcation != null && speciflcation != "" && unitId != null && unitId != "" && coefficient != null && coefficient != "" && drugCategoryName != null && drugCategoryName != "" && drugStateName != null && drugStateName != "";
-            if (demo){
-              conserve()
-            }else {
-                document.getElementById("headLeft").innerHTML="药品品目添加"
-                document.getElementById("headline").innerHTML="失败提示信息"
-                document.getElementById("whether").innerHTML="因数据不完整,您的操作失败,请尝试刷新页面,重新操作"
-            }
-        }
-        function conserve() {
             var addform = $("#addForm").serialize();
             $.ajax({
                 url: "/items/addDrugItems",
@@ -206,6 +212,22 @@
                     }
                 }
             })
+        }
+        function ngsave(){
+            var inserInto = $("#inserInto").serialize();
+            $.ajax({
+                url: "/items/revamp",
+                dataType: "json",
+                type: "post",
+                data: inserInto,
+                success: function (data) {
+                    if (data>0){
+                        alert("修改成功")
+                    }else{
+                        alert("修改失败")
+                    }
+                }
+        })
         }
         var lose=0;
         var dritlist=null;
@@ -286,32 +308,33 @@
     </script>
 
 </head>
-<body ng-app="myApp" ng-controller="myContr" onload="neonw()">
+<body ng-app="myApp" ng-controller="myContr" ng-init="itemsdiction()">
 <div>
    <h5 class="alert alert-infoalert alert-info">药品品目查询</h5>
 <table class="table table-bordered table-striped">
 <tr>
-    <td>药品品目号:<input ng-model="drug.diId"></td>
-    <td>通用名:<input ng-model="drug.commonName"></td>
+    <td>药品品目号:<input ng-model="drug.diId" class="form-control"></td>
+    <td>通用名:<input ng-model="drug.commonName" class="form-control"></td>
 
 </tr>
     <tr>
-        <td>剂型:<input ng-model="drug.dosageForm"></td>
-        <td>规格:<input ng-model="drug.speciflcation"></td>
+        <td>剂型:<input ng-model="drug.dosageForm" class="form-control"></td>
+        <td>规格:<input ng-model="drug.speciflcation" class="form-control"></td>
     </tr>
     <tr>
-        <td>单位:<input ng-model="drug.unitId"></td>
-        <td>转换系数:<input ng-model="drug.coefficient"></td>
+        <td>单位:<select ng-model="drug.unitId" class="form-control">
+            <option ng-repeat="di in dictarr3" ng-value="di.dicId">{{di.dictionariesName}}</option>
+        </select></td>
+        <td>转换系数:<input ng-model="drug.coefficient" class="form-control"></td>
     </tr>
     <tr>
-        <td>药品类别:<select ng-model="drug.drugCategoryName">
-        <option value="1">儿童用药</option>
+        <td>药品类别:<select ng-model="drug.drugCategoryName" class="form-control">
+        <option ng-repeat="di in dictarr1" ng-value="di.dicId">{{di.dictionariesName}}</option>
         </select>
         </td>
         <td>
-            状态:<select ng-model="drug.drugStateName">
-        <option value="2">正常</option>
-            <option value="3">不正常</option>
+            状态:<select ng-model="drug.drugStateName" class="form-control">
+        <option ng-repeat="di in dictarr2" ng-value="di.dicId">{{di.dictionariesName}}</option>
         </select>
         </td>
     </tr>
@@ -378,40 +401,30 @@
                 <form id="addForm">
                 <table class="table table-bordered table-striped"  >
                     <tr>
-                        <td>药品品目号:</td>
-                        <td><input name="diId" readonly="readonly" onblur class="form-control"></td>
-                        <td>通用名:</td>
-                        <td><input name="commonName" onblur  class="form-control" >
-                        <span></span></td>
-                    </tr>
-                    <tr>
-
-                        <td>剂型:</td>
-                        <td><input name="dosageForm" onblur   class="form-control" >
-                        <span></span></td>
-                        <td>规格:</td>
-                        <td><input name="speciflcation" onblur   class="form-control"  >
-                        <span></span></td>
-                    </tr>
-                    <tr>
-                        <td>单位:</td>
-                        <td><input name="unitId" onblur   class="form-control" >
-                            <span></span></td>
-                        <td>转换系数:</td>
-                        <td><input name="coefficient" onblur   class="form-control" >
-                            <span></span></td>
+                        <td>药品品目号:<input name="diId" class="form-control" readonly="readonly"></td>
+                        <td>通用名:<input name="commonName" class="form-control"></td>
 
                     </tr>
                     <tr>
-                        <td>药品类别:</td>
-                        <td><select  name="drugCategoryName" onblur class="form-control" >
-                            <option value="1">儿童用药</option>
-                        </select><span></span></td>
-                        <td>状态:</td>
-                        <td><select name="drugStateName" onblur  class="form-control" >
-                            <option value="2">正常</option>
-                            <option value="3">非正常</option>
-                        </select><span></span></td>
+                        <td>剂型:<input name="dosageForm" class="form-control"></td>
+                        <td>规格:<input name="speciflcation" class="form-control"></td>
+                    </tr>
+                    <tr>
+                        <td>单位:<select name="unitId" class="form-control">
+                            <option ng-repeat="di in dictarr3" ng-value="di.dicId">{{di.dictionariesName}}</option>
+                        </select></td>
+                        <td>转换系数:<input name="coefficient" class="form-control"></td>
+                    </tr>
+                    <tr>
+                        <td>药品类别:<select name="drugCategoryName" class="form-control">
+                            <option ng-repeat="di in dictarr1" ng-value="di.dicId">{{di.dictionariesName}}</option>
+                        </select>
+                        </td>
+                        <td>
+                            状态:<select name="drugStateName" class="form-control">
+                            <option ng-repeat="di in dictarr2" ng-value="di.dicId">{{di.dictionariesName}}</option>
+                        </select>
+                        </td>
                     </tr>
                 </table>
                 </form>
@@ -479,7 +492,7 @@
                     <table class="table table-bordered table-striped"  >
                         <tr>
                             <td>药品品目号:</td>
-                            <td><input ng-model="dritem.diId" name="diId" readonly="readonly" onblur class="form-control"></td>
+                            <td><input ng-model="dritem.diId" name="diId"  readonly="readonly" onblur class="form-control"></td>
                             <td>通用名:</td>
                             <td><input ng-model="dritem.commonName" name="commonName"  class="form-control" >
                                 <span></span></td>
@@ -490,34 +503,35 @@
                             <td><input ng-model="dritem.dosageForm" name="dosageForm"  class="form-control" >
                                 <span></span></td>
                             <td>规格:</td>
-                            <td><input ng-model="dritem.speciflcation" name="speciflcation"   class="form-control"  >
+                            <td><input ng-model="dritem.speciflcation" name="speciflcation" class="form-control"  >
                                 <span></span></td>
                         </tr>
                         <tr>
                             <td>单位:</td>
-                            <td><input ng-model="dritem.unitId" name="unitId"  class="form-control" >
+                            <td><select  name="unitId" class="form-control" >
+                                <option ng-repeat="dc in dictarr3" ng-selected="dc.dicId == dritem.unitId" ng-value="dc.dicId">{{dc.dictionariesName}}</option>
+                            </select>
                                 <span></span></td>
                             <td>转换系数:</td>
-                            <td><input ng-model="dritem.coefficient" name="coefficient"    class="form-control" >
+                            <td><input ng-model="dritem.coefficient" name="coefficient" class="form-control" >
                                 <span></span></td>
 
                         </tr>
                         <tr>
                             <td>药品类别:</td>
-                            <td><select ng-model="dritem.drugCategoryName" name="drugCategoryName"  class="form-control" >
-                                <option value="1">儿童用药</option>
+                            <td><select  name="drugCategoryName" class="form-control" >
+                                <option ng-repeat="dc in dictarr1" ng-selected="dc.dicId == dritem.drugCategoryName" ng-value="dc.dicId">{{dc.dictionariesName}}</option>
                             </select><span></span></td>
                             <td>状态:</td>
-                            <td><select ng-model="dritem.drugStateName" name="drugStateName"   class="form-control" >
-                                <option value="2">正常</option>
-                                <option value="3">非正常</option>
+                            <td><select  name="drugStateName"  class="form-control" >
+                                <option ng-repeat="dc in dictarr2" ng-selected="dc.dicId == dritem.drugStateName" ng-value="dc.dicId">{{dc.dictionariesName}}</option>
                             </select><span></span></td>
                         </tr>
                     </table>
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-success" data-dismiss="modal" ng-click="ngsave()">保存</button>
+                <button class="btn btn-success" data-dismiss="modal" onclick="ngsave()">保存</button>
                 <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
             </div>
         </div>
@@ -528,7 +542,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button id="bton" type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h3>修改页面</h3>
+                <h3>查看页面</h3>
             </div>
             <div class="modal-body">
                     <table class="table table-bordered table-striped"  >
