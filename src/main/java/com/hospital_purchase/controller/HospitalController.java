@@ -5,10 +5,12 @@ import com.hospital_purchase.pojo.User;
 import com.hospital_purchase.service.HospitalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Controller
 @RequestMapping("/Hospital")
@@ -24,5 +26,10 @@ public class HospitalController {
         Hospital hospital = hospitalService.findOneHospital(user.getHospitalId());
         System.out.println(hospital);
         return hospital;
+    }
+    @RequestMapping("/findAllHospital")
+    @ResponseBody
+    public List findAllHospital(){
+        return hospitalService.findAllHospital();
     }
 }

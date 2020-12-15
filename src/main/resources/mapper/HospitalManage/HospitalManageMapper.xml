@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hospital_purchase.dao.hospitalManageDao.HospitalManageMapper">
-  <resultMap id="BaseResultMap" type="com.hospital_purchase.pojo.Hospital">
+  <resultMap id="BaseResultMap" type="com.hospital_purchase.vo.HospitalVO">
     <id column="hp_id" jdbcType="INTEGER" property="hpId" />
     <result column="hospital_number" jdbcType="VARCHAR" property="hospitalNumber" />
     <result column="hospital_name" jdbcType="VARCHAR" property="hospitalName" />
     <result column="mailing_address" jdbcType="VARCHAR" property="mailingAddress" />
     <result column="postal_code" jdbcType="INTEGER" property="postalCode" />
     <result column="affiliating_area" jdbcType="VARCHAR" property="affiliatingArea" />
-    <result column="hospital_rank" jdbcType="INTEGER" property="hospitalRank" />
+    <result column="hospital_rank" jdbcType="VARCHAR" property="hospitalRank" />
     <result column="number_bed" jdbcType="INTEGER" property="numberBed" />
     <result column="is_profit" jdbcType="INTEGER" property="isProfit" />
     <result column="dean_phone" jdbcType="INTEGER" property="deanPhone" />
@@ -26,54 +26,62 @@
     hospital_rank, number_bed, is_profit, dean_phone, dean_fax, medicament_phone, hospital_type, 
     last_drug_money, last_business_money, creation_time, modification_time, del_id
   </sql>
+  <update id="delHospitalInfo" parameterType="com.hospital_purchase.pojo.Hospital">
+    update hospital
+    set del_id = 1
+    where hp_id = #{hpId,jdbcType=INTEGER}
+  </update>
   <select id="findHospital" resultMap="BaseResultMap">
-    select 'true' as QUERYID,
-    <include refid="Base_Column_List" />
-    from hospital
+    SELECT h.hp_id,h.hospital_name,h.hospital_number,h.mailing_address,h.postal_code,
+    h.affiliating_area,h.number_bed,h.is_profit,h.dean_phone,
+    h.dean_fax,h.medicament_phone,h.hospital_type,h.last_drug_money,h.last_business_money,
+    d.dictionaries_name as hospital_rank
+    FROM hospital h
+    LEFT JOIN dictionaries d on h.hospital_rank = d.dic_id
     <where>
       <if test="hospitalName != null and hospitalName != ''">
-        and hospital_name like CONCAT("%",#{hospitalName},"%")
+        and h.hospital_name like CONCAT("%",#{hospitalName},"%")
       </if>
       <if test="hospitalNumber != null and hospitalNumber != ''">
-        and hospital_number = #{hospitalNumber}
+        and h.hospital_number = #{hospitalNumber}
       </if>
       <if test="mailingAddress != null and mailingAddress != ''">
-        and mailing_address like CONCAT("%",#{mailingAddress},"%")
+        and h.mailing_address like CONCAT("%",#{mailingAddress},"%")
       </if>
       <if test="postalCode != null and postalCode != ''">
-        and postal_code = #{postalCode}
+        and h.postal_code = #{postalCode}
       </if>
       <if test="affiliatingArea != null and affiliatingArea != ''">
-        and affiliating_area like CONCAT("%",#{affiliatingArea},"%")
+        and h.affiliating_area like CONCAT("%",#{affiliatingArea},"%")
       </if>
       <if test="hospitalRank != null and hospitalRank != ''">
-        and hospital_rank = #{hospitalRank}
+        and h.hospital_rank = #{hospitalRank}
       </if>
       <if test="numberBed != null and numberBed != ''">
-        and number_bed = #{numberBed}
+        and h.number_bed = #{numberBed}
       </if>
       <if test="isProfit != null and isProfit != ''">
-        and is_profit = #{isProfit}
+        and h.is_profit = #{isProfit}
       </if>
       <if test="deanPhone != null and deanPhone != ''">
-        and dean_phone = #{deanPhone}
+        and h.dean_phone = #{deanPhone}
       </if>
       <if test="deanFax != null and deanFax != ''">
-        and dean_fax = #{deanFax}
+        and h.dean_fax = #{deanFax}
       </if>
       <if test="medicamentPhone != null and medicamentPhone != ''">
-        and medicament_phone = #{medicamentPhone}
+        and h.medicament_phone = #{medicamentPhone}
       </if>
       <if test="hospitalType != null and hospitalType != ''">
-        and hospital_type = #{hospitalType}
+        and h.hospital_type = #{hospitalType}
       </if>
       <if test="lastDrugMoney != null and lastDrugMoney != ''">
-        and last_drug_money = #{lastDrugMoney}
+        and h.last_drug_money = #{lastDrugMoney}
       </if>
       <if test="lastBusinessMoney != null and lastBusinessMoney != ''">
-        and last_business_money = #{lastBusinessMoney}
+        and h.last_business_money = #{lastBusinessMoney}
       </if>
-      and del_id = 0
+      and h.del_id = 0
     </where>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -274,7 +282,7 @@
     </set>
     where hp_id = #{hpId,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.hospital_purchase.pojo.Hospital">
+  <update id="updateByPrimaryKey" parameterType="com.hospital_purchase.pojo.Hospital" >
     update hospital
     set hospital_number = #{hospitalNumber,jdbcType=VARCHAR},
       hospital_name = #{hospitalName,jdbcType=VARCHAR},

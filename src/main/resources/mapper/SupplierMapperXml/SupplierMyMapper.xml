@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hospital_purchase.dao.SupplierMapper">
+<mapper namespace="com.hospital_purchase.dao.SupplierDao.SupplierMyMapper">
   <resultMap id="BaseResultMap" type="com.hospital_purchase.pojo.Supplier">
     <id column="sp_id" jdbcType="INTEGER" property="spId" />
     <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
@@ -11,7 +11,7 @@
     <result column="licence" jdbcType="VARCHAR" property="licence" />
     <result column="licence_time" jdbcType="TIMESTAMP" property="licenceTime" />
     <result column="enterprise_linkman" jdbcType="VARCHAR" property="enterpriseLinkman" />
-    <result column="enterprise_phone" jdbcType="VARCHAR" property="enterprisePhone" />
+    <result column="enterprise_phone" jdbcType="INTEGER" property="enterprisePhone" />
     <result column="manage_scope" jdbcType="VARCHAR" property="manageScope" />
     <result column="registered_address" jdbcType="VARCHAR" property="registeredAddress" />
     <result column="relation_site" jdbcType="VARCHAR" property="relationSite" />
@@ -19,7 +19,7 @@
     <result column="total_assets" jdbcType="REAL" property="totalAssets" />
     <result column="sobey_fax" jdbcType="VARCHAR" property="sobeyFax" />
     <result column="legal_person_name" jdbcType="VARCHAR" property="legalPersonName" />
-    <result column="legal_person_number" jdbcType="VARCHAR" property="legalPersonNumber" />
+    <result column="legal_person_number" jdbcType="INTEGER" property="legalPersonNumber" />
     <result column="enterprise_register_capital" jdbcType="REAL" property="enterpriseRegisterCapital" />
     <result column="last_year_money" jdbcType="REAL" property="lastYearMoney" />
     <result column="email_address" jdbcType="VARCHAR" property="emailAddress" />
@@ -29,7 +29,7 @@
     <result column="business_license" jdbcType="VARCHAR" property="businessLicense" />
     <result column="business_license_time" jdbcType="TIMESTAMP" property="businessLicenseTime" />
     <result column="is_letter_of_credit" jdbcType="INTEGER" property="isLetterOfCredit" />
-    <result column="letter_credit_number" jdbcType="VARCHAR" property="letterCreditNumber" />
+    <result column="letter_credit_number" jdbcType="INTEGER" property="letterCreditNumber" />
     <result column="letter_credit_time" jdbcType="TIMESTAMP" property="letterCreditTime" />
     <result column="fixed_assets" jdbcType="REAL" property="fixedAssets" />
     <result column="company_profile" jdbcType="VARCHAR" property="companyProfile" />
@@ -53,6 +53,36 @@
     from supplier
     where sp_id = #{spId,jdbcType=INTEGER}
   </select>
+  <select id="fandAllSupplier" resultMap="BaseResultMap">
+    SELECT sp_id,supplier_name, supplier_site, supplier_linkman, supplier_phone, enterprise_category,
+    licence, licence_time, enterprise_linkman, enterprise_phone, manage_scope, registered_address,
+    relation_site, postal_code, total_assets, sobey_fax, legal_person_name, legal_person_number,
+    enterprise_register_capital, last_year_money, email_address, enterprise_url, enterprise_code,
+    enterprise_code_time, business_license, business_license_time, is_letter_of_credit,
+    letter_credit_number, letter_credit_time, fixed_assets, company_profile, company_remarks,
+    creation_time, modification_time FROM supplier
+    <where>
+      <if test="supplierName != null and supplierName !=''">
+        and supplier_name LIKE CONCAT("%",#{supplierName,jdbcType=VARCHAR},"%")
+      </if>
+      <if test="supplierLinkman != null and supplierLinkman!=''">
+        and supplier_linkman LIKE CONCAT("%",#{supplierLinkman,jdbcType=VARCHAR},"%")
+      </if>
+      <if test="enterpriseCategory != null and enterpriseCategory!=''">
+        and enterprise_category LIKE CONCAT("%",#{enterpriseCategory,jdbcType=INTEGER},"%")
+      </if>
+      <if test="enterpriseLinkman != null and enterpriseLinkman!=''">
+        and enterprise_linkman LIKE CONCAT("%",#{enterpriseLinkman,jdbcType=VARCHAR},"%")
+      </if>
+      <if test="manageScope != null and manageScope!=''">
+        and manage_scope LIKE CONCAT("%",#{manageScope,jdbcType=VARCHAR},"%")
+      </if>
+      <if test="isLetterOfCredit != null and isLetterOfCredit!=''">
+        and is_letter_of_credit LIKE CONCAT("%",#{isLetterOfCredit,jdbcType=VARCHAR},"%")
+      </if>
+       and del_id = 0
+    </where>
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from supplier
     where sp_id = #{spId,jdbcType=INTEGER}
@@ -74,13 +104,13 @@
     values (#{spId,jdbcType=INTEGER}, #{supplierName,jdbcType=VARCHAR}, #{supplierSite,jdbcType=VARCHAR}, 
       #{supplierLinkman,jdbcType=VARCHAR}, #{supplierPhone,jdbcType=VARCHAR}, #{enterpriseCategory,jdbcType=INTEGER}, 
       #{licence,jdbcType=VARCHAR}, #{licenceTime,jdbcType=TIMESTAMP}, #{enterpriseLinkman,jdbcType=VARCHAR}, 
-      #{enterprisePhone,jdbcType=VARCHAR}, #{manageScope,jdbcType=VARCHAR}, #{registeredAddress,jdbcType=VARCHAR}, 
+      #{enterprisePhone,jdbcType=INTEGER}, #{manageScope,jdbcType=VARCHAR}, #{registeredAddress,jdbcType=VARCHAR}, 
       #{relationSite,jdbcType=VARCHAR}, #{postalCode,jdbcType=INTEGER}, #{totalAssets,jdbcType=REAL}, 
-      #{sobeyFax,jdbcType=VARCHAR}, #{legalPersonName,jdbcType=VARCHAR}, #{legalPersonNumber,jdbcType=VARCHAR}, 
+      #{sobeyFax,jdbcType=VARCHAR}, #{legalPersonName,jdbcType=VARCHAR}, #{legalPersonNumber,jdbcType=INTEGER}, 
       #{enterpriseRegisterCapital,jdbcType=REAL}, #{lastYearMoney,jdbcType=REAL}, #{emailAddress,jdbcType=VARCHAR}, 
       #{enterpriseUrl,jdbcType=VARCHAR}, #{enterpriseCode,jdbcType=INTEGER}, #{enterpriseCodeTime,jdbcType=TIMESTAMP}, 
       #{businessLicense,jdbcType=VARCHAR}, #{businessLicenseTime,jdbcType=TIMESTAMP}, 
-      #{isLetterOfCredit,jdbcType=INTEGER}, #{letterCreditNumber,jdbcType=VARCHAR}, #{letterCreditTime,jdbcType=TIMESTAMP}, 
+      #{isLetterOfCredit,jdbcType=INTEGER}, #{letterCreditNumber,jdbcType=INTEGER}, #{letterCreditTime,jdbcType=TIMESTAMP}, 
       #{fixedAssets,jdbcType=REAL}, #{companyProfile,jdbcType=VARCHAR}, #{companyRemarks,jdbcType=VARCHAR}, 
       #{creationTime,jdbcType=TIMESTAMP}, #{modificationTime,jdbcType=TIMESTAMP}, #{delId,jdbcType=INTEGER}
       )
@@ -223,7 +253,7 @@
         #{enterpriseLinkman,jdbcType=VARCHAR},
       </if>
       <if test="enterprisePhone != null">
-        #{enterprisePhone,jdbcType=VARCHAR},
+        #{enterprisePhone,jdbcType=INTEGER},
       </if>
       <if test="manageScope != null">
         #{manageScope,jdbcType=VARCHAR},
@@ -247,7 +277,7 @@
         #{legalPersonName,jdbcType=VARCHAR},
       </if>
       <if test="legalPersonNumber != null">
-        #{legalPersonNumber,jdbcType=VARCHAR},
+        #{legalPersonNumber,jdbcType=INTEGER},
       </if>
       <if test="enterpriseRegisterCapital != null">
         #{enterpriseRegisterCapital,jdbcType=REAL},
@@ -277,7 +307,7 @@
         #{isLetterOfCredit,jdbcType=INTEGER},
       </if>
       <if test="letterCreditNumber != null">
-        #{letterCreditNumber,jdbcType=VARCHAR},
+        #{letterCreditNumber,jdbcType=INTEGER},
       </if>
       <if test="letterCreditTime != null">
         #{letterCreditTime,jdbcType=TIMESTAMP},
@@ -330,7 +360,7 @@
         enterprise_linkman = #{enterpriseLinkman,jdbcType=VARCHAR},
       </if>
       <if test="enterprisePhone != null">
-        enterprise_phone = #{enterprisePhone,jdbcType=VARCHAR},
+        enterprise_phone = #{enterprisePhone,jdbcType=INTEGER},
       </if>
       <if test="manageScope != null">
         manage_scope = #{manageScope,jdbcType=VARCHAR},
@@ -354,7 +384,7 @@
         legal_person_name = #{legalPersonName,jdbcType=VARCHAR},
       </if>
       <if test="legalPersonNumber != null">
-        legal_person_number = #{legalPersonNumber,jdbcType=VARCHAR},
+        legal_person_number = #{legalPersonNumber,jdbcType=INTEGER},
       </if>
       <if test="enterpriseRegisterCapital != null">
         enterprise_register_capital = #{enterpriseRegisterCapital,jdbcType=REAL},
@@ -384,7 +414,7 @@
         is_letter_of_credit = #{isLetterOfCredit,jdbcType=INTEGER},
       </if>
       <if test="letterCreditNumber != null">
-        letter_credit_number = #{letterCreditNumber,jdbcType=VARCHAR},
+        letter_credit_number = #{letterCreditNumber,jdbcType=INTEGER},
       </if>
       <if test="letterCreditTime != null">
         letter_credit_time = #{letterCreditTime,jdbcType=TIMESTAMP},
@@ -420,7 +450,7 @@
       licence = #{licence,jdbcType=VARCHAR},
       licence_time = #{licenceTime,jdbcType=TIMESTAMP},
       enterprise_linkman = #{enterpriseLinkman,jdbcType=VARCHAR},
-      enterprise_phone = #{enterprisePhone,jdbcType=VARCHAR},
+      enterprise_phone = #{enterprisePhone,jdbcType=INTEGER},
       manage_scope = #{manageScope,jdbcType=VARCHAR},
       registered_address = #{registeredAddress,jdbcType=VARCHAR},
       relation_site = #{relationSite,jdbcType=VARCHAR},
@@ -428,7 +458,7 @@
       total_assets = #{totalAssets,jdbcType=REAL},
       sobey_fax = #{sobeyFax,jdbcType=VARCHAR},
       legal_person_name = #{legalPersonName,jdbcType=VARCHAR},
-      legal_person_number = #{legalPersonNumber,jdbcType=VARCHAR},
+      legal_person_number = #{legalPersonNumber,jdbcType=INTEGER},
       enterprise_register_capital = #{enterpriseRegisterCapital,jdbcType=REAL},
       last_year_money = #{lastYearMoney,jdbcType=REAL},
       email_address = #{emailAddress,jdbcType=VARCHAR},
@@ -438,7 +468,7 @@
       business_license = #{businessLicense,jdbcType=VARCHAR},
       business_license_time = #{businessLicenseTime,jdbcType=TIMESTAMP},
       is_letter_of_credit = #{isLetterOfCredit,jdbcType=INTEGER},
-      letter_credit_number = #{letterCreditNumber,jdbcType=VARCHAR},
+      letter_credit_number = #{letterCreditNumber,jdbcType=INTEGER},
       letter_credit_time = #{letterCreditTime,jdbcType=TIMESTAMP},
       fixed_assets = #{fixedAssets,jdbcType=REAL},
       company_profile = #{companyProfile,jdbcType=VARCHAR},

@@ -241,6 +241,24 @@
 <body ng-app="myApp" ng-controller="myContr">
 <div>
     <h5 class="alert alert-infoalert alert-info">采购单详情页</h5>
+    <table class="table table-bordered table-striped">
+        <tr>
+            <td>医院名称:</td>
+            <td>
+                <input  ng-model="userMessage.userAccount" class="form-control">
+            </td>
+            <td>采购单编号:</td>
+            <td>
+                <input  ng-model="userMessage.userName" class="form-control">
+            </td>
+        </tr>
+        <tr>
+            <td>采购单名称:</td>
+            <td><input  ng-model="userMessage.userName" class="form-control"></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
 </div>
 <div>
     <button type="button" class="btn btn-primary" style="margin-left: 35px" data-toggle="modal" data-target="#editModal" ng-click="addClick()">添加

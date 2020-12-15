@@ -11,6 +11,9 @@
   <sql id="Base_Column_List">
     dic_id, dictionaries_name, dictionaries_id, create_time, modified_time
   </sql>
+  <select id="findDictionariesInfo" resultMap="BaseResultMap">
+    select dic_id,dictionaries_name,dictionaries_id from dictionaries
+  </select>
   <select id="findQualityLevel" resultMap="BaseResultMap">
     select dic_id,dictionaries_name,dictionaries_id from dictionaries WHERE dictionaries_id = 11
   </select>
