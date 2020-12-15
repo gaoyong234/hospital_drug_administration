@@ -21,7 +21,7 @@ public class Supplier {
 
     private String enterpriseLinkman;
 
-    private Integer enterprisePhone;
+    private String enterprisePhone;
 
     private String manageScope;
 
@@ -37,7 +37,7 @@ public class Supplier {
 
     private String legalPersonName;
 
-    private Integer legalPersonNumber;
+    private String legalPersonNumber;
 
     private Float enterpriseRegisterCapital;
 
@@ -57,7 +57,7 @@ public class Supplier {
 
     private Integer isLetterOfCredit;
 
-    private Integer letterCreditNumber;
+    private String letterCreditNumber;
 
     private Date letterCreditTime;
 
@@ -145,12 +145,12 @@ public class Supplier {
         this.enterpriseLinkman = enterpriseLinkman == null ? null : enterpriseLinkman.trim();
     }
 
-    public Integer getEnterprisePhone() {
+    public String getEnterprisePhone() {
         return enterprisePhone;
     }
 
-    public void setEnterprisePhone(Integer enterprisePhone) {
-        this.enterprisePhone = enterprisePhone;
+    public void setEnterprisePhone(String enterprisePhone) {
+        this.enterprisePhone = enterprisePhone == null ? null : enterprisePhone.trim();
     }
 
     public String getManageScope() {
@@ -209,12 +209,12 @@ public class Supplier {
         this.legalPersonName = legalPersonName == null ? null : legalPersonName.trim();
     }
 
-    public Integer getLegalPersonNumber() {
+    public String getLegalPersonNumber() {
         return legalPersonNumber;
     }
 
-    public void setLegalPersonNumber(Integer legalPersonNumber) {
-        this.legalPersonNumber = legalPersonNumber;
+    public void setLegalPersonNumber(String legalPersonNumber) {
+        this.legalPersonNumber = legalPersonNumber == null ? null : legalPersonNumber.trim();
     }
 
     public Float getEnterpriseRegisterCapital() {
@@ -289,12 +289,12 @@ public class Supplier {
         this.isLetterOfCredit = isLetterOfCredit;
     }
 
-    public Integer getLetterCreditNumber() {
+    public String getLetterCreditNumber() {
         return letterCreditNumber;
     }
 
-    public void setLetterCreditNumber(Integer letterCreditNumber) {
-        this.letterCreditNumber = letterCreditNumber;
+    public void setLetterCreditNumber(String letterCreditNumber) {
+        this.letterCreditNumber = letterCreditNumber == null ? null : letterCreditNumber.trim();
     }
 
     public Date getLetterCreditTime() {
