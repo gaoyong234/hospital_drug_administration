@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../../static/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <link rel="stylesheet" href="../../static/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../static/plugins/adminLTE/css/AdminLTE.css">
+    <link rel="stylesheet" href="../../static/plugins/adminLTE/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="../../static/css/style.css">
+    <link rel="stylesheet" href="../../static/plugins/angularjs/toaster.min.css">
+    <script src="../../static/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+    <script src="../../static/plugins/angularjs/angular.min.js"></script>
+    <link rel="stylesheet" href="../../static/plugins/angularjs/pagination.css">
+    <script type="text/javascript" src="../../static/plugins/angularjs/pagination.js"></script>
+    <script src="../../static/js/showLoading.js" type="text/javascript" charset="utf-8"></script>
+    <style>
+        label {
+            float: left;
+            width: 10em;
+            margin-right: 1em;
+            text-align: right;
+        }
+    </style>
+    <script>
+        var app = angular.module("myApp", ["pagination"]);
+        app.controller("myContr", function ($scope, $http) {
+            $scope.entity={};
+            //获取医院信息
+            $http({
+                url:"/Hospital/findOneHospital",
+                method:"post",
+            }).success(function (response) {
+                var date = new Date();
+                var dateYear = date.getFullYear();             //获取年
+                var dateMonth = date.getMonth()+1;               //获取月
+                var dateDate = date.getDate();                 //获取当日
+                var dateHours = date.getHours();               //获取小时
+                var dateMinutes = date.getMinutes();           //获取分钟
+                var dateSeconds = date.getSeconds();           //获取秒
+                if (dateMonth < 10) dateMonth = "0" + dateMonth;
+                if (dateDate < 10) dateDate = "0" + dateDate;
+                if (dateHours < 10) dateHours = "0" + dateHours;
+                if (dateMinutes < 10) dateMinutes = "0" + dateMinutes;
+                if (dateSeconds < 10) dateSeconds = "0" + dateSeconds;
+
+                var newTime = dateYear+"-"+dateMonth+"-"+dateDate+" "+dateHours+":"+dateMinutes+":"+dateSeconds;
+                $scope.hospital=response;
+                $scope.entity.purchaseName=response.hospitalName+newTime+"结算单";
+
+            });
+
+            $scope.paginationConf={
+                currentPage: 1,  				//当前页
+                totalItems: 10,					//总记录数
+                itemsPerPage: 10,				//每页记录数
+                perPageOptions: [5,10, 20, 30, 40, 50], //分页选项，下拉选择一页多少条记录
+                onChange: function () {
+                    $scope.find($scope.paginationConf.currentPage,$scope.paginationConf.itemsPerPage)
+                }
+            }
+            $scope.drug={
+                pageNum:0,
+                pageSize:10
+            }
+            //获取全部信息
+            $scope.find=function(pageNum,items) {
+                if (pageNum==null||pageNum==""){
+                    pageNum=1;
+                }
+                $scope.drug.pageNum=pageNum;
+                $scope.drug.pageSize=items;
+                var druglist=$scope.drug;
+                //console.log(druglist)
+                $http({
+                    url:"/PurchaseOrders/findAllPurchaseOrders",
+                    method:"post",
+                    params: druglist
+                }).success(function (response) {
+                    $scope.lists=response.list;
+                    $scope.paginationConf.totalItems=response.total;
+                })
+
+            }
+            //返回结果提示
+            $scope.showModalButton1 =  function (slogan){
+                showModal({
+                    title: "温馨提示",  //提示的标题
+                    content: slogan,  //提示的内容
+                    showCancel: false,  //是否显示取消按钮，默认为 true
+                    cancelText: '取消',  //取消按钮的文字，默认为"取消"，最多 4 个字符
+                    cancelColor: "#fff",  //取消按钮的文字颜色，默认为"#000000"
+                    cancelBgColor: '#4c4c4c',  //取消按钮的背景颜色
+                    confirmText: '确定',
+                    confirmColor: '#fff',
+                    confirmBgColor: '#ff130a',
+                    success: function() {
+
+                    }
+                });
+            }
+            //删除提示
+            $scope.showModalButton2 = function(){
+                showModal({
+                    title: "温馨提示",  //提示的标题
+                    content: "确认要删除吗？",  //提示的内容
+                    showCancel: true,  //是否显示取消按钮，默认为 true
+                    cancelText: '取消',  //取消按钮的文字，默认为"取消"，最多 4 个字符
+                    cancelColor: "#fff",  //取消按钮的文字颜色，默认为"#000000"
+                    cancelBgColor: '#4c4c4c',  //取消按钮的背景颜色
+                    confirmText: '确定',
+                    confirmColor: '#fff',
+                    confirmBgColor: '#ff1d31',
+                    success: function(res) {
+                        if (res.confirm) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                });
+            }
+            //表单验证
+            $scope.toVerification = function(purchaseOrders){
+                var judge = true;
+                var purchaseName = purchaseOrders.purchaseName;
+                var beginTime = purchaseOrders.beginTime;
+                var endTime = purchaseOrders.endTime;
+                var linkmanName = purchaseOrders.linkmanName;
+                var linkmanPhone = purchaseOrders.linkmanPhone;
+                var postscript =purchaseOrders.postscript;
+                if (purchaseName==null||purchaseName==''){
+                    $scope.showModalButton1("请修改订单名称！");
+                    judge=false;
+                }
+                if (beginTime==null||beginTime==''){
+                    $scope.showModalButton1("请填写结算单供货时间！");
+                    judge=false;
+                }
+                if (endTime==null||endTime==''){
+                    $scope.showModalButton1("请填写结算结束供货时间！");
+                    judge=false;
+                }if (linkmanName==null||linkmanName==''){
+                    $scope.showModalButton1("请填写联系人姓名！");
+                    judge=false;
+                }if (linkmanPhone==null||linkmanPhone==''){
+                    $scope.showModalButton1("请填写联系人电话！");
+                    judge=false;
+                }if (postscript==null||postscript==''){
+                    $scope.showModalButton1("请填写备注！");
+                    judge=false;
+                }
+                if (beginTime>endTime){
+                    $scope.showModalButton1("开始时间与结束时间有误！");
+                    judge=false;
+                }
+                return judge;
+            }
+            //添加
+            $scope.submit = function () {
+                var purchaseOrders=$scope.entity;
+                var judge =$scope.toVerification(purchaseOrders);
+                if(judge) {
+                    $http({
+                        url: "/PurchaseOrders/addPurchaseOrders",
+                        method: "post",
+                        params: purchaseOrders
+                    }).success(function (response) {
+                        $scope.showModalButton1(response.slogan);
+                        $("#editModal").modal('hide');//此处为添加框，关闭添加框
+                        $scope.find($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
+                    })
+                }
+            }
+            //修改显示数据
+            $scope.reviseMassage = function (poId) {
+                $http({
+                    url: "/PurchaseOrders/getOnePurchaseOrders",
+                    method: "post",
+                    params: {"poId": poId}
+                }).success(function (response) {
+                    $scope.revise=response;
+                })
+            }
+            //修改
+            $scope.reviseSave = function () {
+                var purchaseOrders=$scope.revise;
+                var judge =$scope.toVerification(purchaseOrders);
+
+                if(judge) {
+                    $http({
+                        url: "/PurchaseOrders/changePurchaseOrders",
+                        method: "post",
+                        params: purchaseOrders
+                    }).success(function (response) {
+                        $scope.showModalButton1(response.slogan);
+                        $("#modification").modal('hide');//此处为添加框，关闭添加框
+                        $scope.find($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
+                    })
+                }
+            }
+            //删除
+            $scope.removeOne=function (poId) {
+                showModal({
+                    title: "温馨提示",  //提示的标题
+                    content: "确认要删除吗？",  //提示的内容
+                    showCancel: true,  //是否显示取消按钮，默认为 true
+                    cancelText: '取消',  //取消按钮的文字，默认为"取消"，最多 4 个字符
+                    cancelColor: "#fff",  //取消按钮的文字颜色，默认为"#000000"
+                    cancelBgColor: '#4c4c4c',  //取消按钮的背景颜色
+                    confirmText: '确定',
+                    confirmColor: '#fff',
+                    confirmBgColor: '#ff1d31',
+                    success: function(res) {
+                        if (res.confirm) {
+                            $http({
+                                url: "/PurchaseOrders/removePurchaseOrders",
+                                method: "post",
+                                params: {"poId": poId}
+                            }).success(function (response) {
+                                $scope.showModalButton1(response.slogan);
+                                $scope.find($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
+                            })
+                        }
+                    }
+                });
+
+            }
+            //详情页
+            $scope.detailedOne = function(poId){
+                window.location.href="/PurchaseDrug/toDrugInformation?poId="+poId;
+            }
+
+        });
+
+    </script>
+
+
+</head>
+<body ng-app="myApp" ng-controller="myContr">
+<div>
+    <h5 class="alert alert-infoalert alert-info">结算单确认</h5>
+</div>
+<div>
+    <button type="button" class="btn btn-primary" style="margin-left: 35px" data-toggle="modal" data-target="#editModal" ng-click="addClick()">添加
+    </button>
+</div>
+<div>
+    <table id="dataList" class="table">
+        <thead>
+        <tr>
+            <th><input type="checkbox" name="pitchOn" onchange="childrenCheck()"></th>
+            <th>序号</th>
+            <th>选择</th>
+            <th>结算单编号</th>
+            <th>结算单名称</th>
+            <th>下单医院</th>
+            <th>开始采购时间</th>
+            <th>结束采购时间</th>
+            <th>对应账单编号</th>
+            <th>对应采购单名称</th>
+            <th>流水号</th>
+            <th>通用名</th>
+            <th>商品名</th>
+            <th>剂型</th>
+            <th>单位</th>
+            <th>转换系数</th>
+            <th>质量层次</th>
+            <th>生产企业</th>
+            <th>中标价</th>
+            <th>交易价</th>
+        </tr>
+        </thead>
+
+        <tbody id="tbody">
+        <tr ng-repeat="po in lists">
+            <td><input type="checkbox" name="pitchOn" value="{{po.poId}}" onchange="childrenCheck()"></td>
+            <td>{{po.hospitalName}}</td>
+            <td>{{po.purchaseNumber}}</td>
+            <td>{{po.purchaseName}}</td>
+            <td>{{po.beginTime}}</td>
+            <td>{{po.endTime}}</td>
+            <td>{{po.fundTime}}</td>
+            <td>{{po.submitTime}}</td>
+            <td>{{po.auditTime}}</td>
+            <td>{{po.purchaseState}}</td>
+            <td><button class="btn btn-success"  ng-click="detailedOne(po.poId)" data-toggle="modal" >详细</button></td>
+            <td><button class="btn btn-warning" data-toggle="modal" data-target="#modification" ng-click="reviseMassage(po.poId)">修改</button></td>
+            <td><button class="btn btn-danger"  ng-click="removeOne(po.poId)">删除</button></td>
+        </tr>
+        </tbody>
+    </table>
+    <tm-pagination conf="paginationConf"></tm-pagination>
+</div>
+
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button id="bt1" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel">结算单确认</h3>
+            </div>
+            <div class="modal-body">
+
+                <table class="table table-bordered table-striped">
+                    <tr>
+                        <td>结算单编号:</td>
+                        <td><input  name="hospitalNumber" ng-model="hospital.hospitalNumber"  class="form-control" disabled="disabled"></td>
+                        <td>医院名称:</td>
+                        <td><input name="hospitalName" ng-model="hospital.hospitalName" class="form-control" disabled="disabled">
+                        </td>
+                    </tr>
+                    <tr>
+
+                        <td>采购单编号:</td>
+                        <td><input  name="purchaseNumber"
+                                    ng-model="entity.purchaseNumber" class="form-control" disabled="disabled"></td>
+                        <td>采购单名称:</td>
+                        <td><input  name="purchaseName" ng-model="entity.purchaseName" class="form-control" ></td>
+                    </tr>
+                    <tr>
+                        <td>供货时间:</td>
+                        <td><input  name="beginTime"
+                                    ng-model="entity.beginTime"  type="date">
+                            <input  name="endTime"
+                                    ng-model="entity.endTime"  type="date">
+                        </td>
+                        <td>建单时间:</td>
+                        <td><input  name="fundTime"
+                                    ng-model="entity.fundTime" class="form-control" disabled="disabled"></td>
+
+                    </tr>
+                    <tr>
+                        <td>联系人:</td>
+                        <td><input  name="linkmanName"
+                                    ng-model="entity.linkmanName" class="form-control"></td>
+                        <td>联系电话:</td>
+                        <td><input  name="linkmanPhone"
+                                    ng-model="entity.linkmanPhone" class="form-control"></td>
+                    </tr>
+                    <tr>
+                        <td>采购单状态:</td>
+                        <td><input  name="purchaseState"
+                                    ng-model="entity.purchaseState" class="form-control" disabled="disabled"></td>
+                        <td>提交时间:</td>
+                        <td><input  name="modifiedTime"
+                                    ng-model="entity.modifiedTime" class="form-control" disabled="disabled"></td>
+
+                    </tr>
+                    <tr>
+                        <td>备注:</td>
+                        <td><input  name="postscript"
+                                    ng-model="entity.postscript" class="form-control" ></td>
+                    </tr>
+                    <tr>
+                        <td>审核人:</td>
+                        <td><input  name="userId"
+                                    ng-model="entity.userId" class="form-control" disabled="disabled"></td>
+                        <td>审核时间:</td>
+                        <td><input  name="auditTime"
+                                    ng-model="entity.auditTime" class="form-control" disabled="disabled"></td>
+
+                    </tr>
+                    <tr>
+                        <td>审核意见:</td>
+                        <td><input  name="auditOpinion"
+                                    ng-model="entity.auditOpinion" class="form-control"  disabled="disabled"></td>
+                    </tr>
+                </table>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" ng-click="submit()">提交</button>
+                <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modification" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button id="bt" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabe">采购单修改</h3>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered table-striped">
+                    <tr>
+                        <td>医院编号:</td>
+                        <td><input  ng-model="revise.hospitalNumber"  class="form-control" disabled="disabled"></td>
+                        <td>医院名称:</td>
+                        <td><input ng-model="revise.hospitalName" class="form-control" disabled="disabled">
+                        </td>
+                    </tr>
+                    <tr>
+
+                        <td>采购单编号:</td>
+                        <td><input  ng-model="revise.purchaseNumber" class="form-control" disabled="disabled"></td>
+                        <td>采购单名称:</td>
+                        <td><input  ng-model="revise.purchaseName" class="form-control" ></td>
+                    </tr>
+                    <tr>
+                        <td>供货时间:</td>
+                        <td><input  ng-model="revise.beginTime"  type="date">
+                            <input  ng-model="revise.endTime"  type="date">
+                        </td>
+                        <td>建单时间:</td>
+                        <td><input  ng-model="revise.fundTime" class="form-control" disabled="disabled"></td>
+
+                    </tr>
+                    <tr>
+                        <td>联系人:</td>
+                        <td><input  ng-model="revise.linkmanName" class="form-control"></td>
+                        <td>联系电话:</td>
+                        <td><input  ng-model="revise.linkmanPhone" class="form-control"></td>
+                    </tr>
+                    <tr>
+                        <td>采购单状态:</td>
+                        <td><input  ng-model="revise.purchaseState" class="form-control" disabled="disabled"></td>
+                        <td>提交时间:</td>
+                        <td><input  ng-model="revise.modifiedTime" class="form-control" disabled="disabled"></td>
+
+                    </tr>
+                    <tr>
+                        <td>备注:</td>
+                        <td><input  ng-model="revise.postscript" class="form-control" ></td>
+                    </tr>
+                    <tr>
+                        <td>审核人:</td>
+                        <td><input  ng-model="revise.userId" class="form-control" disabled="disabled"></td>
+                        <td>审核时间:</td>
+                        <td><input  ng-model="revise.auditTime" class="form-control" disabled="disabled"></td>
+
+                    </tr>
+                    <tr>
+                        <td>审核意见:</td>
+                        <td><input  ng-model="revise.auditOpinion" class="form-control"  disabled="disabled"></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" data-dismiss="modal" ng-click="reviseSave()">保存</button>
+                <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
