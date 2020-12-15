@@ -4,23 +4,16 @@ import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.github.pagehelper.PageInfo;
-import com.hospital_purchase.pojo.DrugItems;
 import com.hospital_purchase.service.DurgItemsService;
 import com.hospital_purchase.vo.*;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +30,7 @@ public class DrugItemsController {
     @RequestMapping(value = "/durgItemsInquire",method = RequestMethod.GET)
     public String forIndex(){
 
-        return "durgItemsInquire";
+        return "/drugitems/durgItemsInquire";
     }
 
     /**
