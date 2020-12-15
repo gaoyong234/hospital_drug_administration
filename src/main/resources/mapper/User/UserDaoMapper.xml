@@ -12,7 +12,7 @@
     <result column="contact_address" jdbcType="VARCHAR" property="contactAddress" />
     <result column="user_postal_code" jdbcType="INTEGER" property="userPostalCode" />
     <result column="user_linkman" jdbcType="VARCHAR" property="userLinkman" />
-    <result column="user_phone" jdbcType="INTEGER" property="userPhone" />
+    <result column="user_phone" jdbcType="VARCHAR" property="userPhone" />
     <result column="user_email" jdbcType="VARCHAR" property="userEmail" />
     <result column="creation_time" jdbcType="TIMESTAMP" property="creationTime" />
     <result column="modification_time" jdbcType="TIMESTAMP" property="modificationTime" />
@@ -29,7 +29,7 @@
     <result column="contact_address" jdbcType="VARCHAR" property="contactAddress" />
     <result column="user_postal_code" jdbcType="INTEGER" property="userPostalCode" />
     <result column="user_linkman" jdbcType="VARCHAR" property="userLinkman" />
-    <result column="user_phone" jdbcType="INTEGER" property="userPhone" />
+    <result column="user_phone" jdbcType="VARCHAR" property="userPhone" />
     <result column="user_email" jdbcType="VARCHAR" property="userEmail" />
     <result column="creation_time" jdbcType="TIMESTAMP" property="creationTime" />
     <result column="modification_time" jdbcType="TIMESTAMP" property="modificationTime" />
@@ -94,14 +94,38 @@
     LEFT JOIN dictionaries di on di.dic_id = u.user_state
     <where>
       <if test="userName != null and userName != ''">
-        and u.user_name like CONCAT("%",#{userName},"%")
+        and u.user_name like CONCAT(#{userName},"%")
       </if>
-
       <if test="userAccount != null and userAccount != ''">
-        and u.user_account = #{userAccount}
+        and u.user_account like CONCAT(#{userAccount},"%")
+      </if>
+      <if test="userCategory != null and userCategory != ''">
+        and u.user_category = #{userCategory}
+      </if>
+      <if test="userState != null and userState != ''">
+        and u.user_state=#{userState}
+      </if>
+      <if test="hospitalId != null and hospitalId != ''">
+        and u.hospital_id =#{hospitalId}
+      </if>
+      <if test="contactAddress != null and contactAddress != ''">
+        and u.contact_address like CONCAT(#{contactAddress},"%")
+      </if>
+      <if test="userPostalCode != null and userPostalCode != ''">
+        and u.user_postal_code =#{userPostalCode}
+      </if>
+      <if test="userLinkman != null and userLinkman != ''">
+        and u.user_linkman like CONCAT(#{userLinkman},"%")
+      </if>
+      <if test="userPhone != null and userPhone != ''">
+        and u.user_phone like CONCAT(#{userPhone},"%")
+      </if>
+      <if test="userEmail != null and userEmail != ''">
+        and u.user_email like CONCAT(#{userEmail},"%")
       </if>
       and u.del_id=0
     </where>
+    GROUP BY creation_time DESC
 
   </select>
   <update id="updateUser"  parameterType="com.hospital_purchase.pojo.User">
@@ -145,9 +169,6 @@
       </if>
       <if test="modificationTime != null">
         modification_time = #{modificationTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="delId != null">
-        del_id = #{delId,jdbcType=INTEGER},
       </if>
     </set>
     where us_id = #{usId,jdbcType=INTEGER}
