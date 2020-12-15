@@ -20,4 +20,6 @@ public interface DictionariesInfoMapper {
     List<Dictionaries> findQualityLevel();
     //查询药品类别
     List<Dictionaries> findDrugCategorys();
+    //查询字典表里的医院级别信息
+    List findDictionariesInfo();
 }

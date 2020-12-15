@@ -37,6 +37,7 @@
         var demo=false;
         $(function () {
             $scope.query(1);
+            $scope.findHospitalLevel();
             //判断添加的信息不能为空
             $("#addition input").blur(function () {
                 $(this).next().html("");
@@ -55,7 +56,6 @@
             pageNum:0,
             pageSize:5
         }
-
         //查询全部数据
         $scope.query = function(pageNum){
             $scope.fuzzyQuery.pageNum = pageNum;
@@ -65,8 +65,14 @@
                 method:"get",
                 params:dataList
             }).then(function successCallback(response) {
-                //console.log(response.data);
                 $scope.lists = response.data.list;
+                for (var i = 0; i < $scope.lists.length ; i++) {
+                    if ($scope.lists[i].isProfit == 1){
+                        $scope.lists[i].isProfit = "是"
+                    }else {
+                        $scope.lists[i].isProfit = "否"
+                    }
+                }
                 //分页// pageMe.js 使用方法
                 $("#pages").paging({
                     pageNum: response.data.pageNum, // 当前页面
@@ -80,6 +86,20 @@
             },function errorCallback(response) {
 
             });
+        }
+        //查询字典表里的医院级别信息
+        $scope.findHospitalLevel = function(){
+            $http({
+                url:"/hospitalManage/findDictionariesInfo",
+                method:"get"
+            }).then(function successCallback(response) {
+                $scope.hospitalRank=[];
+                for (var i = 0; i <response.data.length ; i++) {
+                    if (response.data[i].dictionariesId==23){
+                        $scope.hospitalRank.push(response.data[i])
+                    }
+                }
+            })
         }
         //添加医院信息
         $scope.addHospitalInfo = function () {
@@ -105,13 +125,14 @@
             if (demo){
                 $scope.conserve();
             }else {
-                document.getElementById("headLeft").innerHTML="药品品目添加"
+                document.getElementById("headLeft").innerHTML="医院信息添加"
                 document.getElementById("headline").innerHTML="失败提示信息"
                 document.getElementById("whether").innerHTML="因数据不完整,您的操作失败,请尝试刷新页面,重新操作"
             }
         }
         $scope.conserve = function () {
            var addform = $("#addForm").serialize();
+           //console.log(JSON.stringify(addform));
            $.ajax({
                url: "/hospitalManage/addHospitaInfo",
                dataType: "json",
@@ -123,9 +144,10 @@
                        document.getElementById("headline").innerHTML="成功提示信息"
                        document.getElementById("whether").innerHTML="您的操作成功"
                        document.getElementById("lose").innerHTML="";
-                       document.getElementById("addForm").reset();
+                       /*document.getElementById("addForm").reset();*/
+                       $scope.query(1);
                    } else {
-                       document.getElementById("headLeft").innerHTML="药品品目添加"
+                       document.getElementById("headLeft").innerHTML="医院信息添加"
                        document.getElementById("headline").innerHTML="失败提示信息"
                        document.getElementById("whether").innerHTML="您的操作失败,请尝试刷新页面,重新操作"
                    }
@@ -139,13 +161,27 @@
                 method:"get",
                 params:{"hpId": hpId}
             }).success(function (response) {
+                //console.log(response);
                 $scope.dritem=response;
+                if ($scope.dritem.isProfit == 1){
+                    $scope.dritem.isProfit = "是"
+                }else {
+                    $scope.dritem.isProfit = "否"
+                }
             })
         }
         //修改
         $scope.updateSave = function () {
+            /*var updateList = $("#inserInto").serialize();*/
             var updateList=$scope.dritem;
+            console.log(updateList);
             var list = $scope.lists;
+            if (updateList.isProfit == "是"){
+                updateList.isProfit = 1
+            }
+            if (updateList.isProfit == "否"){
+                updateList.isProfit = 2
+            }
             for (var i = 0; i < list.length; i++) {
                 if (list[i].hpId == $scope.dritem.hpId) {
                     $scope.list = list[i];
@@ -164,7 +200,6 @@
                     updateList.numberBed != null && updateList.isProfit != null && updateList.deanPhone != null && updateList.deanFax != null &&
                     updateList.medicamentPhone != null && updateList.hospitalType != null && updateList.lastDrugMoney != null &&
                     updateList.lastBusinessMoney != null){
-                    console.log(updateList);
                     $http({
                         url:"/hospitalManage/updateHospitalInfo",
                         method:"post",
@@ -178,7 +213,7 @@
                             return str.join("&");
                         }
                     }).then(function successCallback(response) {
-                        console.log(response);
+                        //console.log(response);
                         if (response.data>0){
                             alert("修改成功")
                             $scope.query(1);
@@ -191,8 +226,32 @@
                 }
             }
         }
+        //删除
+        $scope.delHospitalInfo = function (hpId) {
+            $http({
+                url:"/hospitalManage/delHospitalInfo",
+                method:"post",
+                params: {"hpId":hpId},
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                transformRequest: function(obj) {
+                    var str = [];
+                    for (var s in obj) {
+                        str.push(encodeURIComponent(s) + "=" + encodeURIComponent(obj[s]));
+                    }
+                    return str.join("&");
+                }
+            }).then(function successCallback(response) {
+                console.log(response);
+                if (response.data>0){
+                    alert("删除成功")
+                    $scope.query(1);
+                }else {
+                    alert("删除失败")
+                }
+            })
+        }
     })
-</script>
+    </script>
 </head>
 <body ng-app="myApp" ng-controller="myContr">
     <!--模糊查询的table-->
@@ -207,9 +266,20 @@
             </tr>
             <tr>
                 <td>所属地区:<input ng-model="fuzzyQuery.affiliatingArea"></td>
-                <td>医院级别:<input ng-model="fuzzyQuery.hospitalRank"></td>
+                <td>医院级别:
+                    <select ng-model="fuzzyQuery.hospitalRank">
+                        <option value="">全部</option>
+                        <option ng-repeat="hospitalR in hospitalRank" ng-value="hospitalR.dicId">{{hospitalR.dictionariesName}}</option>
+                    </select>
+                </td>
                 <td>床位数:<input ng-model="fuzzyQuery.numberBed"></td>
-                <td>是否非营利性医疗机构:<input ng-model="fuzzyQuery.isProfit"></td>
+                <td>是否非营利性医疗机构:
+                    <select ng-model="fuzzyQuery.isProfit">
+                        <option value="">全部</option>
+                        <option ng-value="1">是</option>
+                        <option ng-value="2">否</option>
+                    </select>
+                </td>
             </tr>
             <tr>
                 <td>院办电话:<input ng-model="fuzzyQuery.deanPhone"></td>
@@ -273,7 +343,7 @@
                 <th>{{x.lastBusinessMoney}}</th>
                 <!--<button class="btn btn-success" data-toggle="modal" data-target="#chage" ng-click="chage(x.diId)" >查看</button>-->
                 <td><button class="btn btn-warning" data-toggle="modal" data-target="#more" ng-click="updateHospitalInfo(x.hpId)">修改</button></td>
-                <td><button class="btn btn-danger" data-toggle="modal" ng-click="expurgate(x.diId)">删除</button></td>
+                <td><button class="btn btn-danger" data-toggle="modal" ng-click="delHospitalInfo(x.hpId)">删除</button></td>
             </tr>
         </tbody>
     </table>
@@ -281,7 +351,8 @@
     </div>
     <!--分页-->
     <div id="pages" class="page_div"></div>
-<div class="modal fade" id="addition" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <!--添加-->
+    <div class="modal fade" id="addition" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog" style="width:80%;">
         <div class="modal-content" >
             <div class="modal-header">
@@ -310,10 +381,13 @@
                     </tr>
                     <tr>
                         <td>所属地区:</td>
-                        <td><input name="affiliatingArea" onblur   class="form-control" >
+                        <td><input name="affiliatingArea" onblur class="form-control" >
                             <span></span></td>
                         <td>医院级别:</td>
-                        <td><input name="hospitalRank" onblur   class="form-control" >
+                        <td><select name="hospitalRank" ng-model="fuzzyQuery.hospitalRank" onblur class="form-control">
+                                <option ng-value="">请选择</option>
+                                <option ng-repeat="hospital in hospitalRank" ng-value="hospital.dicId">{{hospital.dictionariesName}}</option>
+                            </select>
                             <span></span></td>
                     </tr>
                     <tr>
@@ -322,8 +396,8 @@
                             <span></span></td>
                         <td>是否非营利性医疗机构:</td>
                         <td><select name="isProfit" onblur  class="form-control" >
-                            <option value="1">是</option>
-                            <option value="2">否</option>
+                            <option ng-value="1">是</option>
+                            <option ng-value="2">否</option>
                         </select><span></span></td>
                     </tr>
                     <tr>
@@ -361,7 +435,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="status" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="status" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog" style="width:80%;">
         <div class="modal-content">
             <div class="modal-header">
@@ -379,7 +453,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="introduce" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="introduce" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog" style="width:80%;">
         <div class="modal-content">
             <div class="modal-header">
@@ -404,8 +478,8 @@
     </div>
 
 </div>
-
-<div class="modal fade" id="more" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <!--修改-->
+    <div class="modal fade" id="more" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog" style="width:80%;">
         <div class="modal-content">
             <div class="modal-header">
@@ -437,7 +511,9 @@
                             <td><input ng-model="dritem.affiliatingArea" name="affiliatingArea" onblur   class="form-control" >
                                 <span></span></td>
                             <td>医院级别:</td>
-                            <td><input ng-model="dritem.hospitalRank" name="hospitalRank" onblur   class="form-control" >
+                            <td><select name="hospitalRank" ng-model="dritem.hospitalRank" class="form-control">
+                                    <option ng-repeat="hospitalRs in hospitalRank" ng-selected="hospitalRs.dicId == dritem.hospitalRank" ng-value="hospitalRs.dicId">{{hospitalRs.dictionariesName}}</option>
+                                </select>
                                 <span></span></td>
                         </tr>
                         <tr>
@@ -445,9 +521,10 @@
                             <td><input ng-model="dritem.numberBed" name="numberBed" onblur   class="form-control" >
                                 <span></span></td>
                             <td>是否非营利性医疗机构:</td>
-                            <td><select ng-model="dritem.isProfit" name="isProfit" onblur  class="form-control" >
-                                <option value="1">是</option>
-                                <option value="2">否</option>
+                            <td><select name="isProfit" ng-model="dritem.isProfit" onblur  class="form-control" >
+                                <option ng-value="">{{dritem.isProfit}}</option>
+                                <option ng-value="1">是</option>
+                                <option ng-value="2">否</option>
                             </select><span></span></td>
                         </tr>
                         <tr>
@@ -484,7 +561,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="chage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="chage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog" style="width:80%;">
         <div class="modal-content">
             <div class="modal-header">
