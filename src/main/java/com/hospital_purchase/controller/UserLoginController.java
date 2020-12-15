@@ -86,7 +86,7 @@ public class UserLoginController {
      */
     @RequestMapping("/findAllUser")
     @ResponseBody
-    public PageInfo findAllUser(Integer pageNum,Integer pageSize,User user){
+    public PageInfo findAllUser(@RequestParam(value = "pageNum",defaultValue = "1") Integer pageNum,@RequestParam(value = "pageSize",defaultValue = "10") Integer pageSize,User user){
         return userService.findUserList(pageNum,pageSize,user);
     }
 

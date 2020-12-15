@@ -22,17 +22,20 @@
             margin-right: 1em;
             text-align: right;
         }
-        .contents{
-            text-align:left;
+
+        .contents {
+            text-align: left;
         }
-        .introduce{
-            text-align:right;
+
+        .introduce {
+            text-align: right;
         }
     </style>
     <script>
         var app = angular.module("myApp", ["pagination"]);
         app.controller("myContr", function ($scope, $http) {
             $scope.entity = {};
+            //引用pagination
             $scope.paginationConf = {
                 currentPage: 1,  				//当前页
                 totalItems: 10,					//总记录数
@@ -42,17 +45,19 @@
                     $scope.find($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage)
                 }
             }
+            //定义起始页和每页大小
             $scope.dictionaries = {
                 pageNum: 0,
                 pageSize: 10
             }
+            //查所有
             $scope.find = function (pageNum, items) {
                 if (pageNum == null || pageNum == "") {
                     pageNum = 1;
                 }
                 $scope.dictionaries.pageNum = pageNum;
                 $scope.dictionaries.pageSize = items;
-                var userMessage = $scope.dictionaries;
+                var userMessage = $scope.userMessage;
                 console.log(userMessage)
                 $http({
                     url: "/userController/findAllUser",
@@ -64,6 +69,7 @@
                 })
 
             }
+            //信息提示悬浮窗
             $scope.showModalButton1 = function (slogan) {
                 showModal({
                     title: "温馨提示",  //提示的标题
@@ -80,6 +86,7 @@
                     }
                 });
             }
+            //删除信息提示悬浮窗
             $scope.showModalButton2 = function () {
                 showModal({
                     title: "温馨提示",  //提示的标题
@@ -100,59 +107,137 @@
                     }
                 });
             }
-            //查所有父字典
+            //查所有用户类别
             $http({
-                url: "/userController/findParentDictionaries",
+                url: "/Dictionaries/findChildByParentId",
+                method: "post",
+                params: {"dictionariesId": 30}
+            }).success(function (response) {
+                $scope.childDictionariesCategoryName = response;
+            })
+            //查所有的用户状态
+            $http({
+                url: "/Dictionaries/findChildByParentId",
+                method: "post",
+                params: {"dictionariesId": 35}
+            }).success(function (response) {
+                $scope.childDictionariesStateName = response;
+            })
+            //查所有医院
+            $http({
+                url: "/Hospital/findAllHospital",
                 method: "post"
             }).success(function (response) {
-                $scope.ParentDictionariesList = response;
+                $scope.allHospital = response;
             })
-            $scope.toVerification = function (dictionaries) {
+            //提交验证
+            $scope.toVerification = function (userMassage) {
                 var judge = true;
-                var dictionariesName = dictionaries.dictionariesName;
-                if (dictionariesName == null || dictionariesName == '') {
-                    $scope.showModalButton1("请填写字典名称！");
+                var userName = userMassage.userName;
+                var userCategory = userMassage.userCategory;
+                var userState = userMassage.userState;
+                var hospitalId = userMassage.hospitalId;
+                var contactAddress = userMassage.contactAddress;
+                var userPostalCode = userMassage.userPostalCode;
+                var userLinkman = userMassage.userLinkman;
+                var userPhone = userMassage.userPhone;
+                var userEmail = userMassage.userEmail;
+
+                if (userName == null || userName == '') {
+                    $scope.showModalButton1("请填写用户名称！");
                     judge = false;
                 }
-
+                if (userCategory == null || userCategory == '') {
+                    $scope.showModalButton1("请填选择用户类别！");
+                    judge = false;
+                }
+                if (userState == null || userState == '') {
+                    $scope.showModalButton1("请填选择用户状态！");
+                    judge = false;
+                }
+                if (hospitalId == null || hospitalId == '') {
+                    $scope.showModalButton1("请选择工作单位！");
+                    judge = false;
+                }
+                if (contactAddress == null || contactAddress == '') {
+                    $scope.showModalButton1("请填写联系人地址！");
+                    judge = false;
+                }
+                if (userPostalCode == null || userPostalCode == '') {
+                    $scope.showModalButton1("请填写邮政编码！");
+                    judge = false;
+                }
+                if (userLinkman == null || userLinkman == '') {
+                    $scope.showModalButton1("请填写联系人！");
+                    judge = false;
+                }
+                if (userPhone == null || userPhone == '') {
+                    $scope.showModalButton1("请填写联系电话！");
+                    judge = false;
+                }
+                if (userEmail == null || userEmail == '') {
+                    $scope.showModalButton1("请填写邮箱！");
+                    judge = false;
+                }
+                var reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
+                if (!reg.test(userEmail)) {
+                    $scope.showModalButton1("邮箱格式不正确！");
+                    judge = false;
+                }
+                var phone = /^1[3|4|5|7|8][0-9]{9}$/;
+                if (!phone.test(userPhone)) {
+                    $scope.showModalButton1("手机号填写不正确！");
+                    judge = false;
+                }
                 return judge;
             }
             //添加
             $scope.submit = function () {
-                var dictionaries = $scope.entity;
-                var judge = $scope.toVerification(dictionaries);
+                var user = $scope.entityUser;
+                var judge = $scope.toVerification(user);
                 if (judge) {
                     $http({
-                        url: "/userController/addDictionaries",
+                        url: "/userController/userExist",
                         method: "post",
-                        params: dictionaries
-                    }).success(function (response) {
-                        $scope.showModalButton1(response.slogan);
-                        $("#editModal").modal('hide');//此处为添加框，关闭添加框
-                        $scope.find($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
+                        params: {"userAccount": user.userAccount}
+                    }).success(function (data) {
+                        if (!data.estimate) {
+                            $scope.showModalButton1(data.slogan)
+                        } else {
+                            $http({
+                                url: "/userController/loginUser",
+                                method: "post",
+                                params: user
+                            }).success(function (response) {
+                                $scope.showModalButton1(response.slogan);
+                                $("#editModal").modal('hide');//此处为添加框，关闭添加框
+                                $scope.find($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
+                            })
+                        }
                     })
                 }
             }
             //修改显示数据
             $scope.reviseMassage = function (usId) {
                 $http({
-                    url: "/userController/findOneUserVOById",
+                    url: "/userController/findOneUserById",
                     method: "post",
                     params: {"usId": usId}
                 }).success(function (response) {
-                    $scope.reviseUserVO = response;
+                    $scope.reviseUser = response;
                 })
             }
             //修改
             $scope.reviseSave = function () {
-                var dictionaries = $scope.revise;
-                var judge = $scope.toVerification(dictionaries);
+                var userMassage = $scope.reviseUser;
+                var judge = $scope.toVerification(userMassage);
                 if (judge) {
                     $http({
-                        url: "/Dictionaries/changeDictionaries",
+                        url: "/userController/changeUser",
                         method: "post",
-                        params: dictionaries
+                        params: userMassage
                     }).success(function (response) {
+                        console.log(response)
                         $scope.showModalButton1(response.slogan);
                         $("#modification").modal('hide');//，关闭框
                         $scope.find($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
@@ -160,7 +245,7 @@
                 }
             }
             //查看
-            $scope.detailedMassage=function(usId){
+            $scope.detailedMassage = function (usId) {
                 $http({
                     url: "/userController/findOneUserVOById",
                     method: "post",
@@ -170,7 +255,7 @@
                 })
             }
             //删除
-            $scope.removeOne = function (dicId) {
+            $scope.removeOne = function (usId) {
                 showModal({
                     title: "温馨提示",  //提示的标题
                     content: "确认要删除吗？",  //提示的内容
@@ -184,9 +269,9 @@
                     success: function (res) {
                         if (res.confirm) {
                             $http({
-                                url: "/Dictionaries/removeDictionariesDel",
+                                url: "/userController/removeUser",
                                 method: "post",
-                                params: {"dicId": dicId}
+                                params: {"usId": usId}
                             }).success(function (response) {
                                 $scope.showModalButton1(response.slogan);
                                 $scope.find($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
@@ -196,28 +281,85 @@
                 });
 
             }
-
-
         });
 
     </script>
 </head>
 <body ng-app="myApp" ng-controller="myContr">
 <div>
-    <h5 class="alert alert-infoalert alert-info">字典详情页</h5>
+    <h5 class="alert alert-infoalert alert-info">用户详情页</h5>
     <table class="table table-bordered table-striped">
         <tr>
-            <td class="introduce">字典名称:</td>
-            <td class="contents"><input ng-model="dictionaries.dictionariesName"  class="form-control"/></td>
-            <td class="introduce">父级字典:</td>
-            <td class="contents">
-                <select ng-model="dictionaries.dictionariesId" class="form-control">
+            <td>账号:</td>
+            <td>
+                <input  ng-model="userMessage.userAccount" class="form-control">
+            </td>
+            <td>用户名称:</td>
+            <td>
+                <input  ng-model="userMessage.userName" class="form-control">
+            </td>
+        </tr>
+        <tr>
+            <td>用户类别:</td>
+            <td>
+                <select ng-model="userMessage.userCategory" class="form-control">
                     <option value="">无</option>
-                    <option ng-repeat="ParentDictionaries in ParentDictionariesList"
-                            ng-value="ParentDictionaries.dicId">{{ParentDictionaries.dictionariesName}}
+                    <option ng-repeat="childDictionariesCategory in childDictionariesCategoryName"
+                            ng-value="childDictionariesCategory.dicId"
+                            ng-selected="userMessage.userCategory==childDictionariesCategory.dicId">
+                        {{childDictionariesCategory.dictionariesName}}
                     </option>
                 </select>
             </td>
+            <td>用户状态:</td>
+            <td>
+                <select ng-model="userMessage.userState" class="form-control">
+                    <option value="">无</option>
+                    <option ng-repeat="childDictionariesState in childDictionariesStateName"
+                            ng-selected="childDictionariesState.dicId==userMessage.userState"
+                            ng-value="childDictionariesState.dicId">{{childDictionariesState.dictionariesName}}
+                    </option>
+                </select>
+            </td>
+
+        </tr>
+        <tr>
+            <td>所在单位:</td>
+            <td>
+                <select ng-model="userMessage.hospitalId" class="form-control">
+                    <option value="">请选择</option>
+                    <option ng-repeat="oneHospital in allHospital" ng-value="oneHospital.hpId"
+                            ng-selected="oneHospital.hpId==reviseUser.hospitalId">{{oneHospital.hospitalName}}
+                    </option>
+                </select>
+            </td>
+            <td>联系地址:</td>
+            <td>
+                <input name="contactAddress" ng-model="userMessage.contactAddress" class="form-control">
+            </td>
+
+        </tr>
+        <tr>
+            <td>邮政编码:</td>
+            <td>
+                <input name="userPostalCode" ng-model="userMessage.userPostalCode" class="form-control">
+            </td>
+            <td>联系人:</td>
+            <td>
+                <input name="userLinkman" ng-model="userMessage.userLinkman" class="form-control">
+            </td>
+
+        </tr>
+        <tr>
+            <td>联系电话:</td>
+            <td>
+                <input name="userPhone" ng-model="userMessage.userPhone" class="form-control">
+            </td>
+            <td>Email:</td>
+            <td>
+                <input name="userEmail" ng-model="userMessage.userEmail" class="form-control">
+            </td>
+
         </tr>
         <tr>
             <td></td>
@@ -269,15 +411,17 @@
             <td>{{user.userPhone}}</td>
             <td>{{user.userEmail}}</td>
             <td>
-                <button class="btn btn-success" data-toggle="modal" data-target="#detailed" ng-click="detailedMassage(user.usId)">详细</button>
-            </td>
-            <td>
-                <button class="btn btn-warning" data-toggle="modal" data-target="#modification"
-                        ng-click="reviseMassage(dic.dicId)">修改
+                <button class="btn btn-success" data-toggle="modal" data-target="#detailed"
+                        ng-click="detailedMassage(user.usId)">详细
                 </button>
             </td>
             <td>
-                <button class="btn btn-danger" ng-click="removeOne(dic.dicId)">删除</button>
+                <button class="btn btn-warning" data-toggle="modal" data-target="#modification"
+                        ng-click="reviseMassage(user.usId)">修改
+                </button>
+            </td>
+            <td>
+                <button class="btn btn-danger" ng-click="removeOne(user.usId)">删除</button>
             </td>
         </tr>
         </tbody>
@@ -290,27 +434,95 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button id="bt1" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="myModalLabel">字典添加</h3>
+                <h3 id="myModalLabel">用户添加</h3>
             </div>
             <div class="modal-body">
 
                 <table class="table table-bordered table-striped">
                     <tr>
-                        <td>字典名称:</td>
-                        <td><input name="dictionariesName" ng-model="entity.dictionariesName" class="form-control"></td>
+                        <td>账号:</td>
+                        <td>
+                            <input name="userAccount" ng-model="entityUser.userAccount" class="form-control"></td>
+                        <td>用户名称:</td>
+                        <td>
+                            <input name="userName" ng-model="entityUser.userName" class="form-control">
+                        </td>
                     </tr>
                     <tr>
-
-                        <td>父级字典名称:</td>
+                        <td>密码:</td>
                         <td>
-                            <select ng-model="entity.dictionariesId" class="form-control">
+                            <input name="userPassword" ng-model="entityUser.userPassword" type="password"
+                                   class="form-control">
+                        </td>
+                        <td>用户类别:</td>
+                        <td>
+                            <select ng-model="entityUser.userCategory" class="form-control">
                                 <option value="">无</option>
-                                <option ng-repeat="ParentDictionaries in ParentDictionariesList"
-                                        ng-value="ParentDictionaries.dicId">{{ParentDictionaries.dictionariesName}}
+                                <option ng-repeat="childDictionariesCategory in childDictionariesCategoryName"
+                                        ng-value="childDictionariesCategory.dicId"
+                                        ng-selected="reviseUser.userCategory==childDictionariesCategory.dicId">
+                                    {{childDictionariesCategory.dictionariesName}}
                                 </option>
                             </select>
                         </td>
 
+                    </tr>
+                    <tr>
+                        <td>用户状态:</td>
+                        <td>
+                            <select ng-model="entityUser.userState" class="form-control">
+                                <option value="">无</option>
+                                <option ng-repeat="childDictionariesState in childDictionariesStateName"
+                                        ng-selected="childDictionariesState.dicId==reviseUser.userState"
+                                        ng-value="childDictionariesState.dicId">
+                                    {{childDictionariesState.dictionariesName}}
+                                </option>
+                            </select>
+                        </td>
+
+                        <td>所在单位:</td>
+                        <td>
+                            <select ng-model="entityUser.hospitalId" class="form-control">
+                                <option value="">请选择</option>
+                                <option ng-repeat="oneHospital in allHospital" ng-value="oneHospital.hpId"
+                                        ng-selected="oneHospital.hpId==reviseUser.hospitalId">
+                                    {{oneHospital.hospitalName}}
+                                </option>
+                            </select>
+                        </td>
+
+
+                    </tr>
+                    <tr>
+
+                        <td>联系地址:</td>
+                        <td>
+                            <input name="contactAddress" ng-model="entityUser.contactAddress" class="form-control">
+                        </td>
+                        <td>联系人:</td>
+                        <td>
+                            <input name="userLinkman" ng-model="entityUser.userLinkman" class="form-control">
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>联系电话:</td>
+                        <td>
+                            <input name="userPhone" ng-model="entityUser.userPhone" class="form-control">
+                        </td>
+                        <td>Email:</td>
+                        <td>
+                            <input name="userEmail" ng-model="entityUser.userEmail" class="form-control">
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>邮政编码:</td>
+                        <td>
+                            <input name="userPostalCode" ng-model="entityUser.userPostalCode" class="form-control">
+                        </td>
+                        <td></td>
+                        <td></td>
                     </tr>
                 </table>
 
@@ -327,23 +539,81 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button id="bt" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="myModalLabe">字典修改</h3>
+                <h3 id="myModalLabe">用户修改</h3>
             </div>
             <div class="modal-body">
                 <table class="table table-bordered table-striped">
                     <tr>
-                        <td>字典名称:</td>
-                        <td><input name="dictionariesName" ng-model="revise.dictionariesName" class="form-control"></td>
+                        <td>账号:</td>
+                        <td>
+                            <input name="userAccount" ng-model="reviseUser.userAccount" class="form-control"
+                                   disabled="disabled"></td>
+                        <td>用户名称:</td>
+                        <td>
+                            <input name="userName" ng-model="reviseUser.userName" class="form-control">
+                        </td>
                     </tr>
                     <tr>
-                        <td>父级字典名称:</td>
+                        <td>用户类别:</td>
                         <td>
-                            <select ng-model="revise.dictionariesId" class="form-control" name="reviseDictionariesId">
+                            <select ng-model="reviseUser.userCategory" class="form-control">
                                 <option value="">无</option>
-                                <option ng-repeat="ParentDictionaries in ParentDictionariesList"
-                                        ng-value="ParentDictionaries.dicId">{{ParentDictionaries.dictionariesName}}
+                                <option ng-repeat="childDictionariesCategory in childDictionariesCategoryName"
+                                        ng-value="childDictionariesCategory.dicId"
+                                        ng-selected="reviseUser.userCategory==childDictionariesCategory.dicId">
+                                    {{childDictionariesCategory.dictionariesName}}
                                 </option>
                             </select>
+                        </td>
+                        <td>用户状态:</td>
+                        <td>
+                            <select ng-model="reviseUser.userState" class="form-control">
+                                <option value="">无</option>
+                                <option ng-repeat="childDictionariesState in childDictionariesStateName"
+                                        ng-selected="childDictionariesState.dicId==reviseUser.userState"
+                                        ng-value="childDictionariesState.dicId">
+                                    {{childDictionariesState.dictionariesName}}
+                                </option>
+                            </select>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>所在单位:</td>
+                        <td>
+                            <select ng-model="reviseUser.hospitalId" class="form-control">
+                                <option value="">请选择</option>
+                                <option ng-repeat="oneHospital in allHospital" ng-value="oneHospital.hpId"
+                                        ng-selected="oneHospital.hpId==reviseUser.hospitalId">
+                                    {{oneHospital.hospitalName}}
+                                </option>
+                            </select>
+                        </td>
+                        <td>联系地址:</td>
+                        <td>
+                            <input name="contactAddress" ng-model="reviseUser.contactAddress" class="form-control">
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>邮政编码:</td>
+                        <td>
+                            <input name="userPostalCode" ng-model="reviseUser.userPostalCode" class="form-control">
+                        </td>
+                        <td>联系人:</td>
+                        <td>
+                            <input name="userLinkman" ng-model="reviseUser.userLinkman" class="form-control">
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>联系电话:</td>
+                        <td>
+                            <input name="userPhone" ng-model="reviseUser.userPhone" class="form-control">
+                        </td>
+                        <td>Email:</td>
+                        <td>
+                            <input name="userEmail" ng-model="reviseUser.userEmail" class="form-control">
                         </td>
 
                     </tr>
@@ -368,53 +638,63 @@
                     <tr>
                         <td>账号:</td>
                         <td>
-                            <input name="userAccount" ng-model="informationUserVO.userAccount" class="form-control" disabled="disabled"></td>
+                            <input name="userAccount" ng-model="informationUserVO.userAccount" class="form-control"
+                                   disabled="disabled"></td>
                         <td>用户名称:</td>
                         <td>
-                            <input name="userName" ng-model="informationUserVO.userName" class="form-control" disabled="disabled">
+                            <input name="userName" ng-model="informationUserVO.userName" class="form-control"
+                                   disabled="disabled">
                         </td>
                     </tr>
                     <tr>
                         <td>用户类别:</td>
                         <td>
-                            <input name="categoryName" ng-model="informationUserVO.categoryName" class="form-control" disabled="disabled">
+                            <input name="categoryName" ng-model="informationUserVO.categoryName" class="form-control"
+                                   disabled="disabled">
                         </td>
                         <td>用户状态:</td>
                         <td>
-                            <input name="stateName" ng-model="informationUserVO.stateName" class="form-control" disabled="disabled">
+                            <input name="stateName" ng-model="informationUserVO.stateName" class="form-control"
+                                   disabled="disabled">
                         </td>
 
                     </tr>
                     <tr>
                         <td>所在单位:</td>
                         <td>
-                            <input name="hospitalName" ng-model="informationUserVO.hospitalName" class="form-control" disabled="disabled">
+                            <input name="hospitalName" ng-model="informationUserVO.hospitalName" class="form-control"
+                                   disabled="disabled">
                         </td>
                         <td>联系地址:</td>
                         <td>
-                            <input name="contactAddress" ng-model="informationUserVO.contactAddress" class="form-control" disabled="disabled">
+                            <input name="contactAddress" ng-model="informationUserVO.contactAddress"
+                                   class="form-control" disabled="disabled">
                         </td>
 
                     </tr>
                     <tr>
                         <td>邮政编码:</td>
                         <td>
-                            <input name="userPostalCode" ng-model="informationUserVO.userPostalCode" class="form-control" disabled="disabled">
+                            <input name="userPostalCode" ng-model="informationUserVO.userPostalCode"
+                                   class="form-control" disabled="disabled">
                         </td>
                         <td>联系人:</td>
                         <td>
-                            <input name="userLinkman" ng-model="informationUserVO.userLinkman" class="form-control" disabled="disabled">
+                            <input name="userLinkman" ng-model="informationUserVO.userLinkman" class="form-control"
+                                   disabled="disabled">
                         </td>
 
                     </tr>
                     <tr>
                         <td>联系电话:</td>
                         <td>
-                            <input name="userPhone" ng-model="informationUserVO.userPhone" class="form-control" disabled="disabled">
+                            <input name="userPhone" ng-model="informationUserVO.userPhone" class="form-control"
+                                   disabled="disabled">
                         </td>
                         <td>Email:</td>
                         <td>
-                            <input name="userEmail" ng-model="informationUserVO.userEmail" class="form-control" disabled="disabled">
+                            <input name="userEmail" ng-model="informationUserVO.userEmail" class="form-control"
+                                   disabled="disabled">
                         </td>
 
                     </tr>

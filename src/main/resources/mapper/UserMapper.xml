@@ -12,7 +12,7 @@
     <result column="contact_address" jdbcType="VARCHAR" property="contactAddress" />
     <result column="user_postal_code" jdbcType="INTEGER" property="userPostalCode" />
     <result column="user_linkman" jdbcType="VARCHAR" property="userLinkman" />
-    <result column="user_phone" jdbcType="INTEGER" property="userPhone" />
+    <result column="user_phone" jdbcType="VARCHAR" property="userPhone" />
     <result column="user_email" jdbcType="VARCHAR" property="userEmail" />
     <result column="creation_time" jdbcType="TIMESTAMP" property="creationTime" />
     <result column="modification_time" jdbcType="TIMESTAMP" property="modificationTime" />
