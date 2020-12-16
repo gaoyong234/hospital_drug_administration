@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hospital_purchase.dao.PurchaseOrderDao.PurchaseStorageMapper">
+  <resultMap id="BaseResultMap" type="com.hospital_purchase.vo.PurchaseStorageVO">
+      <id column="po_id" jdbcType="INTEGER" property="poId" />
+      <result column="purchase_number" jdbcType="VARCHAR" property="purchaseNumber" />
+      <result column="purchase_name" jdbcType="VARCHAR" property="purchaseName" />
+      <result column="serial_number" jdbcType="INTEGER" property="serialNumber" />
+      <result column="common_name" jdbcType="VARCHAR" property="commonName" />
+      <result column="commodity_name" jdbcType="VARCHAR" property="commodityName" />
+      <result column="bidding_price" jdbcType="DECIMAL" property="biddingPrice" />
+      <result column="deal_price" jdbcType="DECIMAL" property="dealPrice" />
+      <result column="purchase_quantity" jdbcType="INTEGER" property="purchaseQuantity" />
+      <result column="purchase_total_amount" jdbcType="DECIMAL" property="purchaseTotalAmount" />
+      <result column="dosage_form" jdbcType="VARCHAR" property="dosageForm" />
+      <result column="speciflcation" jdbcType="VARCHAR" property="speciflcation" />
+      <result column="unit_id" jdbcType="VARCHAR" property="unitId" />
+      <result column="coefficient" jdbcType="INTEGER" property="coefficient" />
+      <result column="purchase_state" jdbcType="VARCHAR" property="purchaseState" />
+
+      <result column="storage_volume" jdbcType="INTEGER" property="storageVolume" />
+      <result column="invoice" jdbcType="VARCHAR" property="invoice" />
+      <result column="drug_batch_number" jdbcType="VARCHAR" property="drugBatchNumber" />
+      <result column="effective_time" jdbcType="TIMESTAMP" property="effectiveTime" />
+      <result column="production_name" jdbcType="VARCHAR" property="productionName" />
+      <result column="hospital_name" jdbcType="VARCHAR" property="hospitalName" />
+      <result column="begin_time" jdbcType="TIMESTAMP" property="beginTime" />
+      <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+      <result column="drug_category" jdbcType="VARCHAR" property="drugCategory" />
+      <result column="storage_time" jdbcType="TIMESTAMP" property="storageTime" />
+      <result column="toStorage_time" jdbcType="TIMESTAMP" property="toStorageTime" />
+      <result column="supplier_ame" jdbcType="VARCHAR" property="supplierName" />
+  </resultMap>
+
+  <select id="findPurchaseStorage" resultMap="BaseResultMap">
+    SELECT po.po_id,po.purchase_number,po.purchase_name,di.serial_number,di.common_name,
+			di.commodity_name,dm.bidding_price,pd.deal_price,pd.purchase_quantity,pd.purchase_total_amount,
+
+			di.dosage_form,di.speciflcation,d.dictionaries_name as unit_id,di.coefficient,po.purchase_state
+		FROM purchase_orders po
+		LEFT JOIN purchase_drug pd on pd.purchase_id = po.po_id
+		LEFT JOIN drug_items di on di.di_id = pd.drug_id
+		LEFT JOIN drug_message dm on dm.drug_items_id = di.di_id
+		LEFT JOIN dictionaries d on d.dic_id = di.unit_id
+  </select>
+</mapper>
