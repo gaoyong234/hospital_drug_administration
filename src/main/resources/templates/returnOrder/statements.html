@@ -48,10 +48,19 @@
             <td>生产企业:<input ng-model="drug.unitId"></td>
             <td>对应采购单名称:<input ng-model="drug.coefficient"></td>
         </tr>
+            <td>通用名:<input ng-model="drug.unitId"></td>
+            <td>规格:<input ng-model="drug.unitId"></td>
         <tr>
         </tr>
-        <td>结算时间:<input type="date" ng-model="drug.unitId"></td>
-        <td>采购时间:<input type="date" ng-model="drug.unitId"></td>
+             <td>结算时间:<input type="date" ng-model="drug.unitId"></td>
+             <td>采购时间:<input type="date" ng-model="drug.unitId"></td>
+        <tr>
+            <td>转换系数:<input type="date" ng-model="drug.unitId"></td>
+            <td>商品名:<input type="date" ng-model="drug.unitId"></td>
+            <td>药品类别:
+                <select>
+                    <option value="">全部</option>
+                </select>
         <tr>
         </tr>
         <td>质量层次:
@@ -99,7 +108,7 @@
    </thead>
         <tbody id="tbody">
         <tr ng-repeat="x in lists">
-            <!--<td>{{x.diId}}</td>
+            <!----<td>{{x.diId}}</td>
             <td>{{x.commonName}}</td>
             <td>{{x.dosageForm}}</td>
             <td>{{x.speciflcation}}</td>
@@ -107,7 +116,7 @@
             <td>{{x.coefficient}}</td>
             <td>{{x.drugCategoryName}}</td>
             <td>{{x.drugStateName}}</td>-->
-            <td><button class="btn btn-success" data-toggle="modal" data-target="#chage" ng-click="chage(x.diId)" >查看</button></td>
+            <td><button class="btn btn-success" data-toggle="modal" data-target="#chage"ng-click="chage(x.diId)" >查看</button></td>
             <td><button class="btn btn-warning" data-toggle="modal" data-target="#more" ng-click="amend(x.diId)">修改</button></td>
             <td><button class="btn btn-danger" data-toggle="modal" ng-click="expurgate(x.diId)">删除</button></td>
         </tr>
