@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../static/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <link rel="stylesheet" href="../static/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/plugins/adminLTE/css/AdminLTE.css">
+    <link rel="stylesheet" href="../static/plugins/adminLTE/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../static/plugins/angularjs/toaster.min.css">
+    <script src="../static/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+    <script src="../static/plugins/angularjs/angular.min.js"></script>
+    <link rel="stylesheet" href="../static/plugins/angularjs/pagination.css">
+    <script type="text/javascript" src="../static/plugins/angularjs/pagination.js"></script>
+    <script type="text/javascript" src="../../static/renponsetable/js/pageMe.js"></script>
+    <style>
+        label { float: left; width: 10em; margin-right: 1em; text-align: right; }
+
+        /*分页样式*/
+        /* 外面盒子样式---自己定义 */
+        .page_div{margin:20px 10px 20px 0;color:#666}
+        /* 页数按钮样式 */
+        .page_div button{display:inline-block;min-width:30px;height:28px;cursor:pointer;color:#666;font-size:13px;line-height:28px;background-color:#f9f9f9;border:1px solid #dce0e0;text-align:center;margin:0 4px;-webkit-appearance: none;-moz-appearance: none;appearance: none;}
+        #firstPage,#lastPage,#nextPage,#prePage{width:50px;color:#0073A9;border:1px solid #0073A9}
+        #nextPage,#prePage{width:70px}
+        .page_div .current{background-color:#0073A9;border-color:#0073A9;color:#FFF}
+        /* 页面数量 */
+        .totalPages{margin:0 10px}
+        .totalPages span,.totalSize span{color:#0073A9;margin:0 5px}
+        /*button禁用*/
+        .page_div button:disabled{opacity:.5;cursor:no-drop}
+    </style>
+    <script>
+       var app = angular.module("myApp",[]);
+       app.controller("myContr",function ($scope,$http) {
+           
+           $(function () {
+               $scope.findPage(1);
+           })
+
+           $scope.fuzzyQuery  ={
+               pageNum:0,
+               pageSize:5
+           }
+
+           $scope.findPage = function (pageNum) {
+               $scope.fuzzyQuery.pageNum = pageNum;
+               var dataList = $scope.fuzzyQuery;
+               $http({
+                   url:"/purchaseStorage/findPurchaseStorage",
+                   method:"get",
+                   params:dataList
+               }).then(function successCallback(response) {
+                   $scope.list = response.data.list;
+                   //console.log(response);
+                   //分页// pageMe.js 使用方法
+                   $("#pages").paging({
+                       pageNum: response.data.pageNum, // 当前页面
+                       totalNum: response.data.pages, // 总页码
+                       totalList: response.data.total, // 记录总数量
+                       callback: function (pageNum) { //回调函数
+                           //console.log(pageNum);
+                           $scope.findPage(pageNum);
+                       }
+                   });
+               },function errorCallback(response) {
+
+               });
+
+           }
+            //查询药品类别
+           $http({
+               url:"/drugInformation/findDrugCategorys",
+               method:"get"
+           }).then(function successCallback(response) {
+               //console.log(response);
+               $scope.drugCategory = [];
+               for (var i = 0; i <response.data.length ; i++) {
+                   $scope.drugCategory.push(response.data[i]);
+               }
+           },function errorCallback(response) {
+
+           })
+           //查询供货商
+           $http({
+               url:"/supplier/conditionfand",
+               method:"get"
+           }).then(function successCallback(response) {
+               //console.log(response);
+               $scope.supplier = [];
+               for (var i = 0; i <response.data.list.length ; i++) {
+                   $scope.supplier.push(response.data.list[i]);
+               }
+           },function errorCallback(response) {
+
+           })
+       })
+   </script>
+    <script type="text/javascript">
+        //获取checkbox按钮组
+        var allpro = document.getElementsByName("c1");
+        //全选方法
+        function change() {
+            //获取全选按钮
+            var all = document.getElementById("all");
+            //全选按钮被选中时，遍历所有按钮
+            if (all.checked) {
+                for (var i = 0; i < allpro.length; i++) {
+                    if (allpro[i].type=="checkbox") {
+                        allpro[i].checked=true;
+
+                    }
+                }
+                //全选按钮未被选中时
+            }else{
+                for (var i = 0; i < allpro.length; i++) {
+                    if (allpro[i].type=="checkbox") {
+                        allpro[i].checked=false;
+                    }
+                }
+            }
+        }
+        //反选的方法
+        function revs() {
+            //获得反选按钮
+            var reverse = document.getElementById("revcheck");
+            //反选按钮被选中时，遍历所有按钮
+            if (reverse.checked) {
+                for (var i = 0; i < allpro.length; i++) {
+                    if (allpro[i].type=="checkbox"&&allpro[i].checked==true) {
+                        allpro[i].checked= false;
+                    }else if (allpro[i].type=="checkbox"&&allpro[i].checked==false) {
+                        allpro[i].checked= true;
+                    }
+
+                }
+                //反选按钮未被选中时
+            }else{
+                for (var i = 0; i < allpro.length; i++) {
+                    if (allpro[i].type=="checkbox"&&allpro[i].checked==true) {
+                        allpro[i].checked= false;
+                    }else if (allpro[i].type=="checkbox"&&allpro[i].checked==false) {
+                        allpro[i].checked= true;
+                    }
+
+                }
+            }
+        }
+    </script>
+</head>
+<body ng-app="myApp" ng-controller="myContr">
+    <div>
+        <h5 class="alert alert-infoalert alert-info">入库管理</h5>
+        <table class="table table-bordered table-striped">
+            <tr>
+                <td>采购单编码:<input ng-model="fuzzyQuery.purchaseNumber"></td>
+                <td>采购单名称:<input ng-model="fuzzyQuery.purchaseName"></td>
+                <td>采购状态:
+                    <select>
+                        <option value="">全部</option>
+                        <option value="1">已发货</option>
+                        <option value="2">未发货</option>
+                    </select>
+                </td>
+                <td>采购医院:<input ng-model="fuzzyQuery.unitId"></td>
+            </tr>
+            <tr>
+                <td>开始采购时间:<input type="date" ng-model="fuzzyQuery.coefficient"></td>
+                <td>结束采购时间:<input type="date" ng-model="fuzzyQuery.unitId"></td>
+                <td>药品流水号:<input ng-model="fuzzyQuery.coefficient"></td>
+                <td>通用名:<input ng-model="fuzzyQuery.unitId"></td>
+            </tr>
+            <tr>
+                <td>剂型:<input type="text" ng-model="fuzzyQuery.coefficient"></td>
+                <td>规格:<input type="text" ng-model="fuzzyQuery.unitId"></td>
+                <td>单位:<input ng-model="fuzzyQuery.coefficient"></td>
+                <td>转换系数:<input ng-model="fuzzyQuery.unitId"></td>
+            </tr>
+            <tr>
+                <td>生产企业:<input type="text" ng-model="fuzzyQuery.coefficient"></td>
+                <td>商品名称:<input type="text" ng-model="fuzzyQuery.unitId"></td>
+                <td>药品类别:
+                    <select ng-model="fuzzyQuery.purchaseState">
+                        <option value="">全部</option>
+                        <option ng-repeat="drugCategory in drugCategory" ng-value="drugCategory.dicId">{{drugCategory.dictionariesName}}</option>
+                    </select>
+                </td>
+                <td>入库时间:<input type="date" ng-model="fuzzyQuery.unitId">至<input type="date" ng-model="fuzzyQuery.unitId"></td>
+            </tr>
+            <tr>
+                <td>药品批号:<input type="text" ng-model="fuzzyQuery.coefficient"></td>
+                <td>发票号或入库单号:<input type="text" ng-model="fuzzyQuery.unitId"></td>
+                <td>供货商:
+                    <select ng-model="fuzzyQuery.supplierName">
+                        <option value="">全部</option>
+                        <option ng-repeat="supplier in supplier" ng-value="supplier.spId">{{supplier.supplierName}}</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+            <tr>
+                <td colspan="1" align="right"> <button type="button" class="btn1" ng-click="find()">查询</button></td>
+                <td> <button type="button" class="btn1" ng-click="loadAlllick()">导出</button></td>
+            </tr>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <!--<button type="button" class="btn1" data-toggle="modal" data-target="#addition" ng-click="addClick()">添加
+        </button>-->
+        <input type="checkbox" name="c0" id="all" value="全选" onclick="change()">全选
+        <input type="checkbox" name="r0" id="revcheck" value="反选" onclick="revs()">反选
+        <button type="button" class="btn1" data-toggle="modal" data-target="#addition" ng-click="addClick()">确认入库
+        </button>
+        <!--<button type="button" class="btn1" data-toggle="modal" data-target="#introduce" ng-click="loadlick()">导入
+        </button>-->
+    </div>
+    <!--tabel列表-->
+    <div>
+        <table id="dataList" class="table">
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>选择</th>
+                    <th>采购单编码</th>
+                    <th>采购单名称</th>
+                    <th>流水号</th>
+                    <th>通用名</th>
+                    <th>商品名</th>
+                    <th>中标价格</th>
+                    <th>交易价格</th>
+                    <th>采购量</th>
+                    <th>采购金额</th>
+                    <th>入库量</th>
+                    <th>实际交易金额</th>
+                    <th>发票号或入库单号</th>
+                    <th>药品批号</th>
+                    <th>药品有效期</th>
+                    <th>剂型</th>
+                    <th>规格</th>
+                    <th>单位</th>
+                    <th>转换系数</th>
+                    <th>采购状态</th>
+                    <th>详情</th>
+                </tr>
+            </thead>
+        <tbody id="tbody">
+            <tr ng-repeat="x in list">
+                <th>{{x.poId}}</th>
+                <th><input type="checkbox" name="c1" value=""></th>
+                <th>{{x.purchaseNumber}}</th>
+                <th>{{x.purchaseName}}</th>
+                <th>{{x.serialNumber}}</th>
+                <th>{{x.commonName}}</th>
+                <th>{{x.commodityName}}</th>
+                <th>{{x.biddingPrice}}</th>
+                <th>{{x.dealPrice}}</th>
+                <th>{{x.purchaseQuantity}}</th>
+                <th>{{x.purchaseTotalAmount}}</th>
+                <th><input type="text" style="width: 50px"></th>
+                <th></th>
+                <th><input type="text" style="width: 50px"></th>
+                <th><input type="text" style="width: 50px"></th>
+                <th><input type="text" style="width: 50px"></th>
+                <th>{{x.dosageForm}}</th>
+                <th>{{x.speciflcation}}</th>
+                <th>{{x.unitId}}</th>
+                <th>{{x.coefficient}}</th>
+                <th>{{x.purchaseState}}</th>
+                <td><button class="btn btn-success" data-toggle="modal" data-target="#chage" ng-click="chage(x.diId)" >查看</button>
+                <button class="btn btn-warning" data-toggle="modal" data-target="#more" ng-click="amend(x.diId)">修改</button>
+                <button class="btn btn-danger" data-toggle="modal" ng-click="expurgate(x.diId)">删除</button></td>
+            </tr>
+        </tbody>
+    </table>
+        <tm-pagination conf="paginationConf"></tm-pagination>
+    </div>
+    <!--分页-->
+    <div id="pages" class="page_div"></div>
+    <div class="modal fade" id="addition" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:80%;">
+        <div class="modal-content" >
+            <div class="modal-header">
+                <button id="bt1" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel">药品品目添加</h3>
+            </div>
+            <div class="modal-body">
+                <form id="addForm">
+                <table class="table table-bordered table-striped"  >
+                    <tr>
+                        <td>药品品目号:</td>
+                        <td><input name="diId" readonly="readonly" onblur class="form-control"></td>
+                        <td>通用名:</td>
+                        <td><input name="commonName" onblur  class="form-control" >
+                        <span></span></td>
+                    </tr>
+                    <tr>
+
+                        <td>剂型:</td>
+                        <td><input name="dosageForm" onblur   class="form-control" >
+                        <span></span></td>
+                        <td>规格:</td>
+                        <td><input name="speciflcation" onblur   class="form-control"  >
+                        <span></span></td>
+                    </tr>
+                    <tr>
+                        <td>单位:</td>
+                        <td><input name="unitId" onblur   class="form-control" >
+                            <span></span></td>
+                        <td>转换系数:</td>
+                        <td><input name="coefficient" onblur   class="form-control" >
+                            <span></span></td>
+                    </tr>
+                    <tr>
+                        <td>药品类别:</td>
+                        <td><select  name="drugCategoryName" onblur class="form-control" >
+                            <option value="1">儿童用药</option>
+                        </select><span></span></td>
+                        <td>状态:</td>
+                        <td><select name="drugStateName" onblur  class="form-control" >
+                            <option value="2">正常</option>
+                            <option value="3">非正常</option>
+                        </select><span></span></td>
+                    </tr>
+                </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-toggle="modal" data-dismiss="modal" data-target="#status" onclick="save()">保存</button>
+                <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="modal fade" id="status" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width:80%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 id="headLeft" type="text" ></h4>
+                    <h4 id="headline" type="text" style="width: 100%;height: 45px;display: block;line-height: 45px;text-align: center;"></h4>
+                    <p id="whether" type="text" style="width: 100%;height: 45px;display: block;line-height: 45px;text-align: center;"></p>
+                    <div>
+                        <p id="lose" ></p>
+                    </div>
+                    <div style="text-align:center">
+                        <button data-dismiss="modal" aria-hidden="true">确定</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="introduce" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width:80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+    <h4 class="text-primary">药品品目导入</h4>
+                <br>
+       <div class="text-center">
+    下载导入模板文件  <button class="text-primary" ng-click="loadtemplate()">点击下载药品品目导入模板</button><br><br>
+        <span style="color: red">提示:请下载后在模板文件中录入药品品目信息,在下面的"选择文件"中选择要导入的文件,点击"导入"</span><br>
+       <div class="text-center">
+           <input style="display:block" id="files" type="file">
+       </div>
+     </div>
+                <div class="text-center">
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-dismiss="modal" data-target="#status" onclick="readAlllick()">导入
+                    </button>
+                    <button class="btn btn-info" data-toggle="modal" data-dismiss="modal" data-target="#status" onclick="fandLose()">查看导入失败结果</button>
+                    <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">关闭</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    </div>
+    <div class="modal fade" id="more" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width:80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button id="bt" type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h3 id="myModalLabe">修改页面</h3>
+            </div>
+            <div class="modal-body">
+                <form id="inserInto">
+                    <table class="table table-bordered table-striped"  >
+                        <tr>
+                            <td>药品品目号:</td>
+                            <td><input ng-model="dritem.diId" name="diId" readonly="readonly" onblur class="form-control"></td>
+                            <td>通用名:</td>
+                            <td><input ng-model="dritem.commonName" name="commonName"  class="form-control" >
+                                <span></span></td>
+                        </tr>
+                        <tr>
+
+                            <td>剂型:</td>
+                            <td><input ng-model="dritem.dosageForm" name="dosageForm"  class="form-control" >
+                                <span></span></td>
+                            <td>规格:</td>
+                            <td><input ng-model="dritem.speciflcation" name="speciflcation"   class="form-control"  >
+                                <span></span></td>
+                        </tr>
+                        <tr>
+                            <td>单位:</td>
+                            <td><input ng-model="dritem.unitId" name="unitId"  class="form-control" >
+                                <span></span></td>
+                            <td>转换系数:</td>
+                            <td><input ng-model="dritem.coefficient" name="coefficient"    class="form-control" >
+                                <span></span></td>
+
+                        </tr>
+                        <tr>
+                            <td>药品类别:</td>
+                            <td><select ng-model="dritem.drugCategoryName" name="drugCategoryName"  class="form-control" >
+                                <option value="1">儿童用药</option>
+                            </select><span></span></td>
+                            <td>状态:</td>
+                            <td><select ng-model="dritem.drugStateName" name="drugStateName"   class="form-control" >
+                                <option value="2">正常</option>
+                                <option value="3">非正常</option>
+                            </select><span></span></td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" data-dismiss="modal" ng-click="ngsave()">保存</button>
+                <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div class="modal fade" id="chage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button id="bton" type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h3>修改页面</h3>
+            </div>
+            <div class="modal-body">
+                    <table class="table table-bordered table-striped"  >
+                        <tr>
+                            <td>药品品目号:</td>
+                            <td><input ng-model="chagedri.diId"  readonly="readonly" onblur class="form-control"></td>
+                            <td>通用名:</td>
+                            <td><input ng-model="chagedri.commonName" readonly="readonly"  class="form-control" >
+                                <span></span></td>
+                        </tr>
+                        <tr>
+
+                            <td>剂型:</td>
+                            <td><input ng-model="chagedri.dosageForm" readonly="readonly"  class="form-control" >
+                                <span></span></td>
+                            <td>规格:</td>
+                            <td><input ng-model="chagedri.speciflcation" readonly="readonly"   class="form-control"  >
+                                <span></span></td>
+                        </tr>
+                        <tr>
+                            <td>单位:</td>
+                            <td><input ng-model="chagedri.unitId" readonly="readonly"  class="form-control" >
+                                <span></span></td>
+                            <td>转换系数:</td>
+                            <td><input ng-model="chagedri.coefficient" readonly="readonly"    class="form-control" >
+                                <span></span></td>
+
+                        </tr>
+                        <tr>
+                            <td>药品类别:</td>
+                            <td><input ng-model="chagedri.drugCategoryName" readonly="readonly"  class="form-control" >
+                            </input></td>
+                            <td>状态:</td>
+                            <td><input ng-model="chagedri.drugStateName" readonly="readonly"   class="form-control" >
+                            </input></td>
+                        </tr>
+                    </table>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" data-dismiss="modal" >确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
