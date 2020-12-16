@@ -3,6 +3,7 @@ package com.hospital_purchase.controller;
 import com.github.pagehelper.PageInfo;
 import com.hospital_purchase.pojo.Supplier;
 import com.hospital_purchase.service.SupplierService;
+import com.hospital_purchase.vo.DrugItemsVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +36,12 @@ public class SupplierController {
         return supplierPageInfo;
     }
 
+    @RequestMapping("fandspId")
+    @ResponseBody
+    public Supplier fandspId(Integer spId){
+        return supplierService.fandspId(spId);
+    }
+
     /**
      * 查询字典表信息
      * @return 返回所有字典表
@@ -43,5 +50,11 @@ public class SupplierController {
     @ResponseBody
     public List itemsdiCtion(){
         return supplierService.itemsdiCtion();
+    }
+
+    @RequestMapping("revampsupplier")
+    @ResponseBody
+    public Integer revamp(Supplier supplier){
+        return supplierService.revampsupplier(supplier);
     }
 }

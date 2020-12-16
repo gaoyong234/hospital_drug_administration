@@ -1,5 +1,8 @@
 package com.hospital_purchase.pojo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
 public class Supplier {
@@ -17,6 +20,8 @@ public class Supplier {
 
     private String licence;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone="GMT+8")
     private Date licenceTime;
 
     private String enterpriseLinkman;
@@ -49,16 +54,22 @@ public class Supplier {
 
     private Integer enterpriseCode;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone="GMT+8")
     private Date enterpriseCodeTime;
 
     private String businessLicense;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone="GMT+8")
     private Date businessLicenseTime;
 
     private Integer isLetterOfCredit;
 
     private String letterCreditNumber;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone="GMT+8")
     private Date letterCreditTime;
 
     private Float fixedAssets;
@@ -67,8 +78,12 @@ public class Supplier {
 
     private String companyRemarks;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone="GMT+8")
     private Date creationTime;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone="GMT+8")
     private Date modificationTime;
 
     private Integer delId;

@@ -1,6 +1,7 @@
 package com.hospital_purchase.dao.DictionariesDao;
 
 import com.hospital_purchase.pojo.Dictionaries;
+import com.hospital_purchase.pojo.Supplier;
 import com.hospital_purchase.vo.DictionariesVO;
 
 import java.util.List;

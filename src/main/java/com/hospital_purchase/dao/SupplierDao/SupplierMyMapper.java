@@ -7,4 +7,8 @@ import java.util.List;
 public interface SupplierMyMapper {
 
     List<Supplier> fandAllSupplier(Supplier supplier);
+
+    Supplier fandOnespId(Integer spId);
+
+    Integer revampsupplier(Supplier supplier);
 }

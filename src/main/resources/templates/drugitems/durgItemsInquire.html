@@ -60,30 +60,32 @@
                     ,
                 }).success(function (response) {
                     $scope.dritem=response;
+                    console.log($scope.dritem)
                 })
 
             }
-            $scope.ngsave=function () {
-                var ditereva=$scope.dritem;
-                console.log(ditereva)
-                var list = $scope.lists;
+
+           $scope.ngsave=function () {
+               var ditereva={diId:$scope.dritem.diId,commonName:$scope.dritem.commonName,dosageForm:$scope.dritem.dosageForm,speciflcation:$scope.dritem.speciflcation,unitId:$scope.dritem.unitId,coefficient:$scope.dritem.coefficient,drugStateName:$scope.drugStateName,drugCategoryName:$scope.dritem.drugCategoryName}
+               var list = $scope.lists;
                 for (var i = 0; i < list.length; i++) {
-                    if (list[i].diId == $scope.dritem.diId) {
-                        $scope.pd = list[i];
+                    if (list[i].diId == ditereva.diId) {
+                        $scope.pd ={diId:list[i].diId,commonName:list[i].commonName,dosageForm:list[i].dosageForm,speciflcation:list[i].speciflcation,unitId:list[i].unitId,coefficient:list[i].coefficient,drugStateName:list[i].drugStateName,drugCategoryName:list[i].drugCategoryName};
                         break;
                     }
                 }
-                var equ=$scope.pd.commonName==$scope.dritem.commonName&&$scope.pd.dosageForm==$scope.dritem.dosageForm&&$scope.pd.speciflcation==$scope.dritem.speciflcation&&$scope.pd.unitId==$scope.dritem.unitId&&$scope.pd.coefficient==$scope.dritem.coefficient;
+                console.log($scope.pd)
+               console.log(ditereva)
+                console.log(angular.equals($scope.pd,ditereva))
                 var dec=$scope.dritem.commonName!=null&&$scope.dritem.dosageForm!=null&&$scope.dritem.speciflcation!=null&&$scope.dritem.unitId!=null&&$scope.dritem.coefficient!=null&&$scope.dritem.commonName!=""&&$scope.dritem.dosageForm!=""&&$scope.dritem.speciflcation!=""&&$scope.dritem.unitId!=""&&$scope.dritem.coefficient!="";
-                if (equ){
-                    alert("请修改后提交")
+                if (angular.equals($scope.pd,ditereva)){
+                    alert("无数据更新")
                 }else {
                     if (dec){
                         $http({
                             url:"/items/revamp",
                             method:"post",
-                            data:ditereva,
-                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                            params:ditereva,
                         }).success(function (response) {
                             if (response>0){
                                 alert("修改成功")
@@ -492,7 +494,7 @@
                     <table class="table table-bordered table-striped"  >
                         <tr>
                             <td>药品品目号:</td>
-                            <td><input ng-model="dritem.diId" name="diId"  readonly="readonly" onblur class="form-control"></td>
+                            <td><input ng-model="dritem.diId" name="diId" readonly="readonly" class="form-control"></td>
                             <td>通用名:</td>
                             <td><input ng-model="dritem.commonName" name="commonName"  class="form-control" >
                                 <span></span></td>

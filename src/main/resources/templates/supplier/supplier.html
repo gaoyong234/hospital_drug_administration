@@ -89,7 +89,49 @@
                     }
                 })
             }
+            $scope.amend=function (spId) {
+                $http({
+                    url:"/supplier/fandspId",
+                    method:"get",
+                    params:{"spId": spId}
+                    ,
+                }).success(function (response) {
+                    $scope.insersupp=response;
+                })
+
+            }
+            $scope.ngsave=function(){
+                var list = $scope.lists;
+                var inserInto = $scope.insersupp;
+                for (var i = 0; i < list.length; i++) {
+                    if (list[i].spId == inserInto.spId) {
+                        $scope.congf = list[i];
+                        break;
+                    }
+                }
+                console.log(inserInto)
+                if (angular.equals($scope.congf,inserInto)){
+                    alert("无数据更新")
+                }else {
+                    $http({
+                        url: "/supplier/revampsupplier",
+                        method: "post",
+                        params: inserInto,
+                    }).success(function (data) {
+                        if (data>0){
+                            alert("修改成功")
+                            $scope.find()
+                        }else{
+                            alert("修改失败")
+                        }
+                    })
+                }
+
+            }
         })
+    </script>
+    <script>
+
     </script>
 </head>
 <body ng-app="myApp" ng-controller="myContr" ng-init="supplierdiction()">
@@ -263,66 +305,67 @@
             <div class="modal-body">
                 <form id="inserInto">
                     <table class="table table-bordered table-striped"  >
+                        <input ng-model="insersupp.spId" name="spId" type="text" style="visibility: hidden">
                         <tr>
-                            <td>供货商名称:<input name="supplierNmae" class="form-control" ></td>
-                            <td>地址:<input name="supplierSite" class="form-control"></td>
-                            <td>联系人:<input name="supplierLinkman" class="form-control"></td>
+                            <td>供货商名称:<input ng-model="insersupp.supplierName" name="supplierName" class="form-control" ></td>
+                            <td>地址:<input ng-model="insersupp.supplierSite" name="supplierSite" class="form-control"></td>
+                            <td>联系人:<input ng-model="insersupp.supplierLinkman" name="supplierLinkman" class="form-control"></td>
                         </tr>
                         <tr>
-                            <td>许可证:<input name="licence" class="form-control"></td>
-                            <td>许可证到期时间:<input type="date" name="licenceTime" class="form-control"></td>
-                            <td>联系电话:<input name="supplierPhone" class="form-control"></td>
+                            <td>许可证:<input ng-model="insersupp.licence" name="licence" class="form-control"></td>
+                            <td>许可证到期时间:<input type="date" ng-model="insersupp.licenceTime" name="licenceTime" class="form-control"></td>
+                            <td>联系电话:<input ng-model="insersupp.supplierPhone" name="supplierPhone" class="form-control"></td>
                         </tr>
                         <tr>
-                            <td>企业类型:<select name="enterpriseCategory" class="form-control">
-                                <option ng-repeat="di in dictarr1" ng-value="di.dicId">{{di.dictionariesName}}</option>
+                            <td>企业类型:<select ng-model="insersupp.enterpriseCategory" name="enterpriseCategory" class="form-control">
+                                <option ng-repeat="di in dictarr1" ng-selected="di.dicId==insersupp.enterpriseCategory" ng-value="di.dicId">{{di.dictionariesName}}</option>
                             </select></td>
-                            <td>企业联系人:<input name="enterpriseLinkman" class="form-control"></td>
-                            <td>企业电话:<input name="enterprisePhone" class="form-control"></td>
+                            <td>企业联系人:<input ng-model="insersupp.enterpriseLinkman" name="enterpriseLinkman" class="form-control"></td>
+                            <td>企业电话:<input ng-model="insersupp.enterprisePhone" name="enterprisePhone" class="form-control"></td>
                         </tr>
                         <tr>
-                            <td>经营范围:<input name="manageScope" class="form-control"></td>
-                            <td>注册地址:<input name="registeredAddress" class="form-control"></td>
-                            <td>联系地址:<input name="relationSite" class="form-control"></td>
+                            <td>经营范围:<input ng-model="insersupp.manageScope" name="manageScope" class="form-control"></td>
+                            <td>注册地址:<input ng-model="insersupp.registeredAddress" name="registeredAddress" class="form-control"></td>
+                            <td>联系地址:<input ng-model="insersupp.relationSite" name="relationSite" class="form-control"></td>
                         </tr>
                         <tr>
-                            <td>邮政编码:<input name="postalCode" class="form-control"></td>
-                            <td>总资产(万元):<input name="totalAssets" class="form-control"></td>
-                            <td>企业传真:<input name="sobeyFax" class="form-control"></td>
+                            <td>邮政编码:<input ng-model="insersupp.postalCode" name="postalCode" class="form-control"></td>
+                            <td>总资产(万元):<input ng-model="insersupp.totalAssets" name="totalAssets" class="form-control"></td>
+                            <td>企业传真:<input ng-model="insersupp.sobeyFax" name="sobeyFax" class="form-control"></td>
                         </tr>
                         <tr>
-                            <td>法人代表姓名:<input name="legalPersonName" class="form-control"></td>
-                            <td>法人身份证:<input name="legalPersonNumber" class="form-control"></td>
-                            <td>企业注册资金(万元):<input name="enterpriseRegisterCapital" class="form-control"></td>
+                            <td>法人代表姓名:<input ng-model="insersupp.legalPersonName" name="legalPersonName" class="form-control"></td>
+                            <td>法人身份证:<input ng-model="insersupp.legalPersonNumber" name="legalPersonNumber" class="form-control"></td>
+                            <td>企业注册资金(万元):<input ng-model="insersupp.enterpriseRegisterCapital" name="enterpriseRegisterCapital" class="form-control"></td>
                         </tr>
                         <tr>
-                            <td>上年度销售金额(万元):<input name="lastYearMoney" class="form-control"></td>
-                            <td>电子邮箱:<input name="emailAddress" class="form-control"></td>
-                            <td>网址:<input name="enterpriseUrl" class="form-control"></td>
+                            <td>上年度销售金额(万元):<input ng-model="insersupp.lastYearMoney" name="lastYearMoney" class="form-control"></td>
+                            <td>电子邮箱:<input ng-model="insersupp.emailAddress" name="emailAddress" class="form-control"></td>
+                            <td>网址:<input ng-model="insersupp.enterpriseUrl" name="enterpriseUrl" class="form-control"></td>
                         </tr>
                         <tr>
-                            <td>企业代码证号:<input name="enterpriseCode" class="form-control"></td>
-                            <td>企业代码有效期:<input type="date" name="enterpriseCodeTime" class="form-control"></td>
-                            <td>营业执照:<input name="businessLicense" class="form-control"></td>
+                            <td>企业代码证号:<input ng-model="insersupp.enterpriseCode" name="enterpriseCode" class="form-control"></td>
+                            <td>企业代码有效期:<input type="date" ng-model="insersupp.enterpriseCodeTime" name="enterpriseCodeTime" class="form-control"></td>
+                            <td>营业执照:<input ng-model="insersupp.businessLicense" name="businessLicense" class="form-control"></td>
                         </tr>
                         <tr>
-                            <td>营业执照有效期:<input type="date" name="businessLicenseTime" class="form-control"></td>
-                            <td>是否有企业信用证:<select name="isLetterOfCredit" class="form-control">
+                            <td>营业执照有效期:<input type="date" ng-model="insersupp.businessLicenseTime" name="businessLicenseTime" class="form-control"></td>
+                            <td>是否有企业信用证:<select ng-model="insersupp.isLetterOfCredit" name="isLetterOfCredit" class="form-control">
                                 <option value="0">是</option>
                                 <option value="1">否</option>
                             </select></td>
-                            <td>信用证号:<input name="letterCreditNumber" class="form-control"></td>
+                            <td>信用证号:<input ng-model="insersupp.letterCreditNumber" name="letterCreditNumber" class="form-control"></td>
                         </tr>
                         <tr>
-                            <td>信用证有效期:<input name="letterCreditTime" class="form-control"></td>
-                            <td>固定资产(万元):<input name="fixedAssets" class="form-control"></td>
-                            <td>公司简介(中文):<input name="companyProfile" class="form-control"></td>
+                            <td>信用证有效期:<input type="date" ng-model="insersupp.letterCreditTime" name="letterCreditTime" class="form-control"></td>
+                            <td>固定资产(万元):<input ng-model="insersupp.fixedAssets" name="fixedAssets" class="form-control"></td>
+                            <td>公司简介(中文):<input ng-model="insersupp.companyProfile" name="companyProfile" class="form-control"></td>
                         </tr>
                     </table>
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-success" data-dismiss="modal" onclick="ngsave()">保存</button>
+                <button class="btn btn-success" data-dismiss="modal" ng-click="ngsave()">保存</button>
                 <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
             </div>
         </div>
@@ -345,7 +388,7 @@
                         </tr>
                         <tr>
                             <td>许可证:<input ng-model="chagesupp.licence" name="licence" class="form-control"></td>
-                            <td>许可证到期时间:<input type="date" ng-model="chagesupp.licenceTime" name="licenceTime" class="form-control"></td>
+                            <td>许可证到期时间:<input ng-model="chagesupp.licenceTime" name="licenceTime" class="form-control"></td>
                             <td>联系电话:<input ng-model="chagesupp.supplierPhone" name="supplierPhone" class="form-control"></td>
                         </tr>
                         <tr>
@@ -377,11 +420,11 @@
                         </tr>
                         <tr>
                             <td>企业代码证号:<input ng-model="chagesupp.enterpriseCode" name="enterpriseCode" class="form-control"></td>
-                            <td>企业代码有效期:<input ng-model="chagesupp.enterpriseCodeTime" type="date" name="enterpriseCodeTime" class="form-control"></td>
+                            <td>企业代码有效期:<input ng-model="chagesupp.enterpriseCodeTime" name="enterpriseCodeTime" class="form-control"></td>
                             <td>营业执照:<input ng-model="chagesupp.businessLicense" name="businessLicense" class="form-control"></td>
                         </tr>
                         <tr>
-                            <td>营业执照有效期:<input ng-model="chagesupp.businessLicenseTime" type="date" name="businessLicenseTime" class="form-control"></td>
+                            <td>营业执照有效期:<input ng-model="chagesupp.businessLicenseTime" name="businessLicenseTime" class="form-control"></td>
                             <td>是否有企业信用证:<select ng-model="chagesupp.isLetterOfCredit" name="isLetterOfCredit" class="form-control">
                                 <option value="0">是</option>
                                 <option value="1">否</option>

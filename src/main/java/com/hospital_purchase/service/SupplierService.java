@@ -12,4 +12,8 @@ public interface SupplierService {
     PageInfo<Supplier> fandAllSupplier(Integer pageNum, Integer pageSize, Supplier supplier);
 
     List itemsdiCtion();
+
+    Supplier fandspId(Integer spId);
+
+    Integer revampsupplier(Supplier supplier);
 }

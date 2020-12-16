@@ -83,6 +83,126 @@
        and del_id = 0
     </where>
   </select>
+  <select id="fandOnespId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    SELECT sp_id,supplier_name, supplier_site, supplier_linkman, supplier_phone, enterprise_category,
+    licence, licence_time, enterprise_linkman, enterprise_phone, manage_scope, registered_address,
+    relation_site, postal_code, total_assets, sobey_fax, legal_person_name, legal_person_number,
+    enterprise_register_capital, last_year_money, email_address, enterprise_url, enterprise_code,
+    enterprise_code_time, business_license, business_license_time, is_letter_of_credit,
+    letter_credit_number, letter_credit_time, fixed_assets, company_profile, company_remarks,
+    creation_time, modification_time FROM supplier
+    <where>
+      <if test="spId != null and spId !=''">
+        and sp_id =#{spId,jdbcType=INTEGER}
+      </if>
+      and del_id = 0
+    </where>
+  </select>
+  <update id="revampsupplier" parameterType="com.hospital_purchase.pojo.Supplier">
+    update supplier
+    <set>
+      <if test="supplierName != null and supplierName !=''">
+        supplier_name = #{supplierName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierSite != null and supplierSite !=''">
+        supplier_site = #{supplierSite,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierLinkman != null and supplierLinkman !=''">
+        supplier_linkman = #{supplierLinkman,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierPhone != null and supplierPhone !=''">
+        supplier_phone = #{supplierPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="enterpriseCategory != null and enterpriseCategory !=''">
+        enterprise_category = #{enterpriseCategory,jdbcType=VARCHAR},
+      </if>
+      <if test="licence != null and licence !=''">
+        licence = #{licence,jdbcType=VARCHAR},
+      </if>
+      <if test="licenceTime != null">
+        licence_time = #{licenceTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enterpriseLinkman != null and enterpriseLinkman !=''">
+        enterprise_linkman = #{enterpriseLinkman,jdbcType=VARCHAR},
+      </if>
+      <if test="enterprisePhone != null and enterprisePhone !=''">
+        enterprise_phone = #{enterprisePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="manageScope != null and manageScope !=''">
+        manage_scope = #{manageScope,jdbcType=VARCHAR},
+      </if>
+      <if test="registeredAddress != null and registeredAddress !=''">
+        registered_address = #{registeredAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="relationSite != null and relationSite !=''">
+        relation_site = #{relationSite,jdbcType=VARCHAR},
+      </if>
+      <if test="postalCode != null and postalCode !=''">
+        postal_code = #{postalCode,jdbcType=VARCHAR},
+      </if>
+      <if test="totalAssets != null and totalAssets !=''">
+        total_assets = #{totalAssets,jdbcType=VARCHAR},
+      </if>
+      <if test="sobeyFax != null and sobeyFax !=''">
+        sobey_fax = #{sobeyFax,jdbcType=VARCHAR},
+      </if>
+      <if test="legalPersonName != null and legalPersonName !=''">
+        legal_person_name = #{legalPersonName,jdbcType=VARCHAR},
+      </if>
+      <if test="legalPersonNumber != null and legalPersonNumber !=''">
+        legal_person_number = #{legalPersonNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="enterpriseRegisterCapital != null and enterpriseRegisterCapital !=''">
+        enterprise_register_capital = #{enterpriseRegisterCapital,jdbcType=VARCHAR},
+      </if>
+      <if test="lastYearMoney != null and lastYearMoney !=''">
+        last_year_money = #{lastYearMoney,jdbcType=VARCHAR},
+      </if>
+      <if test="emailAddress != null and emailAddress !=''">
+        email_address = #{emailAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="enterpriseUrl != null and enterpriseUrl !=''">
+        enterprise_url = #{enterpriseUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="enterpriseCode != null and enterpriseCode !=''">
+        enterprise_code = #{enterpriseCode,jdbcType=VARCHAR},
+      </if>
+      <if test="enterpriseCodeTime != null">
+        enterprise_code_time = #{enterpriseCodeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="businessLicense != null and businessLicense !=''">
+        business_license = #{businessLicense,jdbcType=VARCHAR},
+      </if>
+      <if test="businessLicenseTime != null">
+        business_license_time = #{businessLicenseTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isLetterOfCredit != null and isLetterOfCredit !=''">
+        is_letter_of_credit = #{isLetterOfCredit,jdbcType=VARCHAR},
+      </if>
+      <if test="letterCreditNumber != null and letterCreditNumber !=''">
+        letter_credit_number = #{letterCreditNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="letterCreditTime != null">
+        letter_credit_time = #{letterCreditTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fixedAssets != null and fixedAssets !=''">
+        fixed_assets = #{fixedAssets,jdbcType=VARCHAR},
+      </if>
+      <if test="companyProfile != null and companyProfile !=''">
+        company_profile = #{companyProfile,jdbcType=VARCHAR},
+      </if>
+      <if test="companyRemarks != null and companyRemarks !=''">
+        company_remarks = #{companyRemarks,jdbcType=VARCHAR},
+      </if>
+      <if test="creationTime != null">
+        creation_time = #{creationTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modificationTime != null">
+        modification_time = #{modificationTime,jdbcType=TIMESTAMP}
+      </if>
+    </set>
+    where sp_id = #{spId,jdbcType=INTEGER}
+  </update>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from supplier
     where sp_id = #{spId,jdbcType=INTEGER}
