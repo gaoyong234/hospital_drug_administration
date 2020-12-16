@@ -11,7 +11,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class PurchaseDurgVO {
+public class PurchaseDrugVO {
 
     private Integer pdId;
 
@@ -51,9 +51,21 @@ public class PurchaseDurgVO {
 
     private Integer delId;
 
-    //采购状态名称
-    private String purchaseStateName;
 
+    private String purchaseStateName;//采购状态名称
+    private String serialNumber;//流水号
+    private String commonName;//通用名
+    private String dosageForm;//剂型
+    private String speciflcation;//规格
+    private Integer coefficient;//转换系数
+    private Integer unitId;//单位id
+    private String company;//单位
+    private String productionName;//生产企业
+    private String commodityName;//商品名称
+    private String qualityLevel;//质量层次
+    private Integer drugCategory;//药品类别id
+    private String drugCategorys;//药品类别
+    private String  supplierName;//供货商名称
 
 
 
