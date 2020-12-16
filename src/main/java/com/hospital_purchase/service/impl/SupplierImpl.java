@@ -33,4 +33,15 @@ public class SupplierImpl implements SupplierService {
     public List itemsdiCtion() {
         return dictionariesDaoMapper.selectAllDictionaries(new Dictionaries());
     }
+
+    @Override
+    public Supplier fandspId(Integer spId) {
+        return supplierMyMapper.fandOnespId(spId);
+    }
+
+    @Override
+    public Integer revampsupplier(Supplier supplier) {
+        System.out.println(supplier.getLicenceTime());
+        return supplierMyMapper.revampsupplier(supplier);
+    }
 }
