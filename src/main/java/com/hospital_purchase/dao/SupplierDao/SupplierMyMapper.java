@@ -11,4 +11,8 @@ public interface SupplierMyMapper {
     Supplier fandOnespId(Integer spId);
 
     Integer revampsupplier(Supplier supplier);
+
+    Integer addSupplier(Supplier supplier);
+
+    Integer expurgate(Integer spId);
 }

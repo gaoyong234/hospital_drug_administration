@@ -33,6 +33,7 @@
                pageNum:0,
                pageSize:10
            }
+           //查询页面所有的信息,以及分页功能
            $scope.find=function(pageNum,items) {
                if (pageNum==null||pageNum==""){
                    pageNum=1;
@@ -52,6 +53,7 @@
                })
 
            }
+           //点击修改根据ID查询
             $scope.amend=function (diId) {
                 $http({
                     url:"/items/fandId",
@@ -60,45 +62,10 @@
                     ,
                 }).success(function (response) {
                     $scope.dritem=response;
-                    console.log($scope.dritem)
                 })
 
             }
-
-           $scope.ngsave=function () {
-               var ditereva={diId:$scope.dritem.diId,commonName:$scope.dritem.commonName,dosageForm:$scope.dritem.dosageForm,speciflcation:$scope.dritem.speciflcation,unitId:$scope.dritem.unitId,coefficient:$scope.dritem.coefficient,drugStateName:$scope.drugStateName,drugCategoryName:$scope.dritem.drugCategoryName}
-               var list = $scope.lists;
-                for (var i = 0; i < list.length; i++) {
-                    if (list[i].diId == ditereva.diId) {
-                        $scope.pd ={diId:list[i].diId,commonName:list[i].commonName,dosageForm:list[i].dosageForm,speciflcation:list[i].speciflcation,unitId:list[i].unitId,coefficient:list[i].coefficient,drugStateName:list[i].drugStateName,drugCategoryName:list[i].drugCategoryName};
-                        break;
-                    }
-                }
-                console.log($scope.pd)
-               console.log(ditereva)
-                console.log(angular.equals($scope.pd,ditereva))
-                var dec=$scope.dritem.commonName!=null&&$scope.dritem.dosageForm!=null&&$scope.dritem.speciflcation!=null&&$scope.dritem.unitId!=null&&$scope.dritem.coefficient!=null&&$scope.dritem.commonName!=""&&$scope.dritem.dosageForm!=""&&$scope.dritem.speciflcation!=""&&$scope.dritem.unitId!=""&&$scope.dritem.coefficient!="";
-                if (angular.equals($scope.pd,ditereva)){
-                    alert("无数据更新")
-                }else {
-                    if (dec){
-                        $http({
-                            url:"/items/revamp",
-                            method:"post",
-                            params:ditereva,
-                        }).success(function (response) {
-                            if (response>0){
-                                alert("修改成功")
-                                $scope.find();
-                            }else {
-                                alert("修改失败")
-                            }
-                        })
-                    }else {
-                        alert("请完善信息后保存!")
-                    }
-                }
-            }
+            //查看功能,根据ID查找
             $scope.chage=function(diId){
                 var list = $scope.lists;
                 for (var i = 0; i < list.length; i++) {
@@ -107,8 +74,8 @@
                         break;
                     }
                 }
-                console.log($scope.chagedri)
             }
+            //删除药品品目
             $scope.expurgate=function (diId) {
                 if (confirm("是否确认删除?")){
                     $http({
@@ -124,6 +91,7 @@
                     })
                 }
             }
+            //导出
            $scope.loadAlllick=function () {
                if (confirm("是否导出全部数据")) {
                    window.location.href = "/items/exportExcel";
@@ -131,9 +99,11 @@
                    return false;
                }
            }
+           //导入
            $scope.loadtemplate=function () {
                 window.location.href="/items/loadtemplate";
            }
+           //页面加载时运行,查找字典表
            $scope.itemsdiction=function () {
                $http({
                    url:"/items/itemsdiction",
@@ -155,37 +125,8 @@
                    }
                })
            }
-           $scope.save=function () {
-                var indru=$scope.indrug;
-               $http({
-                   url:"/items/addDrugItems",
-                   method:"post",
-                   data:indru,
-                   headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-               }).then(function successCallback(response) {
-                   if (response > 0) {
-                       document.getElementById("headLeft").innerHTML="药品品目添加"
-                       document.getElementById("headline").innerHTML="成功提示信息"
-                       document.getElementById("whether").innerHTML="您的操作成功"
-                       document.getElementById("lose").innerHTML="";
-                   } else {
-                       document.getElementById("headLeft").innerHTML="药品品目添加"
-                       document.getElementById("headline").innerHTML="失败提示信息"
-                       document.getElementById("whether").innerHTML="您的操作失败,请尝试刷新页面,重新操作"
-                   }
-               }, function errorCallback(response) {
-                   if (response > 0) {
-                       document.getElementById("headLeft").innerHTML="药品品目添加"
-                       document.getElementById("headline").innerHTML="成功提示信息"
-                       document.getElementById("whether").innerHTML="您的操作成功"
-                       document.getElementById("lose").innerHTML="";
-                   } else {
-                       document.getElementById("headLeft").innerHTML="药品品目添加"
-                       document.getElementById("headline").innerHTML="失败提示信息"
-                       document.getElementById("whether").innerHTML="您的操作失败,请尝试刷新页面,重新操作"
-                   }
-               })
-           }
+           //保存新添加的药品信息
+
 
        })
 
@@ -194,6 +135,7 @@
     <script type="text/javascript">
         var demo=false;
         var lists;
+        //保存新添加的药品品目信息
         function save() {
             var addform = $("#addForm").serialize();
             $.ajax({
@@ -215,6 +157,7 @@
                 }
             })
         }
+        //保存修改后的药品信息
         function ngsave(){
             var inserInto = $("#inserInto").serialize();
             $.ajax({
@@ -233,6 +176,7 @@
         }
         var lose=0;
         var dritlist=null;
+        //导入
         function readAlllick() {
             dritlist=null;
             var file = $("#files")[0].files[0];
@@ -244,6 +188,7 @@
             }else {
             var formData = new FormData;
             formData.append("filename", file);
+           console.log(file)
             $.ajax({
                 url: "/items/readfile",     //路径
                 type: "post",        //格式
@@ -269,7 +214,11 @@
                 error:function (count) {
                     var parse = JSON.parse(count.responseText);
                     var succeed = parse.succeed;
-                    lose = parse.lose;
+                    if (typeof (parse.lose)=='undefined'){
+
+                    }else {
+                        lose = parse.lose;
+                    }
                     dritlist=parse.drugItemsList;
                     if (succeed>0){
                         document.getElementById("headLeft").innerHTML="药品品目导入"
@@ -286,11 +235,11 @@
             })
             }
         }
+        //导入失败的结果集
         function fandLose() {
             document.getElementById("headLeft").innerHTML="药品品目导入"
             document.getElementById("headline").innerHTML="失败信息"
             document.getElementById("whether").innerHTML="您的操作共失败"+lose+"条"
-            console.log(dritlist)
             var a=""
             for (var i = 0; i < dritlist.length; i++) {
                 a+="&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp第"+(i+1)+"条:",

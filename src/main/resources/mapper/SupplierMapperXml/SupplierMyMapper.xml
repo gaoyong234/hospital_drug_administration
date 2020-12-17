@@ -235,7 +235,7 @@
       #{creationTime,jdbcType=TIMESTAMP}, #{modificationTime,jdbcType=TIMESTAMP}, #{delId,jdbcType=INTEGER}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.hospital_purchase.pojo.Supplier">
+  <insert id="addSupplier" parameterType="com.hospital_purchase.pojo.Supplier">
     insert into supplier
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="spId != null">
@@ -452,6 +452,11 @@
       </if>
     </trim>
   </insert>
+  <update id="expurgate" parameterType="java.lang.Integer">
+    update supplier
+    set del_id=1
+    where sp_id = #{spId,jdbcType=INTEGER}
+  </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.hospital_purchase.pojo.Supplier">
     update supplier
     <set>

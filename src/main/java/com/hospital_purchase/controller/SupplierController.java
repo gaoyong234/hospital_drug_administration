@@ -52,9 +52,37 @@ public class SupplierController {
         return supplierService.itemsdiCtion();
     }
 
+    /**
+     * 修改供货商信息
+     * @param supplier 传入前端修改后的值
+     * @return 更新条数,判断是否更新完成
+     */
     @RequestMapping("revampsupplier")
     @ResponseBody
     public Integer revamp(Supplier supplier){
         return supplierService.revampsupplier(supplier);
+    }
+
+    /**
+     * 添加一个供货商信息
+     * @param supplier 新增的供货商的数据
+     * @return 数据库更新了几条数据,用来判断是否添加成功
+     */
+    @RequestMapping("addSupplier")
+    @ResponseBody
+    public Integer addDrugItems(Supplier supplier){
+        Integer integer = supplierService.addSupplier(supplier);
+        return integer;
+    }
+
+    /**
+     * 根据ID删除某条数据,
+     * @param spId 要删除的数据的ID
+     * @return 数据库更新条数,判断是否操作成功
+     */
+    @RequestMapping("expurgate")
+    @ResponseBody
+    public Integer expurgate(Integer spId){
+        return supplierService.expurgate(spId);
     }
 }

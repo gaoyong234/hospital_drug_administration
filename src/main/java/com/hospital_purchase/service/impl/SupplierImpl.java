@@ -41,7 +41,16 @@ public class SupplierImpl implements SupplierService {
 
     @Override
     public Integer revampsupplier(Supplier supplier) {
-        System.out.println(supplier.getLicenceTime());
         return supplierMyMapper.revampsupplier(supplier);
+    }
+
+    @Override
+    public Integer addSupplier(Supplier supplier) {
+        return supplierMyMapper.addSupplier(supplier);
+    }
+
+    @Override
+    public Integer expurgate(Integer spId) {
+        return supplierMyMapper.expurgate(spId);
     }
 }

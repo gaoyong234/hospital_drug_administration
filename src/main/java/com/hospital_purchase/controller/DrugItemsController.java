@@ -160,14 +160,22 @@ public class DrugItemsController {
         Integer countn=0;
         whetherSucceed.setDrugItemsList(new ArrayList<>());
         //转换数据类型,并插入到数据库
+
+        boolean strinint=false;
         for (Object o : list) {
             drugitemsvo = (DrugItemsVoRead) o;
-            boolean strinint=false;
             try {
                 Integer.valueOf(drugitemsvo.getDrugCategoryName());
+                if (drugitemsvo.getDrugCategoryName()==null){
+                    strinint=true;
+                }
                 strinint=true;
             }catch (Exception e){
-                strinint=false;
+                if (drugitemsvo.getDrugCategoryName()==null){
+                    strinint=true;
+                }else {
+                    strinint=false;
+                }
             }
             if (strinint){
                 Integer readfile = durgItemsService.readfile(drugitemsvo);
