@@ -46,6 +46,7 @@
                 pageNum: 0,
                 pageSize: 10
             }
+            //获取全部信息
             $scope.find = function (pageNum, items) {
                 if (pageNum == null || pageNum == "") {
                     pageNum = 1;
@@ -64,6 +65,7 @@
                 })
 
             }
+            //返回结果提示
             $scope.showModalButton1 = function (slogan) {
                 showModal({
                     title: "温馨提示",  //提示的标题
@@ -80,6 +82,7 @@
                     }
                 });
             }
+            //删除提示
             $scope.showModalButton2 = function () {
                 showModal({
                     title: "温馨提示",  //提示的标题

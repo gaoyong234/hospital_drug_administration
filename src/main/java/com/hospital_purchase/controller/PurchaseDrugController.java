@@ -10,8 +10,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
-import java.util.List;
 
 /**
  * 采购单——药品关联表
@@ -23,14 +23,22 @@ public class PurchaseDrugController {
     private PurchaseDrugService purchaseDrugService;
     /**
      * 去采购单页面
-     * @param puId 采购单id
-     * @param model
+     * @param poId 采购单id
      * @return
      */
     @RequestMapping("/toDrugInformation")
-    public String toDrugInformation(Integer puId,Model model){
-        model.addAttribute("puId",puId);
-        return "/purchaseDrug/AddPurchaseDrug";
+    public ModelAndView toDrugInformation(Integer poId){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("/purchaseDrug/findPurchaseDrug");
+        modelAndView.addObject("poId",poId);
+        return modelAndView;
+    }
+    @RequestMapping("/toAddPurchaseDrug")
+    public ModelAndView toAddPurchaseDrug(Integer purchaseId){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("/purchaseDrug/addPurchaseDrug");
+        modelAndView.addObject("purchaseId",purchaseId);
+        return modelAndView;
     }
 
     /**

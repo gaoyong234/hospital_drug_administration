@@ -230,6 +230,7 @@
             //详情页
             $scope.detailedOne = function(poId){
                 window.location.href="/PurchaseDrug/toDrugInformation?poId="+poId;
+                //window.location.href="purchaseDrug/findPurchaseDrug.html?poId="+poId;
             }
 
         });
@@ -245,16 +246,24 @@
         <tr>
             <td>医院名称:</td>
             <td>
-                <input  ng-model="userMessage.userAccount" class="form-control">
+                <input  ng-model="drug.hospitalName" class="form-control">
             </td>
             <td>采购单编号:</td>
             <td>
-                <input  ng-model="userMessage.userName" class="form-control">
+                <input  ng-model="drug.purchaseNumber" class="form-control">
             </td>
         </tr>
         <tr>
             <td>采购单名称:</td>
-            <td><input  ng-model="userMessage.userName" class="form-control"></td>
+            <td><input  ng-model="drug.purchaseName" class="form-control"></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td colspan="1" align="right">
+                <button type="button" class="btn btn-info" ng-click="find()">查询</button>
+            </td>
             <td></td>
             <td></td>
         </tr>
