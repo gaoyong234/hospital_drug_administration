@@ -1,5 +1,8 @@
 package com.hospital_purchase.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -26,13 +29,33 @@ public class PurchaseStorageVO {
     private Date effectiveTime;// 有效期
     private String productionName;//生产企业
     private String hospitalName;//采购医院
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone="GMT+8")
     private Date beginTime;//开始采购时间
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone="GMT+8")
     private Date endTime;//结束采购时间
     private String drugCategory;//药品类别
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone="GMT+8")
     private Date storageTime;//入库时间(头)
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone="GMT+8")
     private Date toStorageTime;//入库时间(尾)
     private String supplierName;//供货商
+    private Integer delId;//
 
+    public Integer getDelId() {
+        return delId;
+    }
+
+    public void setDelId(Integer delId) {
+        this.delId = delId;
+    }
 
     public Integer getPoId() {
         return poId;
@@ -152,5 +175,101 @@ public class PurchaseStorageVO {
 
     public void setPurchaseState(String purchaseState) {
         this.purchaseState = purchaseState;
+    }
+
+    public Integer getStorageVolume() {
+        return storageVolume;
+    }
+
+    public void setStorageVolume(Integer storageVolume) {
+        this.storageVolume = storageVolume;
+    }
+
+    public String getInvoice() {
+        return invoice;
+    }
+
+    public void setInvoice(String invoice) {
+        this.invoice = invoice;
+    }
+
+    public String getDrugBatchNumber() {
+        return drugBatchNumber;
+    }
+
+    public void setDrugBatchNumber(String drugBatchNumber) {
+        this.drugBatchNumber = drugBatchNumber;
+    }
+
+    public Date getEffectiveTime() {
+        return effectiveTime;
+    }
+
+    public void setEffectiveTime(Date effectiveTime) {
+        this.effectiveTime = effectiveTime;
+    }
+
+    public String getProductionName() {
+        return productionName;
+    }
+
+    public void setProductionName(String productionName) {
+        this.productionName = productionName;
+    }
+
+    public String getHospitalName() {
+        return hospitalName;
+    }
+
+    public void setHospitalName(String hospitalName) {
+        this.hospitalName = hospitalName;
+    }
+
+    public Date getBeginTime() {
+        return beginTime;
+    }
+
+    public void setBeginTime(Date beginTime) {
+        this.beginTime = beginTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getDrugCategory() {
+        return drugCategory;
+    }
+
+    public void setDrugCategory(String drugCategory) {
+        this.drugCategory = drugCategory;
+    }
+
+    public Date getStorageTime() {
+        return storageTime;
+    }
+
+    public void setStorageTime(Date storageTime) {
+        this.storageTime = storageTime;
+    }
+
+    public Date getToStorageTime() {
+        return toStorageTime;
+    }
+
+    public void setToStorageTime(Date toStorageTime) {
+        this.toStorageTime = toStorageTime;
+    }
+
+    public String getSupplierName() {
+        return supplierName;
+    }
+
+    public void setSupplierName(String supplierName) {
+        this.supplierName = supplierName;
     }
 }
