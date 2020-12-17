@@ -16,4 +16,8 @@ public interface SupplierService {
     Supplier fandspId(Integer spId);
 
     Integer revampsupplier(Supplier supplier);
+
+    Integer addSupplier(Supplier supplier);
+
+    Integer expurgate(Integer spId);
 }

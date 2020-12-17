@@ -14,171 +14,39 @@
     <script src="../../static/plugins/angularjs/angular.min.js"></script>
     <link rel="stylesheet" href="../../static/plugins/angularjs/pagination.css">
     <script type="text/javascript" src="../../static/plugins/angularjs/pagination.js"></script>
-
     <script>
-        var app= angular.module("myApp",["pagination"]);
-        app.controller("myContr",function ($scope,$http) {
-            $scope.paginationConf = {
-                currentPage: 1,  				//当前页
-                totalItems: 10,					//总记录数
-                itemsPerPage: 10,				//每页记录数
-                perPageOptions: [5, 10, 20, 30, 40, 50], //分页选项，下拉选择一页多少条记录
-                onChange: function () {
-                    $scope.find($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage)
-                }
-            }
-            $scope.drug = {
-                pageNum: 0,
-                pageSize: 10
-            }
-            //查询页面,以及分页功能
-            $scope.find = function (pageNum, items) {
-                if (pageNum == null || pageNum == "") {
-                    pageNum = 1;
-                }
-                $scope.drug.pageNum = pageNum;
-                $scope.drug.pageSize = items;
-                var supplier = $scope.supp;
-                $http({
-                    url: "/supplier/conditionfand",
-                    method: "post",
-                    params: supplier
-                    ,
-                }).success(function (response) {
-                    $scope.lists = response.list;
-                    $scope.item = new Date();
-                    $scope.paginationConf.totalItems = response.total;
-                })
-
-            }
-            //删除供货商
-            $scope.expurgate=function (spId) {
-                if (confirm("是否确认删除?")){
-                    $http({
-                        url: "/supplier/expurgate",
-                        method: "get",
-                        params: {"spId":spId}
-                    }).success(function (response) {
-                        if (response>0){
-                            $scope.find();
-                        }else {
-                            alert("删除失败")
-                        }
-                    })
-                }
-            }
-            //查看详情
-            $scope.chage=function(spId){
-                var list = $scope.lists;
-                for (var i = 0; i < list.length; i++) {
-                    if (list[i].spId == spId) {
-                        $scope.chagesupp = list[i];
-                        break;
-                    }
-                }
-            }
-            //字典表查询
-            $scope.supplierdiction=function () {
-                $http({
-                    url:"/supplier/supplierdiction",
-                    method:"get",
-                    params:{},
-                }).success(function (response) {
-                    $scope.dictarr1=[]
-                    for (var i = 0; i < response.length; i++) {
-                        if (response[i].dictionariesId==4){
-                            $scope.dictarr1.push(response[i])
-                        }
-                    }
-                })
-            }
-            //点击修改根据ID查询
-            $scope.amend=function (spId) {
-                $http({
-                    url:"/supplier/fandspId",
-                    method:"get",
-                    params:{"spId": spId}
-                    ,
-                }).success(function (response) {
-                    $scope.insersupp=response;
-                })
-
-            }
-            //修改供货商信息
-            $scope.ngsave=function(){
-                var list = $scope.lists;
-                var inserInto = $scope.insersupp;
-                for (var i = 0; i < list.length; i++) {
-                    if (list[i].spId == inserInto.spId) {
-                        $scope.congf = list[i];
-                        break;
-                    }
-                }
-                if (angular.equals($scope.congf,inserInto)){
-                    alert("无数据更新")
-                }else {
-                    $http({
-                        url: "/supplier/revampsupplier",
-                        method: "post",
-                        params: inserInto,
-                    }).success(function (data) {
-                        if (data>0){
-                            alert("修改成功")
-                            $scope.find()
-                        }else{
-                            alert("修改失败")
-                        }
-                    })
-                }
-
-            }
-        })
-    </script>
-    <script type="text/javascript">
-        //保存添加后的供货商信息
-        function save() {
-            var addform = $("#addForm").serialize();
-            $.ajax({
-                url: "/supplier/addSupplier",
-                dataType: "json",
-                type: "post",
-                data: addform,
-                success: function (data) {
-                    if (data > 0) {
-                        document.getElementById("headLeft").innerHTML="药品品目添加"
-                        document.getElementById("headline").innerHTML="成功提示信息"
-                        document.getElementById("whether").innerHTML="您的操作成功"
-                        document.getElementById("lose").innerHTML="";
-                    } else {
-                        document.getElementById("headLeft").innerHTML="药品品目添加"
-                        document.getElementById("headline").innerHTML="失败提示信息"
-                        document.getElementById("whether").innerHTML="您的操作失败,请尝试刷新页面,重新操作"
+        //字典表查询
+        $scope.supplierdiction=function () {
+            $http({
+                url:"/supplier/supplierdiction",
+                method:"get",
+                params:{},
+            }).success(function (response) {
+                $scope.dictarr1=[]
+                for (var i = 0; i < response.length; i++) {
+                    if (response[i].dictionariesId==4){
+                        $scope.dictarr1.push(response[i])
                     }
                 }
             })
         }
-
     </script>
 </head>
 <body ng-app="myApp" ng-controller="myContr" ng-init="supplierdiction()">
 <div>
-    <h5 class="alert alert-infoalert alert-info">查询供货商信息</h5>
+    <h5 class="alert alert-infoalert alert-info">结算药品查询</h5>
     <table class="table table-bordered table-striped">
         <tr>
-            <td>供货商名称:<input ng-model="supp.SupplierName" class="form-control"></td>
-            <td>经营范围:<input ng-model="supp.ManageScope" class="form-control"></td>
-
+            <td>采购单编号:<input ng-model="supp.SupplierName" class="form-control"></td>
+            <td>采购单名称:<input ng-model="supp.ManageScope" class="form-control"></td>
         </tr>
         <tr>
-            <td>联系人:<input ng-model="supp.SupplierLinkman" class="form-control"></td>
-            <td>企业联系人:<input ng-model="supp.enterpriseLinkman" class="form-control"></td>
-        </tr>
-        <tr>
-            <td>是否有企业信用证:<select ng-model="supp.isLetterOfCredit" class="form-control">
+            <td>采购状态:<select ng-model="supp.SupplierLinkman" class="form-control">
                 <option value="0">是</option>
                 <option value="1">否</option>
-            </select></td>
-            <td>联系地址:<input ng-model="supp.relationSite" class="form-control"></td>
+            </select>
+            </td>
+            <td>采购医院:<input ng-model="supp.enterpriseLinkman" class="form-control"></td>
         </tr>
         <tr>
             <td colspan="1" align="right"> <button type="button" class="btn1" ng-click="find()">查询</button></td>
@@ -403,63 +271,63 @@
                 <h3>查看页面</h3>
             </div>
             <div class="modal-body">
-                    <table class="table table-bordered table-striped"  >
-                        <tr>
-                            <td>供货商名称:<input ng-model="chagesupp.supplierName" name="supplierName" class="form-control" ></td>
-                            <td>地址:<input ng-model="chagesupp.supplierSite" name="supplierSite" class="form-control"></td>
-                            <td>联系人:<input ng-model="chagesupp.supplierLinkman" name="supplierLinkman" class="form-control"></td>
-                        </tr>
-                        <tr>
-                            <td>许可证:<input ng-model="chagesupp.licence" name="licence" class="form-control"></td>
-                            <td>许可证到期时间:<input ng-model="chagesupp.licenceTime" name="licenceTime" class="form-control"></td>
-                            <td>联系电话:<input ng-model="chagesupp.supplierPhone" name="supplierPhone" class="form-control"></td>
-                        </tr>
-                        <tr>
-                            <td>企业类型:<select ng-model="chagesupp.enterpriseCategory" name="enterpriseCategory" class="form-control">
-                                <option ng-repeat="di in dictarr1" ng-selected="di.dicId==chagesupp.enterpriseCategory" ng-value="di.dicId">{{di.dictionariesName}}</option>
-                            </select></td>
-                            <td>企业联系人:<input ng-model="chagesupp.enterpriseLinkman" name="enterpriseLinkman" class="form-control"></td>
-                            <td>企业电话:<input ng-model="chagesupp.enterprisePhone" name="enterprisePhone" class="form-control"></td>
-                        </tr>
-                        <tr>
-                            <td>经营范围:<input ng-model="chagesupp.manageScope" name="manageScope" class="form-control"></td>
-                            <td>注册地址:<input ng-model="chagesupp.registeredAddress" name="registeredAddress" class="form-control"></td>
-                            <td>联系地址:<input ng-model="chagesupp.relationSite" name="relationSite" class="form-control"></td>
-                        </tr>
-                        <tr>
-                            <td>邮政编码:<input ng-model="chagesupp.postalCode" name="postalCode" class="form-control"></td>
-                            <td>总资产(万元):<input ng-model="chagesupp.totalAssets" name="totalAssets" class="form-control"></td>
-                            <td>企业传真:<input ng-model="chagesupp.sobeyFax" name="sobeyFax" class="form-control"></td>
-                        </tr>
-                        <tr>
-                            <td>法人代表姓名:<input ng-model="chagesupp.legalPersonName" name="legalPersonName" class="form-control"></td>
-                            <td>法人身份证:<input ng-model="chagesupp.legalPersonNumber" name="legalPersonNumber" class="form-control"></td>
-                            <td>企业注册资金(万元):<input ng-model="chagesupp.enterpriseRegisterCapital" name="enterpriseRegisterCapital" class="form-control"></td>
-                        </tr>
-                        <tr>
-                            <td>上年度销售金额(万元):<input ng-model="chagesupp.lastYearMoney" name="lastYearMoney" class="form-control"></td>
-                            <td>电子邮箱:<input ng-model="chagesupp.emailAddress" name="emailAddress" class="form-control"></td>
-                            <td>网址:<input ng-model="chagesupp.enterpriseUrl" name="enterpriseUrl" class="form-control"></td>
-                        </tr>
-                        <tr>
-                            <td>企业代码证号:<input ng-model="chagesupp.enterpriseCode" name="enterpriseCode" class="form-control"></td>
-                            <td>企业代码有效期:<input ng-model="chagesupp.enterpriseCodeTime" name="enterpriseCodeTime" class="form-control"></td>
-                            <td>营业执照:<input ng-model="chagesupp.businessLicense" name="businessLicense" class="form-control"></td>
-                        </tr>
-                        <tr>
-                            <td>营业执照有效期:<input ng-model="chagesupp.businessLicenseTime" name="businessLicenseTime" class="form-control"></td>
-                            <td>是否有企业信用证:<select ng-model="chagesupp.isLetterOfCredit" name="isLetterOfCredit" class="form-control">
-                                <option value="0">是</option>
-                                <option value="1">否</option>
-                            </select></td>
-                            <td>信用证号:<input ng-model="chagesupp.letterCreditNumber" name="letterCreditNumber" class="form-control"></td>
-                        </tr>
-                        <tr>
-                            <td>信用证有效期:<input ng-model="chagesupp.letterCreditTime" name="letterCreditTime" class="form-control"></td>
-                            <td>固定资产(万元):<input ng-model="chagesupp.fixedAssets" name="fixedAssets" class="form-control"></td>
-                            <td>公司简介(中文):<input ng-model="chagesupp.companyProfile" name="companyProfile" class="form-control"></td>
-                        </tr>
-                    </table>
+                <table class="table table-bordered table-striped"  >
+                    <tr>
+                        <td>供货商名称:<input ng-model="chagesupp.supplierName" name="supplierName" class="form-control" ></td>
+                        <td>地址:<input ng-model="chagesupp.supplierSite" name="supplierSite" class="form-control"></td>
+                        <td>联系人:<input ng-model="chagesupp.supplierLinkman" name="supplierLinkman" class="form-control"></td>
+                    </tr>
+                    <tr>
+                        <td>许可证:<input ng-model="chagesupp.licence" name="licence" class="form-control"></td>
+                        <td>许可证到期时间:<input ng-model="chagesupp.licenceTime" name="licenceTime" class="form-control"></td>
+                        <td>联系电话:<input ng-model="chagesupp.supplierPhone" name="supplierPhone" class="form-control"></td>
+                    </tr>
+                    <tr>
+                        <td>企业类型:<select ng-model="chagesupp.enterpriseCategory" name="enterpriseCategory" class="form-control">
+                            <option ng-repeat="di in dictarr1" ng-selected="di.dicId==chagesupp.enterpriseCategory" ng-value="di.dicId">{{di.dictionariesName}}</option>
+                        </select></td>
+                        <td>企业联系人:<input ng-model="chagesupp.enterpriseLinkman" name="enterpriseLinkman" class="form-control"></td>
+                        <td>企业电话:<input ng-model="chagesupp.enterprisePhone" name="enterprisePhone" class="form-control"></td>
+                    </tr>
+                    <tr>
+                        <td>经营范围:<input ng-model="chagesupp.manageScope" name="manageScope" class="form-control"></td>
+                        <td>注册地址:<input ng-model="chagesupp.registeredAddress" name="registeredAddress" class="form-control"></td>
+                        <td>联系地址:<input ng-model="chagesupp.relationSite" name="relationSite" class="form-control"></td>
+                    </tr>
+                    <tr>
+                        <td>邮政编码:<input ng-model="chagesupp.postalCode" name="postalCode" class="form-control"></td>
+                        <td>总资产(万元):<input ng-model="chagesupp.totalAssets" name="totalAssets" class="form-control"></td>
+                        <td>企业传真:<input ng-model="chagesupp.sobeyFax" name="sobeyFax" class="form-control"></td>
+                    </tr>
+                    <tr>
+                        <td>法人代表姓名:<input ng-model="chagesupp.legalPersonName" name="legalPersonName" class="form-control"></td>
+                        <td>法人身份证:<input ng-model="chagesupp.legalPersonNumber" name="legalPersonNumber" class="form-control"></td>
+                        <td>企业注册资金(万元):<input ng-model="chagesupp.enterpriseRegisterCapital" name="enterpriseRegisterCapital" class="form-control"></td>
+                    </tr>
+                    <tr>
+                        <td>上年度销售金额(万元):<input ng-model="chagesupp.lastYearMoney" name="lastYearMoney" class="form-control"></td>
+                        <td>电子邮箱:<input ng-model="chagesupp.emailAddress" name="emailAddress" class="form-control"></td>
+                        <td>网址:<input ng-model="chagesupp.enterpriseUrl" name="enterpriseUrl" class="form-control"></td>
+                    </tr>
+                    <tr>
+                        <td>企业代码证号:<input ng-model="chagesupp.enterpriseCode" name="enterpriseCode" class="form-control"></td>
+                        <td>企业代码有效期:<input ng-model="chagesupp.enterpriseCodeTime" name="enterpriseCodeTime" class="form-control"></td>
+                        <td>营业执照:<input ng-model="chagesupp.businessLicense" name="businessLicense" class="form-control"></td>
+                    </tr>
+                    <tr>
+                        <td>营业执照有效期:<input ng-model="chagesupp.businessLicenseTime" name="businessLicenseTime" class="form-control"></td>
+                        <td>是否有企业信用证:<select ng-model="chagesupp.isLetterOfCredit" name="isLetterOfCredit" class="form-control">
+                            <option value="0">是</option>
+                            <option value="1">否</option>
+                        </select></td>
+                        <td>信用证号:<input ng-model="chagesupp.letterCreditNumber" name="letterCreditNumber" class="form-control"></td>
+                    </tr>
+                    <tr>
+                        <td>信用证有效期:<input ng-model="chagesupp.letterCreditTime" name="letterCreditTime" class="form-control"></td>
+                        <td>固定资产(万元):<input ng-model="chagesupp.fixedAssets" name="fixedAssets" class="form-control"></td>
+                        <td>公司简介(中文):<input ng-model="chagesupp.companyProfile" name="companyProfile" class="form-control"></td>
+                    </tr>
+                </table>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
