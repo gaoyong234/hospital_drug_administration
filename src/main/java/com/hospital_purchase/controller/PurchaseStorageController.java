@@ -1,9 +1,9 @@
 package com.hospital_purchase.controller;
 
 import com.github.pagehelper.PageInfo;
+import com.hospital_purchase.pojo.Storage;
 import com.hospital_purchase.service.PurchaseStorageService;
 import com.hospital_purchase.vo.PurchaseStorageVO;
-import com.hospital_purchase.vo.SupplierVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,7 +29,7 @@ public class PurchaseStorageController {
     }
 
     /**
-     * 查询采购入库单+分页
+     * 查询采购入库单+分页+模糊查询
      * @param pageNum
      * @param pageSize
      * @param purchaseStorageVO
@@ -44,4 +44,25 @@ public class PurchaseStorageController {
         return purchaseStorage;
     }
 
+    /**
+     * 按id查找采购多条数据
+     * @param poId
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/findPurchaseDataById")
+    public List<PurchaseStorageVO> findPurchaseDataById(@RequestParam("poId") List<Integer> poId){
+        return purchaseStorageService.findPurchaseDataById(poId);
+    }
+
+    @ResponseBody
+    @RequestMapping("/stockInPurchaseInfo")
+    public Integer stockInPurchaseInfo(PurchaseStorageVO purchaseStorageVO){
+        Storage storage = new Storage();
+        storage.setPurchaseOrderId(purchaseStorageVO.getPoId());
+        storage.setStorageVolume(purchaseStorageVO.getStorageVolume());
+        storage.setInvoice(purchaseStorageVO.getInvoice());
+        storage.setDrugBatchNumber(purchaseStorageVO.getDrugBatchNumber());
+        return purchaseStorageService.stockInPurchaseInfo(storage);
+    }
 }

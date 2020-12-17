@@ -44,7 +44,7 @@
                pageNum:0,
                pageSize:5
            }
-
+            //查询数据
            $scope.findPage = function (pageNum) {
                $scope.fuzzyQuery.pageNum = pageNum;
                var dataList = $scope.fuzzyQuery;
@@ -54,6 +54,14 @@
                    params:dataList
                }).then(function successCallback(response) {
                    $scope.list = response.data.list;
+                   for (var i = 0; i <$scope.list.length ; i++) {
+                       if ($scope.list[i].purchaseState == 1){
+                           $scope.list[i].purchaseState = "已发货"
+                       }
+                       if ($scope.list[i].purchaseState == 2){
+                           $scope.list[i].purchaseState = "未发货"
+                       }
+                   }
                    //console.log(response);
                    //分页// pageMe.js 使用方法
                    $("#pages").paging({
@@ -69,6 +77,61 @@
 
                });
 
+           }
+           //根据id查询多条数据
+           $scope.addClick = function(){
+               var obj  = document.getElementsByName("c1");
+               var checkArr = [];
+               var poId = {poId:checkArr}
+               for (var i = 0; i < obj.length; i++) {
+                   if (obj[i].checked)
+                       checkArr.push(obj[i].value);
+               }
+               //console.log(checkArr);
+               $http({
+                   url:"/purchaseStorage/findPurchaseDataById",
+                   method:"get",
+                   params:poId
+               }).success(function (response) {
+                   //console.log(response);
+                   /*$scope.dritem=response;*/
+                   var storageVolume=$("[name='storageVolume']").val();
+                   var invoice=$("[name='invoice']").val();
+                   var drugBatchNumber=$("[name='drugBatchNumber']").val();
+                   var effectiveTime=$("[name='effectiveTime']").val();
+                   console.log(storageVolume,invoice,drugBatchNumber,effectiveTime);
+                   if (storageVolume != null && storageVolume != '' && invoice != null && invoice != '' &&
+                       drugBatchNumber != null && drugBatchNumber != ''){
+                       var addPurchase = $("#addPurchase").serialize();
+                       console.log(JSON.stringify(addPurchase));
+                        $http({
+                            url:"/purchaseStorage/stockInPurchaseInfo",
+                            method:"post",
+                            params:addPurchase,
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            transformRequest: function(obj) {
+                                var str = [];
+                                for (var s in obj) {
+                                    str.push(encodeURIComponent(s) + "=" + encodeURIComponent(obj[s]));
+                                }
+                                return str.join("&");
+                            }
+                        }).then(function successCallback(response) {
+                                console.log(response);
+                                if (response.data>0){
+                                    alert("添加成功")
+                                }else {
+                                    alert("添加失败")
+                                }
+                        },function errorCallback(response) {
+                            alert("请完善信息后保存!")
+                        })
+                   }else {
+                       document.getElementById("headLeft").innerHTML="入库"
+                       document.getElementById("headline").innerHTML="失败提示信息"
+                       document.getElementById("whether").innerHTML="因数据不完整,您的操作失败,请尝试刷新页面,重新操作"
+                   }
+               })
            }
             //查询药品类别
            $http({
@@ -158,40 +221,40 @@
                 <td>采购单编码:<input ng-model="fuzzyQuery.purchaseNumber"></td>
                 <td>采购单名称:<input ng-model="fuzzyQuery.purchaseName"></td>
                 <td>采购状态:
-                    <select>
+                    <select ng-model="fuzzyQuery.purchaseState">
                         <option value="">全部</option>
                         <option value="1">已发货</option>
                         <option value="2">未发货</option>
                     </select>
                 </td>
-                <td>采购医院:<input ng-model="fuzzyQuery.unitId"></td>
+                <td>采购医院:<input ng-model="fuzzyQuery.hospitalName"></td>
             </tr>
             <tr>
-                <td>开始采购时间:<input type="date" ng-model="fuzzyQuery.coefficient"></td>
-                <td>结束采购时间:<input type="date" ng-model="fuzzyQuery.unitId"></td>
-                <td>药品流水号:<input ng-model="fuzzyQuery.coefficient"></td>
-                <td>通用名:<input ng-model="fuzzyQuery.unitId"></td>
+                <td>开始采购时间:<input type="date" ng-model="fuzzyQuery.beginTime"></td>
+                <td>结束采购时间:<input type="date" ng-model="fuzzyQuery.endTime"></td>
+                <td>药品流水号:<input ng-model="fuzzyQuery.serialNumber"></td>
+                <td>通用名:<input ng-model="fuzzyQuery.commonName"></td>
             </tr>
             <tr>
-                <td>剂型:<input type="text" ng-model="fuzzyQuery.coefficient"></td>
-                <td>规格:<input type="text" ng-model="fuzzyQuery.unitId"></td>
-                <td>单位:<input ng-model="fuzzyQuery.coefficient"></td>
-                <td>转换系数:<input ng-model="fuzzyQuery.unitId"></td>
+                <td>剂型:<input type="text" ng-model="fuzzyQuery.dosageForm"></td>
+                <td>规格:<input type="text" ng-model="fuzzyQuery.speciflcation"></td>
+                <td>单位:<input ng-model="fuzzyQuery.unitId"></td>
+                <td>转换系数:<input ng-model="fuzzyQuery.coefficient"></td>
             </tr>
             <tr>
-                <td>生产企业:<input type="text" ng-model="fuzzyQuery.coefficient"></td>
-                <td>商品名称:<input type="text" ng-model="fuzzyQuery.unitId"></td>
+                <td>生产企业:<input type="text" ng-model="fuzzyQuery.productionName"></td>
+                <td>商品名称:<input type="text" ng-model="fuzzyQuery.commodityName"></td>
                 <td>药品类别:
-                    <select ng-model="fuzzyQuery.purchaseState">
+                    <select ng-model="fuzzyQuery.drugCategory">
                         <option value="">全部</option>
                         <option ng-repeat="drugCategory in drugCategory" ng-value="drugCategory.dicId">{{drugCategory.dictionariesName}}</option>
                     </select>
                 </td>
-                <td>入库时间:<input type="date" ng-model="fuzzyQuery.unitId">至<input type="date" ng-model="fuzzyQuery.unitId"></td>
+                <td>入库时间:<input type="date" ng-model="fuzzyQuery.storageTime">至<input type="date" ng-model="fuzzyQuery.toStorageTime"></td>
             </tr>
             <tr>
-                <td>药品批号:<input type="text" ng-model="fuzzyQuery.coefficient"></td>
-                <td>发票号或入库单号:<input type="text" ng-model="fuzzyQuery.unitId"></td>
+                <td>药品批号:<input type="text" ng-model="fuzzyQuery.drugBatchNumber"></td>
+                <td>发票号或入库单号:<input type="text" ng-model="fuzzyQuery.invoice"></td>
                 <td>供货商:
                     <select ng-model="fuzzyQuery.supplierName">
                         <option value="">全部</option>
@@ -201,7 +264,7 @@
             </tr>
             <tr>
             <tr>
-                <td colspan="1" align="right"> <button type="button" class="btn1" ng-click="find()">查询</button></td>
+                <td colspan="1" align="right"> <button type="button" class="btn1" ng-click="findPage()">查询</button></td>
                 <td> <button type="button" class="btn1" ng-click="loadAlllick()">导出</button></td>
             </tr>
             </tr>
@@ -212,12 +275,12 @@
         </button>-->
         <input type="checkbox" name="c0" id="all" value="全选" onclick="change()">全选
         <input type="checkbox" name="r0" id="revcheck" value="反选" onclick="revs()">反选
-        <button type="button" class="btn1" data-toggle="modal" data-target="#addition" ng-click="addClick()">确认入库
-        </button>
+        <button type="button" ng-click="addClick()">确认入库</button>
         <!--<button type="button" class="btn1" data-toggle="modal" data-target="#introduce" ng-click="loadlick()">导入
         </button>-->
     </div>
     <!--tabel列表-->
+
     <div>
         <table id="dataList" class="table">
             <thead>
@@ -247,9 +310,10 @@
                 </tr>
             </thead>
         <tbody id="tbody">
+        <form id="addPurchase">
             <tr ng-repeat="x in list">
                 <th>{{x.poId}}</th>
-                <th><input type="checkbox" name="c1" value=""></th>
+                <th><input type="checkbox" name="c1" value="{{x.poId}}"></th>
                 <th>{{x.purchaseNumber}}</th>
                 <th>{{x.purchaseName}}</th>
                 <th>{{x.serialNumber}}</th>
@@ -259,20 +323,21 @@
                 <th>{{x.dealPrice}}</th>
                 <th>{{x.purchaseQuantity}}</th>
                 <th>{{x.purchaseTotalAmount}}</th>
-                <th><input type="text" style="width: 50px"></th>
+                <th><input type="text" name="storageVolume" style="background-color: #9d9d9d;width: 50px;"></th>
                 <th></th>
-                <th><input type="text" style="width: 50px"></th>
-                <th><input type="text" style="width: 50px"></th>
-                <th><input type="text" style="width: 50px"></th>
+                <th><input type="text" name="invoice" style="background-color: #9d9d9d;width: 50px"></th>
+                <th><input type="text" name="drugBatchNumber" style="background-color: #9d9d9d;width: 50px;"></th>
+                <th><input type="text" name="effectiveTime" style="background-color: #9d9d9d;width: 50px;"></th>
                 <th>{{x.dosageForm}}</th>
                 <th>{{x.speciflcation}}</th>
                 <th>{{x.unitId}}</th>
                 <th>{{x.coefficient}}</th>
                 <th>{{x.purchaseState}}</th>
                 <td><button class="btn btn-success" data-toggle="modal" data-target="#chage" ng-click="chage(x.diId)" >查看</button>
-                <button class="btn btn-warning" data-toggle="modal" data-target="#more" ng-click="amend(x.diId)">修改</button>
+                <button class="btn btn-warning" data-toggle="modal" data-target="#more" ng-click="update(x.poId)">修改</button>
                 <button class="btn btn-danger" data-toggle="modal" ng-click="expurgate(x.diId)">删除</button></td>
             </tr>
+        </form>
         </tbody>
     </table>
         <tm-pagination conf="paginationConf"></tm-pagination>
@@ -388,13 +453,13 @@
                 <form id="inserInto">
                     <table class="table table-bordered table-striped"  >
                         <tr>
-                            <td>药品品目号:</td>
-                            <td><input ng-model="dritem.diId" name="diId" readonly="readonly" onblur class="form-control"></td>
-                            <td>通用名:</td>
-                            <td><input ng-model="dritem.commonName" name="commonName"  class="form-control" >
+                            <td>id:</td>
+                            <td><input ng-model="dritem.poId" name="poId" class="form-control"></td>
+                            <td>采购单编码:</td>
+                            <td><input ng-model="dritem.purchaseNumber" name="purchaseNumber"  class="form-control" >
                                 <span></span></td>
                         </tr>
-                        <tr>
+                        <!--<tr>
 
                             <td>剂型:</td>
                             <td><input ng-model="dritem.dosageForm" name="dosageForm"  class="form-control" >
@@ -422,7 +487,7 @@
                                 <option value="2">正常</option>
                                 <option value="3">非正常</option>
                             </select><span></span></td>
-                        </tr>
+                        </tr>-->
                     </table>
                 </form>
             </div>

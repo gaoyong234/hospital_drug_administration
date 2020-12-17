@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hospital_purchase.dao.PurchaseOrderDao.PurchaseStorageMapper">
-  <resultMap id="BaseResultMap" type="com.hospital_purchase.vo.PurchaseStorageVO">
+    <resultMap id="BaseResultMap" type="com.hospital_purchase.vo.PurchaseStorageVO">
       <id column="po_id" jdbcType="INTEGER" property="poId" />
       <result column="purchase_number" jdbcType="VARCHAR" property="purchaseNumber" />
       <result column="purchase_name" jdbcType="VARCHAR" property="purchaseName" />
@@ -29,18 +29,111 @@
       <result column="drug_category" jdbcType="VARCHAR" property="drugCategory" />
       <result column="storage_time" jdbcType="TIMESTAMP" property="storageTime" />
       <result column="toStorage_time" jdbcType="TIMESTAMP" property="toStorageTime" />
-      <result column="supplier_ame" jdbcType="VARCHAR" property="supplierName" />
-  </resultMap>
+      <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+      <result column="del_id" jdbcType="INTEGER" property="delId" />
+    </resultMap>
 
-  <select id="findPurchaseStorage" resultMap="BaseResultMap">
-    SELECT po.po_id,po.purchase_number,po.purchase_name,di.serial_number,di.common_name,
-			di.commodity_name,dm.bidding_price,pd.deal_price,pd.purchase_quantity,pd.purchase_total_amount,
+    <select id="findPurchaseStorage" resultMap="BaseResultMap">
+    SELECT po.po_id,
+        po.purchase_number,po.purchase_name,di.serial_number,di.common_name,
+        di.commodity_name,dm.bidding_price,pd.deal_price,pd.purchase_quantity,pd.purchase_total_amount,
 
-			di.dosage_form,di.speciflcation,d.dictionaries_name as unit_id,di.coefficient,po.purchase_state
+        di.dosage_form,di.speciflcation,d.dictionaries_name as unit_id,di.coefficient,po.purchase_state,
+
+        s.storage_volume,s.invoice,s.drug_batch_number,s.effective_time,
+        di.production_name,h.hospital_name,po.begin_time,po.end_time,ds.dictionaries_name as drug_category,
+        s.storage_time,su.supplier_name
+
+        FROM purchase_orders po
+        LEFT JOIN purchase_drug pd on pd.purchase_id = po.po_id
+        LEFT JOIN drug_items di on di.di_id = pd.drug_id
+        LEFT JOIN drug_message dm on dm.drug_items_id = di.di_id
+        LEFT JOIN dictionaries d on d.dic_id = di.unit_id
+        LEFT JOIN storage s on s.purchase_order_id = po.po_id
+        LEFT JOIN hospital h on h.hp_id = po.hospital_id
+        LEFT JOIN dictionaries ds on ds.dic_id = di.drug_category
+        LEFT JOIN supplier su on su.sp_id = pd.supplier_id
+        <where>
+            <if test="purchaseNumber != null and purchaseNumber != ''">
+                and po.purchase_number = #{purchaseNumber}
+            </if>
+            <if test="purchaseName != null and purchaseName != ''">
+                and po.purchase_name like CONCAT("%",#{purchaseName},"%")
+            </if>
+            <if test="purchaseState != null and purchaseState != ''">
+                and po.purchase_state = #{purchaseState}
+            </if>
+            <if test="hospitalName != null and hospitalName != ''">
+                and h.hospital_name = #{hospitalName}
+            </if>
+            <if test="beginTime != null and endTime != null">
+                and po.begin_time between #{beginTime} and #{endTime}
+            </if>
+            <if test="serialNumber != null and serialNumber != ''">
+                and di.serial_number = #{serialNumber}
+            </if>
+            <if test="commonName != null and commonName != ''">
+                and di.common_name like CONCAT("%",#{commonName},"%")
+            </if>
+            <if test="dosageForm != null and dosageForm != ''">
+                and di.dosage_form like CONCAT("%",#{dosageForm},"%")
+            </if>
+            <if test="speciflcation != null and speciflcation != ''">
+                and di.speciflcation = #{speciflcation}
+            </if>
+            <if test="unitId != null and unitId != ''">
+                and d.dictionaries_name = #{unitId}
+            </if>
+            <if test="coefficient != null and coefficient != ''">
+                and di.coefficient = #{coefficient}
+            </if>
+            <if test="productionName != null and productionName != ''">
+                and di.production_name = #{productionName}
+            </if>
+            <if test="commodityName != null and commodityName != ''">
+                and di.commodity_name = #{commodityName}
+            </if>
+            <if test="drugCategory != null and drugCategory != ''">
+                and ds.dic_id = #{drugCategory}
+            </if>
+            <if test="storageTime != null and toStorageTime != null">
+                and s.storage_time between #{storageTime} and #{toStorageTime}
+            </if>
+            <if test="drugBatchNumber != null and drugBatchNumber != ''">
+                and s.drug_batch_number = #{drugBatchNumber}
+            </if>
+            <if test="invoice != null and invoice != ''">
+                and s.invoice = #{invoice}
+            </if>
+            <if test="supplierName != null and supplierName != ''">
+                and su.sp_id = #{supplierName}
+            </if>
+            and po.del_id = 0
+        </where>
+    </select>
+    <select id="findPurchaseDataById" resultMap="BaseResultMap">
+        SELECT po.po_id,
+        po.purchase_number,po.purchase_name,di.serial_number,di.common_name,
+		di.commodity_name,dm.bidding_price,pd.deal_price,pd.purchase_quantity,pd.purchase_total_amount,
+
+		di.dosage_form,di.speciflcation,d.dictionaries_name as unit_id,di.coefficient,po.purchase_state,
+
+		s.storage_volume,s.invoice,s.drug_batch_number,s.effective_time,
+		di.production_name,h.hospital_name,po.begin_time,po.end_time,ds.dictionaries_name as drug_category,
+		s.storage_time,su.supplier_name
+
 		FROM purchase_orders po
 		LEFT JOIN purchase_drug pd on pd.purchase_id = po.po_id
 		LEFT JOIN drug_items di on di.di_id = pd.drug_id
 		LEFT JOIN drug_message dm on dm.drug_items_id = di.di_id
 		LEFT JOIN dictionaries d on d.dic_id = di.unit_id
-  </select>
+		LEFT JOIN storage s on s.purchase_order_id = po.po_id
+		LEFT JOIN hospital h on h.hp_id = po.hospital_id
+		LEFT JOIN dictionaries ds on ds.dic_id = di.drug_category
+		LEFT JOIN supplier su on su.sp_id = pd.supplier_id
+        where po.po_id in
+        <foreach  collection="poId" item="poId" index="index" open="(" close=")" separator=",">
+            #{poId}
+        </foreach>
+    </select>
 </mapper>
