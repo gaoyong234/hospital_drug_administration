@@ -23,9 +23,9 @@ public class PurchaseOrdersServiceImpl implements PurchaseOrdersService {
     private PurchaseOrdersDaoMapper purchaseOrdersDaoMapper;
 
     @Override
-    public PageInfo findAllPurchaseOrders(Integer pageNum, Integer pageSize, PurchaseOrders purchaseOrders) {
+    public PageInfo findAllPurchaseOrders(Integer pageNum, Integer pageSize, PurchaseOrdersVO purchaseOrdersVO) {
         PageHelper.startPage(pageNum,pageSize);
-        List<PurchaseOrdersVO> purchaseOrdersList = purchaseOrdersDaoMapper.selectPurchaseOrdersList(purchaseOrders);
+        List<PurchaseOrdersVO> purchaseOrdersList = purchaseOrdersDaoMapper.selectPurchaseOrdersList(purchaseOrdersVO);
         PageInfo<PurchaseOrdersVO> pageInfo = new PageInfo<PurchaseOrdersVO>(purchaseOrdersList);
         return pageInfo;
     }

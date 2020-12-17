@@ -7,7 +7,7 @@ import com.hospital_purchase.vo.PurchaseOrdersVO;
 
 public interface PurchaseOrdersService {
 
-    PageInfo findAllPurchaseOrders(Integer pageNum, Integer pageSize, PurchaseOrders purchaseOrders);
+    PageInfo findAllPurchaseOrders(Integer pageNum, Integer pageSize, PurchaseOrdersVO purchaseOrdersVO);
 
     Message addPurchaseOrders(PurchaseOrders purchaseOrders);
 

@@ -2,7 +2,6 @@ package com.hospital_purchase.dao.PurchaseOrderDao;
 
 
 
-import com.hospital_purchase.pojo.PurchaseOrders;
 import com.hospital_purchase.vo.PurchaseOrdersVO;
 
 import java.util.List;
@@ -10,7 +9,7 @@ import java.util.List;
 public interface PurchaseOrdersDaoMapper {
 
     //查询多条
-    List selectPurchaseOrdersList(PurchaseOrders purchaseOrders);
+    List selectPurchaseOrdersList(PurchaseOrdersVO purchaseOrdersVO);
     //查询单个
     PurchaseOrdersVO selectPurchaseOrdersById(Integer poId);
     //加删除

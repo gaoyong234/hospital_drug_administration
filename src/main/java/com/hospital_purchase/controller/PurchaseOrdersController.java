@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
@@ -34,13 +35,13 @@ public class PurchaseOrdersController {
      *
      * @param pageNum 起始页
      * @param pageSize 每页显示多少条
-     * @param purchaseOrders 查询条件
+     * @param purchaseOrdersVO 查询条件
      * @return
      */
     @RequestMapping("/findAllPurchaseOrders")
     @ResponseBody
-    public PageInfo findAllPurchaseOrders(Integer pageNum, Integer pageSize, PurchaseOrders purchaseOrders){
-        return purchaseOrdersService.findAllPurchaseOrders(pageNum,pageSize,purchaseOrders);
+    public PageInfo findAllPurchaseOrders(@RequestParam(value = "pageNum",defaultValue = "1") Integer pageNum,@RequestParam(value = "pageSize",defaultValue = "10") Integer pageSize, PurchaseOrdersVO purchaseOrdersVO){
+        return purchaseOrdersService.findAllPurchaseOrders(pageNum,pageSize,purchaseOrdersVO);
     }
 
     /**

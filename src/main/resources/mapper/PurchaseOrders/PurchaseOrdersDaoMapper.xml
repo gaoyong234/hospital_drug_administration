@@ -49,13 +49,24 @@
     modified_time, submit_time, linkman_name, linkman_phone, user_id, audit_time, purchase_number,del_id
   </sql>
 
-  <select id="selectPurchaseOrdersList" resultMap="BaseMap" parameterType="com.hospital_purchase.pojo.PurchaseOrders">
+  <select id="selectPurchaseOrdersList" resultMap="BaseMap" parameterType="com.hospital_purchase.vo.PurchaseOrdersVO">
     select
      po_id, audit_state, audit_opinion, hospital_id, purchase_name, fund_time, purchase_state,begin_time,end_time,postscript,hospital_number,
     modified_time, submit_time, linkman_name, linkman_phone, user_id, audit_time, purchase_number,po.del_id delId,hospital_name
     from purchase_orders po
     left join hospital hs on hs.hp_id = po.hospital_id
-    where po.del_id=0
+    <where>
+      <if test="hospitalName!=null  and hospitalName != ''">
+        and hospital_name like CONCAT("%",#{hospitalName},"%")
+      </if>
+      <if test="purchaseNumber!=null  and purchaseNumber != ''">
+        and purchase_number like CONCAT("%",#{purchaseNumber},"%")
+      </if>
+      <if test="purchaseName!=null  and purchaseName != ''">
+        and purchase_name like CONCAT("%",#{purchaseName},"%")
+      </if>
+      and po.del_id=0
+    </where>
     order by fund_time,modified_time DESC
   </select>
   <select id="selectPurchaseOrdersById" parameterType="integer" resultMap="BaseMap">

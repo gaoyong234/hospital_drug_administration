@@ -93,7 +93,7 @@
       <if test="purchaseState != null and purchaseState != ''">
         and purchase_state =#{purchaseState}
       </if>
-      and pd_id=#{pdId}
+      and purchase_id=#{purchaseId}
       and pd.del_id=0
     </where>
   </select>

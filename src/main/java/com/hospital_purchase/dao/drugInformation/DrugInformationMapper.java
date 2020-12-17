@@ -2,6 +2,7 @@ package com.hospital_purchase.dao.drugInformation;
 import com.hospital_purchase.vo.DrugInformationExcelVO;
 import com.hospital_purchase.pojo.DrugItems;
 import com.hospital_purchase.vo.DrugInformationVO;
+import com.hospital_purchase.vo.DrugMessageVO;
 
 import java.util.List;
 
@@ -29,4 +30,6 @@ public interface DrugInformationMapper {
     int delDrugInformation(Integer id);
 
     List<DrugInformationExcelVO> selectAllDrugInformationDataVo();
+    //gy模糊查询
+    List<DrugMessageVO> findAllDrugInfo(DrugMessageVO DrugMessageVO);
 }
