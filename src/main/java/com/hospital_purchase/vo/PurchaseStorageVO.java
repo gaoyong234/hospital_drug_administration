@@ -1,6 +1,8 @@
 package com.hospital_purchase.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.hospital_purchase.common.PurchaseStorageDto;
+import com.hospital_purchase.pojo.Storage;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
@@ -8,7 +10,18 @@ import java.util.Date;
 
 public class PurchaseStorageVO {
 
+    private PurchaseStorageDto[] storageList;
+
+    public PurchaseStorageDto[] getStorageList() {
+        return storageList;
+    }
+
+    public void setStorageList(PurchaseStorageDto[] storageList) {
+        this.storageList = storageList;
+    }
+
     private Integer poId;
+    private Integer stId;//入库id
     private String purchaseNumber;//采购单编码
     private String purchaseName;//采购单名称
     private Integer serialNumber;//流水号
@@ -48,6 +61,14 @@ public class PurchaseStorageVO {
     private Date toStorageTime;//入库时间(尾)
     private String supplierName;//供货商
     private Integer delId;//
+
+    public Integer getStId() {
+        return stId;
+    }
+
+    public void setStId(Integer stId) {
+        this.stId = stId;
+    }
 
     public Integer getDelId() {
         return delId;
