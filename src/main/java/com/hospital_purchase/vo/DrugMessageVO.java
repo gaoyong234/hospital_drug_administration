@@ -79,6 +79,8 @@ public class DrugMessageVO {
     private String drugStateName;//交易名称
     private Integer supplierId;//供货商id
     private String supplierName;//供货商名称
+    private BigDecimal biddingPriceBegin;//中标起始
+    private BigDecimal biddingPriceEnd;//中标结束
 
 
 }

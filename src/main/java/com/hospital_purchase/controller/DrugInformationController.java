@@ -8,6 +8,7 @@ import com.hospital_purchase.pojo.DrugMessage;
 import com.hospital_purchase.service.DrugInformationService;
 import com.hospital_purchase.util.ExcelUploadUtil;
 import com.hospital_purchase.vo.DrugInformationVO;
+import com.hospital_purchase.vo.DrugMessageVO;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -361,5 +362,12 @@ public class DrugInformationController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @RequestMapping("/findAllDrugInfo")
+    @ResponseBody
+    public PageInfo findAllDrugInfo(@RequestParam(value = "pageNum",defaultValue = "1") Integer pageNum, @RequestParam(value = "pageSize",defaultValue = "10") Integer pageSize , DrugMessageVO drugMessageVO){
+
+        return drugInformationService.findAllDrugInfo(pageNum,pageSize,drugMessageVO);
     }
 }

@@ -111,7 +111,7 @@
             $http({
                 url: "/Dictionaries/findChildByParentId",
                 method: "post",
-                params: {"dictionariesId": 30}
+                params: {"dictionariesId": 8}
             }).success(function (response) {
                 $scope.childDictionariesCategoryName = response;
             })
@@ -119,7 +119,7 @@
             $http({
                 url: "/Dictionaries/findChildByParentId",
                 method: "post",
-                params: {"dictionariesId": 35}
+                params: {"dictionariesId": 9}
             }).success(function (response) {
                 $scope.childDictionariesStateName = response;
             })
