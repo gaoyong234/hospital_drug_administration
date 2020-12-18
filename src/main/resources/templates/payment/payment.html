@@ -15,38 +15,125 @@
     <link rel="stylesheet" href="../../static/plugins/angularjs/pagination.css">
     <script type="text/javascript" src="../../static/plugins/angularjs/pagination.js"></script>
     <script>
-        //字典表查询
-        $scope.supplierdiction=function () {
+        var app = angular.module("myApp", ["pagination"]);
+        app.controller("myContr", function ($scope, $http) {
+            $scope.entity = {};
+            //获取医院信息
             $http({
-                url:"/supplier/supplierdiction",
-                method:"get",
-                params:{},
+                url: "/Hospital/findOneHospital",
+                method: "post",
             }).success(function (response) {
-                $scope.dictarr1=[]
-                for (var i = 0; i < response.length; i++) {
-                    if (response[i].dictionariesId==4){
-                        $scope.dictarr1.push(response[i])
+                var date = new Date();
+                var dateYear = date.getFullYear();             //获取年
+                var dateMonth = date.getMonth() + 1;               //获取月
+                var dateDate = date.getDate();                 //获取当日
+                var dateHours = date.getHours();               //获取小时
+                var dateMinutes = date.getMinutes();           //获取分钟
+                var dateSeconds = date.getSeconds();           //获取秒
+                if (dateMonth < 10) dateMonth = "0" + dateMonth;
+                if (dateDate < 10) dateDate = "0" + dateDate;
+                if (dateHours < 10) dateHours = "0" + dateHours;
+                if (dateMinutes < 10) dateMinutes = "0" + dateMinutes;
+                if (dateSeconds < 10) dateSeconds = "0" + dateSeconds;
+
+                var newTime = dateYear + "-" + dateMonth + "-" + dateDate + " " + dateHours + ":" + dateMinutes + ":" + dateSeconds;
+                $scope.hospital = response;
+                $scope.entity.purchaseName = response.hospitalName + newTime + "结算单";
+                console.log(response)
+            })
+
+            $scope.paginationConf={
+                currentPage: 1,  				//当前页
+                totalItems: 10,					//总记录数
+                itemsPerPage: 10,				//每页记录数
+                perPageOptions: [5,10, 20, 30, 40, 50], //分页选项，下拉选择一页多少条记录
+                onChange: function () {
+                    $scope.find($scope.paginationConf.currentPage,$scope.paginationConf.itemsPerPage)
+                }
+            }
+            $scope.drug={
+                pageNum:0,
+                pageSize:10
+            }
+
+            $scope.find=function(pageNum,items) {
+                if (pageNum==null||pageNum==""){
+                    pageNum=1;
+                }
+                $scope.drug.pageNum=pageNum;
+                $scope.drug.pageSize=items;
+                var druglist=$scope.drug;
+                $http({
+                    url:"/payment/findPayment",
+                    method:"post",
+                    params: druglist
+                }).success(function (response) {
+                    $scope.lists=response.list;
+                    $scope.paginationConf.totalItems=response.total;
+                })
+
+            }
+            //删除供货商
+            $scope.expurgate=function (spId) {
+                if (confirm("是否确认删除?")){
+                    $http({
+                        url: "/payment/expurgate",
+                        method: "get",
+                        params: {"spId":spId}
+                    }).success(function (response) {
+                        if (response>0){
+                            $scope.find();
+                        }else {
+                            alert("删除失败")
+                        }
+                    })
+                }
+            }
+
+        })
+    </script>
+    <script type="text/javascript">
+        function save() {
+            var addform = $("#addForm").serialize();
+            $.ajax({
+                url: "/payment/addpayment",
+                dataType: "json",
+                type: "post",
+                data: addform,
+                success: function (data) {
+                    if (data > 0) {
+                        document.getElementById("headLeft").innerHTML="结算单添加"
+                        document.getElementById("headline").innerHTML="成功提示信息"
+                        document.getElementById("whether").innerHTML="您的操作成功"
+                        document.getElementById("lose").innerHTML="";
+                    } else {
+                        document.getElementById("headLeft").innerHTML="结算单添加"
+                        document.getElementById("headline").innerHTML="失败提示信息"
+                        document.getElementById("whether").innerHTML="您的操作失败,请尝试刷新页面,重新操作"
                     }
                 }
             })
         }
+
     </script>
 </head>
-<body ng-app="myApp" ng-controller="myContr" ng-init="supplierdiction()">
+<body ng-app="myApp" ng-controller="myContr">
 <div>
     <h5 class="alert alert-infoalert alert-info">结算药品查询</h5>
     <table class="table table-bordered table-striped">
         <tr>
-            <td>采购单编号:<input ng-model="supp.SupplierName" class="form-control"></td>
-            <td>采购单名称:<input ng-model="supp.ManageScope" class="form-control"></td>
+            <td>结算单编号:<input ng-model="payment.paymentNumber" class="form-control"></td>
+            <td>结算单名称:<input ng-model="payment.paymentName" class="form-control"></td>
         </tr>
         <tr>
-            <td>采购状态:<select ng-model="supp.SupplierLinkman" class="form-control">
-                <option value="0">是</option>
-                <option value="1">否</option>
-            </select>
+            <td>医院编号:<input ng-model="payment.hospitalNumber" class="form-control">
             </td>
-            <td>采购医院:<input ng-model="supp.enterpriseLinkman" class="form-control"></td>
+            <td>医院名称:<input ng-model="payment.hospitalName" class="form-control"></td>
+        </tr>
+        <tr>
+            <td>联系人:<input ng-model="payment.paymentLinkman" class="form-control">
+            </td>
+            <td>联系电话:<input ng-model="payment.paymentPhone" class="form-control"></td>
         </tr>
         <tr>
             <td colspan="1" align="right"> <button type="button" class="btn1" ng-click="find()">查询</button></td>
@@ -64,12 +151,13 @@
     <table id="dataList" class="table">
         <thead>
         <tr>
-            <th>供货商名称</th>
-            <th>经营范围</th>
+            <th>结算单编号</th>
+            <th>结算单名称</th>
+            <th>医院编号</th>
+            <th>医院名称</th>
             <th>联系人</th>
-            <th>企业联系人</th>
-            <th>是否有企业信用证</th>
-            <th>联系地址</th>
+            <th>联系电话</th>
+            <th>结算单状态</th>
             <th>详细</th>
             <th>修改</th>
             <th>删除</th>
@@ -78,12 +166,13 @@
 
         <tbody id="tbody">
         <tr ng-repeat="x in lists">
-            <td>{{x.supplierName}}</td>
-            <td>{{x.manageScope}}</td>
-            <td>{{x.supplierLinkman}}</td>
-            <td>{{x.enterpriseLinkman}}</td>
-            <td>{{x.isLetterOfCredit>0 ? '否':'是'}}</td>
-            <td>{{x.relationSite}}</td>
+            <td>{{x.paymentNumber}}</td>
+            <td>{{x.paymentName}}</td>
+            <td>{{x.hospitalNumber}}</td>
+            <td>{{x.hospitalName}}</td>
+            <td>{{x.paymentLinkman}}</td>
+            <td>{{x.paymentPhone}}</td>
+            <td>{{x.paymentState==2 ? '已确认结算':'未确认结算'}}</td>
             <td><button class="btn btn-success" data-toggle="modal" data-target="#chage" ng-click="chage(x.spId)" >查看</button></td>
             <td><button class="btn btn-warning" data-toggle="modal" data-target="#more" ng-click="amend(x.spId)">修改</button></td>
             <td><button class="btn btn-danger" data-toggle="modal" ng-click="expurgate(x.spId)">删除</button></td>
@@ -98,65 +187,52 @@
         <div class="modal-content" >
             <div class="modal-header">
                 <button id="bt1" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="myModalLabel">添加供货商信息</h3>
+                <h3 id="myModalLabel">添加结算单</h3>
             </div>
             <div class="modal-body">
                 <form id="addForm">
-                    <table class="table table-bordered table-striped"  >
+                    <table class="table table-bordered table-striped">
                         <tr>
-                            <td>供货商名称:<input name="supplierName" class="form-control" ></td>
-                            <td>地址:<input name="supplierSite" class="form-control"></td>
-                            <td>联系人:<input name="supplierLinkman" class="form-control"></td>
+                            <td>医院编号:</td>
+                            <td><input  name="hospitalNumber" ng-model="hospital.hospitalNumber"  class="form-control" disabled="disabled"></td>
+                            <td>医院名称:</td>
+                            <td><input name="hospitalName" ng-model="hospital.hospitalName" class="form-control" disabled="disabled">
+                            </td>
                         </tr>
                         <tr>
-                            <td>许可证:<input name="licence" class="form-control"></td>
-                            <td>许可证到期时间:<input type="date" name="licenceTime" class="form-control"></td>
-                            <td>联系电话:<input name="supplierPhone" class="form-control"></td>
+
+                            <td>结算单编号:</td>
+                            <td><input  name="paymentNumber" ng-model="entity.purchaseNumber" class="form-control" disabled="disabled"></td>
+                            <td>结算单名称:</td>
+                            <td><input  name="paymentName" ng-model="entity.purchaseName" class="form-control" ></td>
                         </tr>
                         <tr>
-                            <td>企业类型:<select name="enterpriseCategory" class="form-control">
-                                <option ng-repeat="di in dictarr1" ng-value="di.dicId">{{di.dictionariesName}}</option>
+                            <td>结算时间:</td>
+                            <td><input  name="paymentTime" ng-model="entity.beginTime"  type="date">-
+                            </td>
+                            <td>建单时间:</td>
+                            <td><input  name="establishTime" ng-model="entity.fundTime" class="form-control" disabled="disabled"></td>
+                        </tr>
+                        <tr>
+                            <td>联系人:</td>
+                            <td><input  name="paymentLinkman" ng-model="entity.linkmanName" class="form-control"></td>
+                            <td>联系电话:</td>
+                            <td><input  name="paymentPhone" ng-model="entity.linkmanPhone" class="form-control"></td>
+                        </tr>
+                        <tr>
+                            <td>结算单状态:</td>
+                            <td><select  name="paymentState" ng-model="entity.purchaseState" class="form-control" disabled="disabled">
+                                <option value="1">未结算</option>
+                                <option value="2">已结算</option>
                             </select></td>
-                            <td>企业联系人:<input name="enterpriseLinkman" class="form-control"></td>
-                            <td>企业电话:<input name="enterprisePhone" class="form-control"></td>
+                            <td>提交时间:</td>
+                            <td><input  name="presentTime" ng-model="entity.modifiedTime" class="form-control" disabled="disabled">
+                            </td>
                         </tr>
                         <tr>
-                            <td>经营范围:<input name="manageScope" class="form-control"></td>
-                            <td>注册地址:<input name="registeredAddress" class="form-control"></td>
-                            <td>联系地址:<input name="relationSite" class="form-control"></td>
-                        </tr>
-                        <tr>
-                            <td>邮政编码:<input name="postalCode" class="form-control"></td>
-                            <td>总资产(万元):<input name="totalAssets" class="form-control"></td>
-                            <td>企业传真:<input name="sobeyFax" class="form-control"></td>
-                        </tr>
-                        <tr>
-                            <td>法人代表姓名:<input name="legalPersonName" class="form-control"></td>
-                            <td>法人身份证:<input name="legalPersonNumber" class="form-control"></td>
-                            <td>企业注册资金(万元):<input name="enterpriseRegisterCapital" class="form-control"></td>
-                        </tr>
-                        <tr>
-                            <td>上年度销售金额(万元):<input name="lastYearMoney" class="form-control"></td>
-                            <td>电子邮箱:<input name="emailAddress" class="form-control"></td>
-                            <td>网址:<input name="enterpriseUrl" class="form-control"></td>
-                        </tr>
-                        <tr>
-                            <td>企业代码证号:<input name="enterpriseCode" class="form-control"></td>
-                            <td>企业代码有效期:<input type="date" name="enterpriseCodeTime" class="form-control"></td>
-                            <td>营业执照:<input name="businessLicense" class="form-control"></td>
-                        </tr>
-                        <tr>
-                            <td>营业执照有效期:<input type="date" name="businessLicenseTime" class="form-control"></td>
-                            <td>是否有企业信用证:<select name="isLetterOfCredit" class="form-control">
-                                <option value="0">是</option>
-                                <option value="1">否</option>
-                            </select></td>
-                            <td>信用证号:<input name="letterCreditNumber" class="form-control"></td>
-                        </tr>
-                        <tr>
-                            <td>信用证有效期:<input name="letterCreditTime" class="form-control"></td>
-                            <td>固定资产(万元):<input name="fixedAssets" class="form-control"></td>
-                            <td>公司简介(中文):<input name="companyProfile" class="form-control"></td>
+                            <td>备注:</td>
+                            <td><input  name="presentRemarks" ng-model="entity.postscript" class="form-control" ></td>
+                            <input ng-model="hospital.hpId" name="drugId" type="text" style="visibility: hidden">
                         </tr>
                     </table>
                 </form>
