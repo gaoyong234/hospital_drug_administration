@@ -111,6 +111,20 @@
       </if>
     </trim>
   </insert>
+  <update id="stockInPurchaseInfo" parameterType="java.util.List">
+    <foreach collection="list" item="param" index= "index" open="" close="" separator =";">
+      update storage
+        <set>
+          purchase_order_id = #{param.purchaseOrderId},
+          storage_volume = #{param.storageVolume},
+          invoice = #{param.invoice},
+          drug_batch_number = #{param.drugBatchNumber}
+        </set>
+        <where>
+          st_id = #{param.stId}
+        </where>
+    </foreach>
+  </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.hospital_purchase.pojo.Storage">
     update storage
     <set>

@@ -3,6 +3,7 @@
 <mapper namespace="com.hospital_purchase.dao.PurchaseOrderDao.PurchaseStorageMapper">
     <resultMap id="BaseResultMap" type="com.hospital_purchase.vo.PurchaseStorageVO">
       <id column="po_id" jdbcType="INTEGER" property="poId" />
+        <result column="st_id" jdbcType="INTEGER" property="stId" />
       <result column="purchase_number" jdbcType="VARCHAR" property="purchaseNumber" />
       <result column="purchase_name" jdbcType="VARCHAR" property="purchaseName" />
       <result column="serial_number" jdbcType="INTEGER" property="serialNumber" />
@@ -34,7 +35,7 @@
     </resultMap>
 
     <select id="findPurchaseStorage" resultMap="BaseResultMap">
-    SELECT po.po_id,
+    SELECT po.po_id,s.st_id,
         po.purchase_number,po.purchase_name,di.serial_number,di.common_name,
         di.commodity_name,dm.bidding_price,pd.deal_price,pd.purchase_quantity,pd.purchase_total_amount,
 
@@ -112,7 +113,7 @@
         </where>
     </select>
     <select id="findPurchaseDataById" resultMap="BaseResultMap">
-        SELECT po.po_id,
+        SELECT po.po_id,s.st_id,
         po.purchase_number,po.purchase_name,di.serial_number,di.common_name,
 		di.commodity_name,dm.bidding_price,pd.deal_price,pd.purchase_quantity,pd.purchase_total_amount,
 

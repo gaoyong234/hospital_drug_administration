@@ -1,15 +1,15 @@
 package com.hospital_purchase.controller;
 
 import com.github.pagehelper.PageInfo;
+import com.hospital_purchase.common.PurchaseStorageDto;
 import com.hospital_purchase.pojo.Storage;
 import com.hospital_purchase.service.PurchaseStorageService;
 import com.hospital_purchase.vo.PurchaseStorageVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -56,13 +56,18 @@ public class PurchaseStorageController {
     }
 
     @ResponseBody
-    @RequestMapping("/stockInPurchaseInfo")
-    public Integer stockInPurchaseInfo(PurchaseStorageVO purchaseStorageVO){
-        Storage storage = new Storage();
-        storage.setPurchaseOrderId(purchaseStorageVO.getPoId());
-        storage.setStorageVolume(purchaseStorageVO.getStorageVolume());
-        storage.setInvoice(purchaseStorageVO.getInvoice());
-        storage.setDrugBatchNumber(purchaseStorageVO.getDrugBatchNumber());
-        return purchaseStorageService.stockInPurchaseInfo(storage);
+    @RequestMapping(value = "/stockInPurchaseInfo")
+    public Integer stockInPurchaseInfo(@RequestBody PurchaseStorageVO purchaseStorageVO){
+        List<Storage> list = new ArrayList<>();
+        for(PurchaseStorageDto purchaseStorageDto:purchaseStorageVO.getStorageList()){
+            Storage storage = new Storage();
+            storage.setStId(purchaseStorageDto.getStId());
+            storage.setPurchaseOrderId(purchaseStorageDto.getPoId());
+            storage.setStorageVolume(purchaseStorageDto.getStorageVolume());
+            storage.setInvoice(purchaseStorageDto.getInvoice());
+            storage.setDrugBatchNumber(purchaseStorageDto.getDrugBatchNumber());
+            list.add(storage);
+        }
+        return purchaseStorageService.stockInPurchaseInfo(list);
     }
 }

@@ -12,5 +12,5 @@ public interface PurchaseStorageService {
     //按id查找采购数据
     List<PurchaseStorageVO> findPurchaseDataById(List<Integer> poId);
 
-    Integer stockInPurchaseInfo(Storage storage);
+    Integer stockInPurchaseInfo(List<Storage> list);
 }

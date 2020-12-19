@@ -35,7 +35,7 @@ public class PurchaseStorageServiceImpl implements PurchaseStorageService {
     }
 
     @Override
-    public Integer stockInPurchaseInfo(Storage storage) {
-        return storageMapper.updateByPrimaryKeySelective(storage);
+    public Integer stockInPurchaseInfo(List<Storage> list) {
+        return storageMapper.stockInPurchaseInfo(list);
     }
 }
