@@ -13,4 +13,8 @@ public interface PaymentMyService {
     Integer addPayment(PaymentVo payment);
 
     PageInfo<PaymentVo> fandPayment(Integer pageNum, Integer pageSize, PaymentVo payment);
+
+    Integer expurgate(Integer soId);
+
+    PaymentVo findpayment(Integer soId);
 }

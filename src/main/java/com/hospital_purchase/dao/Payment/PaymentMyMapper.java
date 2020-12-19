@@ -12,4 +12,8 @@ public interface PaymentMyMapper {
     Integer addPayment(PaymentVo payment);
 
     List<PaymentVo> fandPayment(PaymentVo payment);
+
+    Integer expurgate(Integer soId);
+
+    PaymentVo findpayment(Integer soId);
 }

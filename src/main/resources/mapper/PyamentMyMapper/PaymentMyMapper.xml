@@ -49,7 +49,7 @@
     where so_id = #{soId,jdbcType=INTEGER}
   </select>
   <select id="fandPayment" resultMap="BaseMap">
-    SELECT so_id,drug_id,payment_number,payment_name,hospital_number,hospital_name,payment_linkman,payment_phone
+    SELECT so_id,drug_id,payment_number,payment_name,hospital_number,hospital_name,payment_linkman,payment_phone,payment_state
      FROM payment pa LEFT JOIN hospital ho on pa.drug_id=ho.hp_id
      <where>
     <if test="paymentNumber != null  and paymentNumber !=''">
@@ -73,6 +73,20 @@
       and pa.del_id=0
      </where>
   </select>
+  <select id="findpayment" resultMap="BaseMap">
+     SELECT so_id,drug_id,payment_number,payment_name,hospital_number,hospital_name,payment_linkman,payment_phone
+     ,establish_time,payment_time,payment_state,present_time
+     FROM payment pa LEFT JOIN hospital ho on pa.drug_id=ho.hp_id
+    <where>
+      so_id=#{soId}
+      and pa.del_id=0
+    </where>
+  </select>
+  <update id="expurgate" parameterType="java.lang.Integer">
+    update payment
+    set del_id=1
+    where so_id = #{soId,jdbcType=INTEGER}
+  </update>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from payment
     where so_id = #{soId,jdbcType=INTEGER}

@@ -36,4 +36,14 @@ public class PaymentMyServiceImpl implements PaymentMyService {
         PageInfo<PaymentVo> pageInfo = new PageInfo<PaymentVo>(registraPayment);
         return pageInfo;
     }
+
+    @Override
+    public Integer expurgate(Integer soId) {
+        return paymentMyMapper.expurgate(soId);
+    }
+
+    @Override
+    public PaymentVo findpayment(Integer soId) {
+        return paymentMyMapper.findpayment(soId);
+    }
 }
