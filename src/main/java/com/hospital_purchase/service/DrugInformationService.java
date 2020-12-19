@@ -5,6 +5,7 @@ import com.hospital_purchase.pojo.Dictionaries;
 import com.hospital_purchase.pojo.DrugItems;
 import com.hospital_purchase.pojo.DrugMessage;
 import com.hospital_purchase.vo.DrugInformationVO;
+import com.hospital_purchase.vo.DrugMessageVO;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import javax.servlet.http.HttpServletResponse;
@@ -33,4 +34,6 @@ public interface DrugInformationService {
     Workbook ExportAllDrugInformationDataVo(String fileName, String henders[], String privateMethods[]);
     //导入下载模板excel
     void downloadTemplate(HttpServletResponse response) throws IOException;
+    //gy模糊查询
+    PageInfo<DrugMessageVO> findAllDrugInfo(Integer pageNum,Integer pageSize,DrugMessageVO drugMessageVO);
 }

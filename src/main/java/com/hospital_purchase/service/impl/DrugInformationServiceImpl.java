@@ -13,6 +13,7 @@ import com.hospital_purchase.pojo.DrugMessage;
 import com.hospital_purchase.service.DrugInformationService;
 import com.hospital_purchase.util.ExcelWriteUtil;
 import com.hospital_purchase.vo.DrugInformationVO;
+import com.hospital_purchase.vo.DrugMessageVO;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -97,5 +98,13 @@ public class DrugInformationServiceImpl implements DrugInformationService {
     @Override
     public void downloadTemplate(HttpServletResponse response) throws IOException {
         DrugInformationTemplateUtil.loadtemplate(response);
+    }
+
+    @Override
+    public PageInfo<DrugMessageVO> findAllDrugInfo(Integer pageNum, Integer pageSize, DrugMessageVO DrugMessageVO) {
+        PageHelper.startPage(pageNum,pageSize);
+        List<DrugMessageVO> drugItemsList = drugInformationMapper.findAllDrugInfo(DrugMessageVO);
+        PageInfo<DrugMessageVO > pageInfo = new PageInfo<DrugMessageVO>(drugItemsList);
+        return pageInfo;
     }
 }

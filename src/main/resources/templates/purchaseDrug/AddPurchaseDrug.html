@@ -54,9 +54,9 @@
                 $scope.dictionaries.pageNum = pageNum;
                 $scope.dictionaries.pageSize = items;
                 var dictionariesMessage = $scope.dictionaries;
-                console.log(dictionariesMessage)
+                //console.log(dictionariesMessage)
                 $http({
-                    url: "/drugInformation/findAllDrugInfoLike",
+                    url: "/drugInformation/findAllDrugInfo",
                     method: "post",
                     params: dictionariesMessage
                 }).success(function (response) {
@@ -103,23 +103,30 @@
                     }
                 });
             }
-            //查所有父字典
+            //查所有药品类别
             $http({
-                url: "/Dictionaries/findParentDictionaries",
-                method: "post"
+                url: "/Dictionaries/findChildByParentId",
+                method: "post",
+                params: {"dictionariesId": 1}
             }).success(function (response) {
-                $scope.ParentDictionariesList = response;
+                $scope.childDictionariesDrugCategoryName = response;
             })
-            $scope.toVerification = function (dictionaries) {
-                var judge = true;
-                var dictionariesName = dictionaries.dictionariesName;
-                if (dictionariesName == null || dictionariesName == '') {
-                    $scope.showModalButton1("请填写字典名称！");
-                    judge = false;
-                }
-
-                return judge;
-            }
+            //查所有交易状态
+            $http({
+                url: "/Dictionaries/findChildByParentId",
+                method: "post",
+                params: {"dictionariesId": 11}
+            }).success(function (response) {
+                $scope.childDictionariesTransactionStatus = response;
+            })
+            //查所有交易状态
+            $http({
+                url: "/Dictionaries/findChildByParentId",
+                method: "post",
+                params: {"dictionariesId": 7}
+            }).success(function (response) {
+                $scope.childDictionariesSupplyStatus = response;
+            })
             //添加
             $scope.submit = function () {
                 var dictionaries = $scope.entity;
@@ -136,32 +143,8 @@
                     })
                 }
             }
-            //修改显示数据
-            $scope.reviseMassage = function (dicId) {
-                $http({
-                    url: "/Dictionaries/findDictionariesById",
-                    method: "post",
-                    params: {"dicId": dicId}
-                }).success(function (response) {
-                    $scope.revise = response;
-                })
-            }
-            //修改
-            $scope.reviseSave = function () {
-                var dictionaries = $scope.revise;
-                var judge = $scope.toVerification(dictionaries);
-                if (judge) {
-                    $http({
-                        url: "/Dictionaries/changeDictionaries",
-                        method: "post",
-                        params: dictionaries
-                    }).success(function (response) {
-                        $scope.showModalButton1(response.slogan);
-                        $("#modification").modal('hide');//，关闭框
-                        $scope.find($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
-                    })
-                }
-            }
+
+
             //查看
             $scope.detailedMassage=function(dicId){
                 $http({
@@ -172,32 +155,56 @@
                     $scope.information = response;
                 })
             }
-            //删除
-            $scope.removeOne = function (dicId) {
-                showModal({
-                    title: "温馨提示",  //提示的标题
-                    content: "确认要删除吗？",  //提示的内容
-                    showCancel: true,  //是否显示取消按钮，默认为 true
-                    cancelText: '取消',  //取消按钮的文字，默认为"取消"，最多 4 个字符
-                    cancelColor: "#fff",  //取消按钮的文字颜色，默认为"#000000"
-                    cancelBgColor: '#4c4c4c',  //取消按钮的背景颜色
-                    confirmText: '确定',
-                    confirmColor: '#fff',
-                    confirmBgColor: '#ff1d31',
-                    success: function (res) {
-                        if (res.confirm) {
-                            $http({
-                                url: "/Dictionaries/removeDictionariesDel",
-                                method: "post",
-                                params: {"dicId": dicId}
-                            }).success(function (response) {
-                                $scope.showModalButton1(response.slogan);
-                                $scope.find($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
-                            })
-                        }
-                    }
-                });
 
+            //全选
+            $scope.dmId = [];
+            $scope.checked = [];
+            $scope.selectAll = function () {
+
+                if ($scope.select_all) {//true
+                    $scope.select_all=false;
+
+                }else {//空或者false
+                    $scope.select_all=true;
+                }
+                if($scope.select_all) {
+                    //全选
+                    $scope.select_one = true;
+                    $scope.checked = [];
+                    $scope.dmId={};
+                    angular.forEach($scope.lists, function (drugMessage) {
+                        var id =drugMessage.dmId;
+                        //全选的id
+                        $scope.checked.push(id);
+                        //全选的id：状态true
+                        $scope.dmId.dmIds = drugMessage.dmId;
+                        $scope.dmId.checkeds=true;
+                    })
+                }else {
+                    $scope.select_one = false;
+                    $scope.checked = [];
+                    $scope.dmId = {};
+                }
+                console.log("checked"+$scope.checked)
+                console.log("dmId"+$scope.dmId.dmIds)
+                console.log("dmId"+$scope.dmId.checkeds)
+            };
+            $scope.selectOne = function (select) {
+                angular.forEach($scope.dmId , function (drugMessageOne, index) {
+                    //返回出现的位置，下标
+                    var count = $scope.checked.indexOf(index);
+                    if(drugMessageOne && count ===-1) {
+                        $scope.checked.push(index);
+                    } else if (!drugMessageOne && count !== -1){
+                        $scope.checked.splice(count, 1);
+                    };
+                });
+                if ($scope.lists.length === $scope.checked.length) {
+                    $scope.select_all = true;
+                } else {
+                    $scope.select_all = false;
+                }
+                console.log($scope.checked);
             }
 
 
@@ -207,41 +214,80 @@
 </head>
 <body ng-app="myApp" ng-controller="myContr">
 <div>
-    <h5 class="alert alert-infoalert alert-info">字典详情页</h5>
+    <h5 class="alert alert-infoalert alert-info">药品详情</h5>
     <table class="table table-bordered table-striped">
         <tr>
-            <td class="introduce">字典名称:</td>
-            <td class="contents"><input ng-model="dictionaries.dictionariesName"  class="form-control"/></td>
-            <td class="introduce">父级字典:</td>
+            <td class="introduce">流 水 号:</td>
+            <td class="contents"><input ng-model="dictionaries.serialNumber"  class="form-control"/></td>
+            <td class="introduce">通 用 名:</td>
+            <td class="contents"><input ng-model="dictionaries.commonName"  class="form-control"/></td>
+        </tr>
+        <tr>
+            <td class="introduce">剂    型:</td>
+            <td class="contents"><input ng-model="dictionaries.dosageForm"  class="form-control"/></td>
+            <td class="introduce">规    格:</td>
+            <td class="contents"><input ng-model="dictionaries.speciflcation"  class="form-control"/></td>
+        </tr>
+        <tr>
+            <td class="introduce">单    位:</td>
+            <td class="contents"><input ng-model="dictionaries.company"  class="form-control"/></td>
+            <td class="introduce">转换系数:</td>
+            <td class="contents"><input ng-model="dictionaries.coefficient"  class="form-control"/></td>
+        </tr>
+        <tr>
+            <td class="introduce">生产企业:</td>
+            <td class="contents"><input ng-model="dictionaries.productionName"  class="form-control"/></td>
+            <td class="introduce">商品名称:</td>
+            <td class="contents"><input ng-model="dictionaries.commodityName"  class="form-control"/></td>
+        </tr>
+        <tr>
+            <td class="introduce">中标价格:</td>
+            <td class="contents"><input ng-model="dictionaries.biddingPriceBegin"  />至<input ng-model="dictionaries.biddingPriceEnd"  />$</td>
+            <td class="introduce">药品类别:</td>
             <td class="contents">
-                <select ng-model="dictionaries.dictionariesId" class="form-control">
-                    <option value="">无</option>
-                    <option ng-repeat="ParentDictionaries in ParentDictionariesList"
-                            ng-value="ParentDictionaries.dicId">{{ParentDictionaries.dictionariesName}}
-                    </option>
+                <select ng-model="dictionaries.drugCategory" class="form-control">
+                    <option value="">请选择</option>
+                    <option ng-repeat="drugCategoryName in childDictionariesDrugCategoryName" ng-value="drugCategoryName.dicId">{{drugCategoryName.dictionariesName}}</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="introduce">药品交易状态:</td>
+            <td class="contents">
+                <select ng-model="dictionaries.drugState" class="form-control">
+                    <option value="">请选择</option>
+                    <option ng-repeat="transactionStatus in childDictionariesTransactionStatus" ng-value="transactionStatus.dicId">{{transactionStatus.dictionariesName}}</option>
+                </select>
+            </td>
+            <td class="introduce">供货状态:</td>
+            <td class="contents">
+                <select ng-model="dictionaries.drugState" class="form-control">
+                    <option value="">请选择</option>
+                    <option ng-repeat="supplyStatus in childDictionariesSupplyStatus" ng-value="supplyStatus.dicId">{{supplyStatus.dictionariesName}}</option>
                 </select>
             </td>
         </tr>
         <tr>
             <td></td>
             <td colspan="1" align="right">
-                <button type="button" class="btn btn-info" ng-click="find()">查询</button>
+                <button type="button" class="btn btn-success" ng-click="find()">查询</button>
             </td>
             <td></td>
             <td></td>
         </tr>
+
     </table>
 </div>
 <div>
     <button type="button" class="btn btn-primary" style="margin-left: 35px" data-toggle="modal" data-target="#editModal"
-            ng-click="addClick()">添加
+            ng-click="addClick()">添加采购药品
     </button>
 </div>
 <div>
     <table id="dataList" class="table">
         <thead>
         <tr>
-            <th><input type="checkbox" name="pitchOn" onchange="childrenCheck()"></th>
+            <th><input type="checkbox" name="pitchOn" ng-model="select_all" ng-click="selectAll()"></th>
             <th>药品流水号</th>
             <th>通用名</th>
             <th>剂型</th>
@@ -260,23 +306,23 @@
         </thead>
 
         <tbody id="tbody">
-        <tr ng-repeat="drugItem in lists">
-            <td><input type="checkbox" name="pitchOn" value="{{drugItem.diId}}"></td>
-            <td>{{drugItem.serialNumber}}</td>
-            <td>{{drugItem.commonName}}</td>
-            <td>{{drugItem.dosageForm}}</td>
-            <td>{{drugItem.speciflcation}}</td>
-            <td>{{drugItem.company.dictionariesName}}</td>
-            <td>{{drugItem.coefficient}}</td>
-            <td>{{drugItem.productionName}}</td>
-            <td>{{drugItem.commodityName}}</td>
-            <td>{{drugItem.biddingPrice.biddingPrice}}</td>
-            <td>{{drugItem.drugCategorys.drugCategorys}}</td>
-            <td>{{drugItem.drugState}}</td>
-            <td>{{drugItem.dicId}}</td>
-            <td>{{drugItem.dicId}}</td>
+        <tr ng-repeat="drugMessage in lists">
+            <td><input type="checkbox" name="pitchOn" ng-model="dmId[drugMessage.dmId]" ng-checked = "select_one" ng-click="selectOne(dmId[drugMessage.dmId])" ></td>
+            <td>{{drugMessage.serialNumber}}</td>
+            <td>{{drugMessage.commonName}}</td>
+            <td>{{drugMessage.dosageForm}}</td>
+            <td>{{drugMessage.speciflcation}}</td>
+            <td>{{drugMessage.company}}</td>
+            <td>{{drugMessage.coefficient}}</td>
+            <td>{{drugMessage.productionName}}</td>
+            <td>{{drugMessage.commodityName}}</td>
+            <td>{{drugMessage.biddingPrice}}</td>
+            <td>{{drugMessage.drugCategoryName}}</td>
+            <td>{{drugMessage.drugState}}</td>
+            <td>{{drugMessage.supplierName}}</td>
+            <td>{{drugMessage.dicId}}</td>
             <td>
-                <button class="btn btn-danger" ng-click="removeOne(dic.dicId)">删除</button>
+                <button class="btn btn-success" ng-click="detailedOne(po.poId)" data-toggle="modal">详细</button>
             </td>
         </tr>
         </tbody>
@@ -284,77 +330,6 @@
     <tm-pagination conf="paginationConf"></tm-pagination>
 </div>
 
-<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog" style="width:80%;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button id="bt1" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="myModalLabel">字典添加</h3>
-            </div>
-            <div class="modal-body">
-
-                <table class="table table-bordered table-striped">
-                    <tr>
-                        <td>字典名称:</td>
-                        <td><input name="dictionariesName" ng-model="entity.dictionariesName" class="form-control"></td>
-                    </tr>
-                    <tr>
-
-                        <td>父级字典名称:</td>
-                        <td>
-                            <select ng-model="entity.dictionariesId" class="form-control">
-                                <option value="">无</option>
-                                <option ng-repeat="ParentDictionaries in ParentDictionariesList"
-                                        ng-value="ParentDictionaries.dicId">{{ParentDictionaries.dictionariesName}}
-                                </option>
-                            </select>
-                        </td>
-
-                    </tr>
-                </table>
-
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary" ng-click="submit()">提交</button>
-                <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">关闭</button>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="modification" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog" style="width:80%;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button id="bt" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="myModalLabe">字典修改</h3>
-            </div>
-            <div class="modal-body">
-                <table class="table table-bordered table-striped">
-                    <tr>
-                        <td>字典名称:</td>
-                        <td><input name="dictionariesName" ng-model="revise.dictionariesName" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>父级字典名称:</td>
-                        <td>
-                            <select ng-model="revise.dictionariesId" class="form-control" name="reviseDictionariesId">
-                                <option value="">无</option>
-                                <option ng-repeat="ParentDictionaries in ParentDictionariesList"
-                                        ng-value="ParentDictionaries.dicId" ng-selected="revise.dictionariesId==ParentDictionaries.dicId">{{ParentDictionaries.dictionariesName}}
-                                </option>
-                            </select>
-                        </td>
-
-                    </tr>
-                </table>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-success" data-dismiss="modal" ng-click="reviseSave()">保存</button>
-                <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
-            </div>
-        </div>
-    </div>
-</div>
 <div class="modal fade" id="detailed" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog" style="width:80%;">
         <div class="modal-content">
