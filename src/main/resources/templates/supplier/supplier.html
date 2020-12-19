@@ -135,7 +135,7 @@
         })
     </script>
     <script type="text/javascript">
-        //保存添加后的供货商信息
+        //保存添加后的结算单信息
         function save() {
             var addform = $("#addForm").serialize();
             $.ajax({
@@ -145,12 +145,12 @@
                 data: addform,
                 success: function (data) {
                     if (data > 0) {
-                        document.getElementById("headLeft").innerHTML="药品品目添加"
+                        document.getElementById("headLeft").innerHTML="供货商添加"
                         document.getElementById("headline").innerHTML="成功提示信息"
                         document.getElementById("whether").innerHTML="您的操作成功"
                         document.getElementById("lose").innerHTML="";
                     } else {
-                        document.getElementById("headLeft").innerHTML="药品品目添加"
+                        document.getElementById("headLeft").innerHTML="供货商添加"
                         document.getElementById("headline").innerHTML="失败提示信息"
                         document.getElementById("whether").innerHTML="您的操作失败,请尝试刷新页面,重新操作"
                     }
