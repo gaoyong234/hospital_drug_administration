@@ -32,4 +32,6 @@ public interface DrugInformationMapper {
     List<DrugInformationExcelVO> selectAllDrugInformationDataVo();
     //gy模糊查询
     List<DrugMessageVO> findAllDrugInfo(DrugMessageVO DrugMessageVO);
+    //根据id查单条
+    DrugMessageVO selectDrugById(Integer id);
 }

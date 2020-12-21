@@ -37,10 +37,12 @@ public class PurchaseStorageServiceImpl implements PurchaseStorageService {
     @Override
     public Integer stockInPurchaseInfo(List<Storage> list) {
         return storageMapper.stockInPurchaseInfo(list);
+
     }
 
     @Override
     public Integer updatePurchaseDataById(List<Object> list1) {
         return purchaseStorageMapper.updatePurchaseDataById(list1);
+
     }
 }

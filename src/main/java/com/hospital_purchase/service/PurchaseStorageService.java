@@ -15,4 +15,7 @@ public interface PurchaseStorageService {
     Integer stockInPurchaseInfo(List<Storage> list);
     //采购单入库成功后修改状态
     Integer updatePurchaseDataById(List<Object> list1);
+
+
+    Integer stockInPurchaseInfo(List<Storage> list);
 }

@@ -171,10 +171,12 @@
                    params:dataList
                }).then(function successCallback(response) {
                    $scope.list = response.data.list;
+
                    //求和
                    var storageVolume = [];
                    var invoice = [];
                    var drugBatchNumber = [];
+                   //console.log($scope.list)
                    for (var i = 0; i <$scope.list.length ; i++) {
                        if ($scope.list[i].purchaseState == 1){
                            $scope.list[i].purchaseState = "已入库"
@@ -279,6 +281,7 @@
                        marketClues.push({poId:tdValue.find("[name='c1']").val(),stId:tdValue.find("[name='stId']").val(),
                                         storageVolume:tdValue.find("[name='storageVolume']").val(),invoice:tdValue.find("[name='invoice']").val(),
                                         drugBatchNumber:tdValue.find("[name='drugBatchNumber']").val(),purchaseState:1,effectiveTime:tdValue.find("[name='effectiveTime']").val()})
+
                    });
                    var data ={
                        storageList:marketClues
@@ -288,6 +291,7 @@
                    for (var i = 0; i <marketClues.length ; i++) {
                        if (marketClues[i].storageVolume != null && marketClues[i].storageVolume != '' && marketClues[i].invoice != null && marketClues[i].invoice != '' &&
                            marketClues[i].drugBatchNumber != null && marketClues[i].drugBatchNumber != '' && marketClues[i].effectiveTime != null && marketClues[i].effectiveTime != ''){
+
                            msg = true;
                        }else {
                            msg = false;
@@ -311,6 +315,7 @@
                                },
                                error:function (data) {
                                    alert("请完善信息后保存!");
+
                                }
                            })
                        }
@@ -496,6 +501,7 @@
             </thead>
             <tbody id="tbody">
             <!--<tr ng-repeat="x in list">
+
                 <th>{{x.poId}}<input type="hidden" name="stId" value="{{x.stId}}"></th>
                 <th><input type="checkbox" name="c1" value="{{x.poId}}"></th>
                 <th>{{x.purchaseNumber}}</th>
@@ -521,6 +527,7 @@
                 <button class="btn btn-warning" data-toggle="modal" data-target="#more" ng-click="update(x.poId)">修改</button>
                 <button class="btn btn-danger" data-toggle="modal" ng-click="expurgate(x.diId)">删除</button></td>&ndash;&gt;
             </tr>-->
+
         </tbody>
     </table>
         <tm-pagination conf="paginationConf"></tm-pagination>

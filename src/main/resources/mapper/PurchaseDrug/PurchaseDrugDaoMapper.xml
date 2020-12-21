@@ -64,16 +64,16 @@
     LEFT JOIN dictionaries dictio on dictio.dic_id=di.drug_category
     <where>
       <if test="serialNumber != null and serialNumber != ''">
-        and serial_number like CONCAT(#{serialNumber},"%")
+        and serial_number like CONCAT("%",#{serialNumber},"%")
       </if>
       <if test="commonName != null and commonName != ''">
-        and common_name like CONCAT(#{commonName},"%")
+        and common_name like CONCAT("%",#{commonName},"%")
       </if>
       <if test="dosageForm != null and dosageForm != ''">
-        and dosage_form like CONCAT(#{dosageForm},"%")
+        and dosage_form like CONCAT("%",#{dosageForm},"%")
       </if>
       <if test="speciflcation != null and speciflcation != ''">
-        and speciflcation like CONCAT(#{speciflcation},"%")
+        and speciflcation like CONCAT("%",#{speciflcation},"%")
       </if>
       <if test="unitId != null and unitId != ''">
         and unit_id =#{unitId}
@@ -82,10 +82,10 @@
         and coefficient =#{coefficient}
       </if>
       <if test="productionName != null and productionName != ''">
-        and production_name like CONCAT(#{productionName},"%")
+        and production_name like CONCAT("%",#{productionName},"%")
       </if>
       <if test="commodityName != null and commodityName != ''">
-        and commodity_name like CONCAT(#{commodityName},"%")
+        and commodity_name like CONCAT("%",#{commodityName},"%")
       </if>
       <if test="drugCategory != null and drugCategory != ''">
         and drug_category =#{drugCategory}
@@ -232,6 +232,13 @@
     LEFT JOIN dictionaries dicti on dicti.dic_id=dm.quality_level
     LEFT JOIN dictionaries dictio on dictio.dic_id=di.drug_category
     where pd_id=#{pdId}
-    and del_id = 0
+    and pd.del_id=0
   </select>
+  <update id="updateSupplier" >
+    update purchase_drug
+    set supplier_id = #{supId}
+    where pd_id=#{pdId}
+    and drug_id=#{drugId}
+    and del_id=0
+  </update>
 </mapper>

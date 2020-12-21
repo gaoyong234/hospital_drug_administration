@@ -15,4 +15,6 @@ public interface SupplierMyMapper {
     Integer addSupplier(Supplier supplier);
 
     Integer expurgate(Integer spId);
+
+    List<Supplier> selectAllSupplierName();
 }

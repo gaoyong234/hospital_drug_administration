@@ -119,7 +119,8 @@
           storage_volume = #{param.storageVolume},
           invoice = #{param.invoice},
           drug_batch_number = #{param.drugBatchNumber},
-          effective_time = #{param.effectiveTime}
+          effective_time = #{param.effectiveTime},
+          drug_batch_number = #{param.drugBatchNumber}
         </set>
         <where>
           st_id = #{param.stId}
