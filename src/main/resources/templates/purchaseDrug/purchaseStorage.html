@@ -40,9 +40,11 @@
                $scope.findPage(1);
            })
 
+           //模糊查询
            $scope.fuzzyQuery  ={
                pageNum:0,
-               pageSize:5
+               pageSize:5,
+               purchaseState:2
            }
             //查询数据
            $scope.findPage = function (pageNum) {
@@ -53,15 +55,95 @@
                    method:"get",
                    params:dataList
                }).then(function successCallback(response) {
-                   $scope.list = response.data.list;
-                   //console.log($scope.list)
-                   for (var i = 0; i <$scope.list.length ; i++) {
-                       if ($scope.list[i].purchaseState == 1){
-                           $scope.list[i].purchaseState = "已发货"
-                       }
-                       if ($scope.list[i].purchaseState == 2){
-                           $scope.list[i].purchaseState = "未发货"
-                       }
+                   if (dataList.purchaseState==1){
+                       $scope.findPages();
+                   }
+                   if (dataList.purchaseState==2){
+                       var strr;
+                       $http({
+                           url:"/purchaseStorage/findPurchaseStorage",
+                           method:"get",
+                           params:dataList
+                       }).then(function successCallback(response) {
+                           $scope.list = response.data.list;
+                           //求和
+                           var purchaseQuantity = [];
+                           var purchaseTotalAmount = [];
+                           for (var i = 0; i <$scope.list.length ; i++) {
+                               if ($scope.list[i].purchaseState == 1){
+                                   $scope.list[i].purchaseState = "已入库"
+                               }
+                               if ($scope.list[i].purchaseState == 2){
+                                   $scope.list[i].purchaseState = "未入库"
+                               }
+                               purchaseQuantity.push($scope.list[i]['purchaseQuantity'])
+                               purchaseTotalAmount.push($scope.list[i]['purchaseTotalAmount'])
+                           }
+                           if (purchaseQuantity == ""){purchaseQuantity = [0];}
+                           if (purchaseTotalAmount == ""){purchaseTotalAmount = [0];}
+                           for (var i = 0; i <$scope.list.length ; i++) {
+                               var sample = $scope.list[i];
+                               strr += '<tr>\n' +
+                                   '<th>'+ sample.poId +'<input type="hidden" name="stId" value="'+sample.stId+'"></th>\n' +
+                                   '<th><input type="checkbox" name="c1" value="'+sample.poId+'"></th>\n' +
+                                   '<th>'+sample.purchaseNumber+'</th>\n' +
+                                   '<th>'+sample.purchaseName+'</th>\n' +
+                                   '<th>'+sample.serialNumber+'</th>\n' +
+                                   '<th>'+sample.commonName+'</th>\n' +
+                                   '<th>'+sample.commodityName+'</th>\n' +
+                                   '<th>'+sample.biddingPrice+'</th>\n' +
+                                   '<th>'+sample.dealPrice+'</th>\n' +
+                                   '<th>'+sample.purchaseQuantity+'</th>\n' +
+                                   '<th>'+sample.purchaseTotalAmount+'</th>\n' +
+                                   '<th><input type="text" name="storageVolume" style="background-color: #9d9d9d;width: 50px;"></th>\n' +
+                                   '<th></th>\n' +
+                                   '<th><input type="text" name="invoice" style="background-color: #9d9d9d;width: 50px"></th>\n' +
+                                   '<th><input type="text" name="drugBatchNumber" style="background-color: #9d9d9d;width: 50px;"></th>\n' +
+                                   '<th><input type="text" name="effectiveTime" style="background-color: #9d9d9d;width: 50px;"></th>\n' +
+                                   '<th>'+sample.dosageForm+'</th>\n' +
+                                   '<th>'+sample.speciflcation+'</th>\n' +
+                                   '<th>'+sample.unitId+'</th>\n' +
+                                   '<th>'+sample.coefficient+'</th>\n' +
+                                   '<th>'+sample.purchaseState+'</th>\n' +
+                                   '</tr>'
+                           }
+                           strr += '<tr style="background-color: #f89406">\n' +
+                               '<th>合计:</th>\n' +
+                               '<th></th>\n' +
+                               '<th></th>\n' +
+                               '<th></th>\n' +
+                               '<th></th>\n' +
+                               '<th></th>\n' +
+                               '<th></th>\n' +
+                               '<th></th>\n' +
+                               '<th></th>\n' +
+                               '<th>'+ eval(purchaseQuantity.join('+')) +'</th>\n' +
+                               '<th>'+ eval(purchaseTotalAmount.join('+')) +'</th>\n' +
+                               '<th></th>\n' +
+                               '<th></th>\n' +
+                               '<th></th>\n' +
+                               '<th></th>\n' +
+                               '<th></th>\n' +
+                               '<th></th>\n' +
+                               '<th></th>\n' +
+                               '<th></th>\n' +
+                               '<th></th>\n' +
+                               '<th></th>\n' +
+                               '</tr>'
+                           $("#tbody").html(strr);
+                           //分页// pageMe.js 使用方法
+                           $("#pages").paging({
+                               pageNum: response.data.pageNum, // 当前页面
+                               totalNum: response.data.pages, // 总页码
+                               totalList: response.data.total, // 记录总数量
+                               callback: function (pageNum) { //回调函数
+                                   //console.log(pageNum);
+                                   $scope.findPage(pageNum);
+                               }
+                           });
+                       },function errorCallback(response) {
+
+                       });
                    }
                    //console.log(response);
                    //分页// pageMe.js 使用方法
@@ -79,7 +161,103 @@
                });
 
            }
-           //根据id查询多条数据
+           //查询已入库的信息并显示在页面上
+           $scope.findPages = function (pageNum){
+               $scope.fuzzyQuery.pageNum = pageNum;
+               var dataList = $scope.fuzzyQuery;
+               $http({
+                   url:"/purchaseStorage/findPurchaseStorage",
+                   method:"get",
+                   params:dataList
+               }).then(function successCallback(response) {
+                   $scope.list = response.data.list;
+
+                   //求和
+                   var storageVolume = [];
+                   var invoice = [];
+                   var drugBatchNumber = [];
+                   //console.log($scope.list)
+                   for (var i = 0; i <$scope.list.length ; i++) {
+                       if ($scope.list[i].purchaseState == 1){
+                           $scope.list[i].purchaseState = "已入库"
+                       }
+                       if ($scope.list[i].purchaseState == 2){
+                           $scope.list[i].purchaseState = "未入库"
+                       }
+                       storageVolume.push($scope.list[i]['storageVolume'])
+                       invoice.push($scope.list[i]['invoice'])
+                       drugBatchNumber.push($scope.list[i]['drugBatchNumber'])
+                   }
+                   if (storageVolume == ""){storageVolume = [0];}
+                   if (invoice == ""){invoice = [0];}
+                   if (drugBatchNumber == ""){drugBatchNumber = [0];}
+                   var str;
+                   for (var i = 0; i <$scope.list.length ; i++) {
+                       var sample = $scope.list[i];
+                        str += '<tr>\n' +
+                            '<th>' + sample.poId + '</th>\n' +
+                            '<th><input type="checkbox" name="c1" value="{{x.poId}}"></th>\n' +
+                            '<th>'+ sample.purchaseNumber +'</th>\n' +
+                            '<th>'+ sample.purchaseName +'</th>\n' +
+                            '<th>'+ sample.serialNumber +'</th>\n' +
+                            '<th>'+ sample.commonName +'</th>\n' +
+                            '<th>'+ sample.commodityName +'</th>\n' +
+                            '<th>'+ sample.biddingPrice +'</th>\n' +
+                            '<th>'+ sample.dealPrice +'</th>\n' +
+                            '<th>'+ sample.purchaseQuantity +'</th>\n' +
+                            '<th>'+ sample.purchaseTotalAmount +'</th>\n' +
+                            '<th>'+ sample.storageVolume +'</th>\n' +
+                            '<th></th>\n' +
+                            '<th>'+ sample.invoice +'</th>\n' +
+                            '<th>'+ sample.drugBatchNumber +'</th>\n' +
+                            '<th>'+ sample.effectiveTime +'</th>\n' +
+                            '<th>'+ sample.dosageForm +'</th>\n' +
+                            '<th>'+ sample.speciflcation +'</th>\n' +
+                            '<th>'+ sample.unitId +'</th>\n' +
+                            '<th>'+ sample.coefficient +'</th>\n' +
+                            '<th>'+ sample.purchaseState +'</th>\n' +
+                            '</tr>'
+                   }
+                   str += '<tr style="background-color: #f89406">\n' +
+                       '<th>合计:</th>\n' +
+                       '<th></th>\n' +
+                       '<th></th>\n' +
+                       '<th></th>\n' +
+                       '<th></th>\n' +
+                       '<th></th>\n' +
+                       '<th></th>\n' +
+                       '<th></th>\n' +
+                       '<th></th>\n' +
+                       '<th></th>\n' +
+                       '<th></th>\n' +
+                       '<th>'+ eval(storageVolume.join('+')) +'</th>\n' +
+                       '<th></th>\n' +
+                       '<th>'+ eval(invoice.join('+')) +'</th>\n' +
+                       '<th>'+ eval(drugBatchNumber.join('+')) +'</th>\n' +
+                       '<th></th>\n' +
+                       '<th></th>\n' +
+                       '<th></th>\n' +
+                       '<th></th>\n' +
+                       '<th></th>\n' +
+                       '<th></th>\n' +
+                       '</tr>'
+                   $("#tbody").html(str);
+                   //console.log(response);
+                   //分页// pageMe.js 使用方法
+                   $("#pages").paging({
+                       pageNum: response.data.pageNum, // 当前页面
+                       totalNum: response.data.pages, // 总页码
+                       totalList: response.data.total, // 记录总数量
+                       callback: function (pageNum) { //回调函数
+                           //console.log(pageNum);
+                           $scope.findPage(pageNum);
+                       }
+                   });
+               },function errorCallback(response) {
+
+               });
+           }
+           //根据id查询多条数据 并执行入库操作
            $scope.addClick = function(){
                var obj  = document.getElementsByName("c1");
                var checkArr = [];
@@ -102,7 +280,8 @@
                        var tdValue = $(this).parent("th").parent("tr");//获取th的值zhi；
                        marketClues.push({poId:tdValue.find("[name='c1']").val(),stId:tdValue.find("[name='stId']").val(),
                                         storageVolume:tdValue.find("[name='storageVolume']").val(),invoice:tdValue.find("[name='invoice']").val(),
-                                        drugBatchNumber:tdValue.find("[name='drugBatchNumber']").val()})
+                                        drugBatchNumber:tdValue.find("[name='drugBatchNumber']").val(),purchaseState:1,effectiveTime:tdValue.find("[name='effectiveTime']").val()})
+
                    });
                    var data ={
                        storageList:marketClues
@@ -111,7 +290,8 @@
                    var msg = false;
                    for (var i = 0; i <marketClues.length ; i++) {
                        if (marketClues[i].storageVolume != null && marketClues[i].storageVolume != '' && marketClues[i].invoice != null && marketClues[i].invoice != '' &&
-                           marketClues[i].drugBatchNumber != null && marketClues[i].drugBatchNumber != ''){
+                           marketClues[i].drugBatchNumber != null && marketClues[i].drugBatchNumber != '' && marketClues[i].effectiveTime != null && marketClues[i].effectiveTime != ''){
+
                            msg = true;
                        }else {
                            msg = false;
@@ -127,13 +307,15 @@
                                contentType:"application/json",
                                success:function (data) {
                                    if (data>0){
-                                       alert("您的操作成功！")
+                                       alert("您的操作成功！入库成功"+ checkArr.length +"条,执行失败0条");
+                                       $scope.findPage(1);
                                    }else {
-                                       alert("入库失败，请稍后重试！")
+                                       alert("入库失败，请稍后重试！");
                                    }
                                },
                                error:function (data) {
-                                   alert("请完善信息后保存!")
+                                   alert("请完善信息后保存!");
+
                                }
                            })
                        }
@@ -232,9 +414,8 @@
                 <td>采购单名称:<input ng-model="fuzzyQuery.purchaseName"></td>
                 <td>采购状态:
                     <select ng-model="fuzzyQuery.purchaseState">
-                        <option value="">全部</option>
-                        <option value="1">已发货</option>
-                        <option value="2">未发货</option>
+                        <option value="1">已入库</option>
+                        <option value="2">未入库</option>
                     </select>
                 </td>
                 <td>采购医院:<input ng-model="fuzzyQuery.hospitalName"></td>
@@ -275,7 +456,7 @@
             <tr>
             <tr>
                 <td colspan="1" align="right"> <button type="button" class="btn1" ng-click="findPage()">查询</button></td>
-                <td> <button type="button" class="btn1" ng-click="loadAlllick()">导出</button></td>
+                <!--<td> <button type="button" class="btn1" ng-click="loadAlllick()">导出</button></td>-->
             </tr>
             </tr>
         </table>
@@ -290,7 +471,6 @@
         </button>-->
     </div>
     <!--tabel列表-->
-
     <div>
         <table id="dataList" class="table">
             <thead>
@@ -310,7 +490,7 @@
                     <th>实际交易金额</th>
                     <th>发票号或入库单号</th>
                     <th>药品批号</th>
-                    <th>药品有效期</th>
+                    <th>药品有效期(单位:年)</th>
                     <th>剂型</th>
                     <th>规格</th>
                     <th>单位</th>
@@ -319,9 +499,9 @@
                     <!--<th>详情</th>-->
                 </tr>
             </thead>
-        <tbody id="tbody">
-        <form id="addPurchase">
-            <tr ng-repeat="x in list">
+            <tbody id="tbody">
+            <!--<tr ng-repeat="x in list">
+
                 <th>{{x.poId}}<input type="hidden" name="stId" value="{{x.stId}}"></th>
                 <th><input type="checkbox" name="c1" value="{{x.poId}}"></th>
                 <th>{{x.purchaseNumber}}</th>
@@ -343,34 +523,11 @@
                 <th>{{x.unitId}}</th>
                 <th>{{x.coefficient}}</th>
                 <th>{{x.purchaseState}}</th>
-                <!--<td><button class="btn btn-success" data-toggle="modal" data-target="#chage" ng-click="chage(x.diId)" >查看</button>
+                &lt;!&ndash;<td><button class="btn btn-success" data-toggle="modal" data-target="#chage" ng-click="chage(x.diId)" >查看</button>
                 <button class="btn btn-warning" data-toggle="modal" data-target="#more" ng-click="update(x.poId)">修改</button>
-                <button class="btn btn-danger" data-toggle="modal" ng-click="expurgate(x.diId)">删除</button></td>-->
-            </tr>
-            <tr style="background-color: #f89406">
-                <th>合计:</th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th><input type="text" readonly="readonly" ng-repeat="k in list" name="storageVolume" style="background-color: #9d9d9d;width: 50px;"></th>
-                <th></th>
-                <th><input type="text" readonly="readonly" name="invoice" style="background-color: #9d9d9d;width: 50px"></th>
-                <th><input type="text" readonly="readonly" name="drugBatchNumber" style="background-color: #9d9d9d;width: 50px;"></th>
-                <th><input type="text" readonly="readonly" name="effectiveTime" style="background-color: #9d9d9d;width: 50px;"></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-            </tr>
-        </form>
+                <button class="btn btn-danger" data-toggle="modal" ng-click="expurgate(x.diId)">删除</button></td>&ndash;&gt;
+            </tr>-->
+
         </tbody>
     </table>
         <tm-pagination conf="paginationConf"></tm-pagination>

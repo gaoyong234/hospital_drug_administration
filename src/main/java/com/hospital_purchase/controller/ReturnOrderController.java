@@ -1,5 +1,6 @@
 package com.hospital_purchase.controller;
 
+import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -14,5 +15,10 @@ public class ReturnOrderController {
     @RequestMapping("/toReturnOrderInterface")
     public String toReturnOrderInterface(){
         return "returnOrder/returnOrder";
+    }
+
+    @RequestMapping("/toReturnOrderMaintain")
+    public String toReturnOrderMaintain(){
+        return "returnOrder/returnOrderMaintain";
     }
 }

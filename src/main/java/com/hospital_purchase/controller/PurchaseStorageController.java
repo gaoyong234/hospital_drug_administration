@@ -55,19 +55,39 @@ public class PurchaseStorageController {
         return purchaseStorageService.findPurchaseDataById(poId);
     }
 
+    /**
+     * 采购单入库操作
+     * @param purchaseStorageVO
+     * @return
+     */
     @ResponseBody
     @RequestMapping(value = "/stockInPurchaseInfo")
     public Integer stockInPurchaseInfo(@RequestBody PurchaseStorageVO purchaseStorageVO){
         List<Storage> list = new ArrayList<>();
+        List<Object> list1 = new ArrayList<>();
+        Integer y = 0;
         for(PurchaseStorageDto purchaseStorageDto:purchaseStorageVO.getStorageList()){
             Storage storage = new Storage();
+            PurchaseStorageVO purchaseStorageVO1 = new PurchaseStorageVO();
             storage.setStId(purchaseStorageDto.getStId());
             storage.setPurchaseOrderId(purchaseStorageDto.getPoId());
             storage.setStorageVolume(purchaseStorageDto.getStorageVolume());
             storage.setInvoice(purchaseStorageDto.getInvoice());
             storage.setDrugBatchNumber(purchaseStorageDto.getDrugBatchNumber());
+            storage.setEffectiveTime(purchaseStorageDto.getEffectiveTime());
+            purchaseStorageVO1.setPoId(purchaseStorageDto.getPoId());
+            purchaseStorageVO1.setPurchaseState(purchaseStorageDto.getPurchaseState());
             list.add(storage);
+            list1.add(purchaseStorageVO1);
         }
-        return purchaseStorageService.stockInPurchaseInfo(list);
+        Integer i = purchaseStorageService.updatePurchaseDataById(list1);
+        Integer j = purchaseStorageService.stockInPurchaseInfo(list);
+        if (i>0 && j == purchaseStorageVO.getStorageList().length){
+            y = 1;
+        }else {
+            y = i+ +j;
+        }
+        return y;     
+
     }
 }

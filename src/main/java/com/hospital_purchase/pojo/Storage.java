@@ -22,7 +22,7 @@ public class Storage {
 
     private String drugBatchNumber;
 
-    private Date effectiveTime;
+    private String effectiveTime;
 
     private Date storageTime;
 
@@ -80,11 +80,11 @@ public class Storage {
         this.drugBatchNumber = drugBatchNumber == null ? null : drugBatchNumber.trim();
     }
 
-    public Date getEffectiveTime() {
+    public String getEffectiveTime() {
         return effectiveTime;
     }
 
-    public void setEffectiveTime(Date effectiveTime) {
+    public void setEffectiveTime(String effectiveTime) {
         this.effectiveTime = effectiveTime;
     }
 

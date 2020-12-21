@@ -11,6 +11,11 @@ public interface PurchaseStorageService {
     PageInfo<PurchaseStorageVO> findPurchaseStorage(Integer pageNum, Integer pageSize, PurchaseStorageVO purchaseStorageVO);
     //按id查找采购数据
     List<PurchaseStorageVO> findPurchaseDataById(List<Integer> poId);
+    //采购单入库操作
+    Integer stockInPurchaseInfo(List<Storage> list);
+    //采购单入库成功后修改状态
+    Integer updatePurchaseDataById(List<Object> list1);
+
 
     Integer stockInPurchaseInfo(List<Storage> list);
 }

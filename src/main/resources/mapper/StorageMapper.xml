@@ -8,7 +8,7 @@
     <result column="storage_volume" jdbcType="INTEGER" property="storageVolume" />
     <result column="invoice" jdbcType="VARCHAR" property="invoice" />
     <result column="drug_batch_number" jdbcType="VARCHAR" property="drugBatchNumber" />
-    <result column="effective_time" jdbcType="TIMESTAMP" property="effectiveTime" />
+    <result column="effective_time" jdbcType="VARCHAR" property="effectiveTime" />
     <result column="storage_time" jdbcType="TIMESTAMP" property="storageTime" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="modified_time" jdbcType="TIMESTAMP" property="modifiedTime" />
@@ -118,6 +118,8 @@
           purchase_order_id = #{param.purchaseOrderId},
           storage_volume = #{param.storageVolume},
           invoice = #{param.invoice},
+          drug_batch_number = #{param.drugBatchNumber},
+          effective_time = #{param.effectiveTime},
           drug_batch_number = #{param.drugBatchNumber}
         </set>
         <where>

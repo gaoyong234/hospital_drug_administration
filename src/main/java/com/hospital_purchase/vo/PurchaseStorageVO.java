@@ -39,7 +39,7 @@ public class PurchaseStorageVO {
     private Integer storageVolume;//入库量
     private String invoice;//发票或入库单号
     private String drugBatchNumber;//药品批号
-    private Date effectiveTime;// 有效期
+    private String effectiveTime;// 有效期
     private String productionName;//生产企业
     private String hospitalName;//采购医院
 
@@ -222,11 +222,11 @@ public class PurchaseStorageVO {
         this.drugBatchNumber = drugBatchNumber;
     }
 
-    public Date getEffectiveTime() {
+    public String getEffectiveTime() {
         return effectiveTime;
     }
 
-    public void setEffectiveTime(Date effectiveTime) {
+    public void setEffectiveTime(String effectiveTime) {
         this.effectiveTime = effectiveTime;
     }
 
