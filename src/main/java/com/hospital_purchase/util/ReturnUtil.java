@@ -15,6 +15,7 @@ public class ReturnUtil {
 
             message.setSlogan(str+"成功！！");
             message.setEstimate(true);
+            message.setCount(count);
         }else {
             message.setSlogan(str+"失败！！");
             message.setEstimate(false);

@@ -53,4 +53,9 @@ public class SupplierImpl implements SupplierService {
     public Integer expurgate(Integer spId) {
         return supplierMyMapper.expurgate(spId);
     }
+
+    @Override
+    public List<Supplier> findAllSupplierName() {
+        return supplierMyMapper.selectAllSupplierName();
+    }
 }

@@ -55,12 +55,12 @@
                 $scope.drug.pageNum = pageNum;
                 $scope.drug.pageSize = items;
                 $scope.drug.purchaseId = $("#purchaseId").val();
-                var druglist = $scope.drug;
-                console.log(druglist)
+                var drugList = $scope.drug;
+                //console.log(drugList)
                 $http({
                     url: "/PurchaseDrug/findAllDrugByPurchase",
                     method: "post",
-                    params: druglist
+                    params: drugList
                 }).success(function (response) {
                     $scope.lists = response.list;
                     $scope.paginationConf.totalItems = response.total;
@@ -84,6 +84,24 @@
                     }
                 });
             }
+            //返回结果提示
+            $scope.showModalButton3 = function (slogan,count) {
+                showModal({
+                    title: "温馨提示",  //提示的标题
+                    content: slogan+"共删除"+count+"条数据",  //提示的内容
+                    showCancel: false,  //是否显示取消按钮，默认为 true
+                    cancelText: '取消',  //取消按钮的文字，默认为"取消"，最多 4 个字符
+                    cancelColor: "#fff",  //取消按钮的文字颜色，默认为"#000000"
+                    cancelBgColor: '#4c4c4c',  //取消按钮的背景颜色
+                    confirmText: '确定',
+                    confirmColor: '#fff',
+                    confirmBgColor: '#ff130a',
+                    success: function () {
+
+                    }
+                });
+            }
+
             //删除提示
             $scope.showModalButton2 = function () {
                 showModal({
@@ -105,81 +123,65 @@
                     }
                 });
             }
-            //表单验证
-            $scope.toVerification = function (purchaseOrders) {
-                var judge = true;
-                var purchaseName = purchaseOrders.purchaseName;
-                var beginTime = purchaseOrders.beginTime;
-                var endTime = purchaseOrders.endTime;
-                var linkmanName = purchaseOrders.linkmanName;
-                var linkmanPhone = purchaseOrders.linkmanPhone;
-                var postscript = purchaseOrders.postscript;
-                if (purchaseName == null || purchaseName == '') {
-                    $scope.showModalButton1("请修改订单名称！");
-                    judge = false;
-                }
-                if (beginTime == null || beginTime == '') {
-                    $scope.showModalButton1("请填写订单供货时间！");
-                    judge = false;
-                }
-                if (endTime == null || endTime == '') {
-                    $scope.showModalButton1("请填写订单结束供货时间！");
-                    judge = false;
-                }
-                if (linkmanName == null || linkmanName == '') {
-                    $scope.showModalButton1("请填写联系人姓名！");
-                    judge = false;
-                }
-                if (linkmanPhone == null || linkmanPhone == '') {
-                    $scope.showModalButton1("请填写联系人电话！");
-                    judge = false;
-                }
-                if (postscript == null || postscript == '') {
-                    $scope.showModalButton1("请填写备注！");
-                    judge = false;
-                }
-                if (beginTime > endTime) {
-                    $scope.showModalButton1("开始时间与结束时间有误！");
-                    judge = false;
-                }
-                return judge;
-            }
+
             //添加
             $scope.submit = function () {
                 var  purchaseId= $("#purchaseId").val();
+                console.log(purchaseId)
                 //window.location.href="/PurchaseDrug/toDrugInformation?poId="+poId;
                 window.location.href="/PurchaseDrug/toAddPurchaseDrug?purchaseId="+purchaseId;
 
             }
-            //修改显示数据
-            $scope.reviseMassage = function (poId) {
+
+            //查所有药品类别
+            $http({
+                url: "/Dictionaries/findChildByParentId",
+                method: "post",
+                params: {"dictionariesId": 1}
+            }).success(function (response) {
+                $scope.drugCategoryName = response;
+            })
+            //查所有供货商
+            $http({
+                url: "/supplier/findAllSupplierName",
+                method: "post"
+            }).success(function (response) {
+                $scope.SupplierNameList = response;
+            })
+
+            //查采购状态purchaseState
+            $http({
+                url: "/Dictionaries/findChildByParentId",
+                method: "post",
+                params: {"dictionariesId": 10}
+            }).success(function (response) {
+                $scope.purchaseStateName = response;
+            })
+
+            //修改数据处理
+            $scope.reviseMassage = function(pdId,drugId,supplierId){
+                $scope.purchaseDrugVO={
+                    pdId:pdId,
+                    drugId:drugId,
+                    supplierId:supplierId
+                }
+
+            }
+
+            //更改供货商
+            $scope.reviseSave = function(){
+                var purchaseDrugVO = $scope.purchaseDrugVO;
                 $http({
-                    url: "/PurchaseOrders/getOnePurchaseOrders",
+                    url: "/PurchaseDrug/changeSupplier",
                     method: "post",
-                    params: {"poId": poId}
+                    params: purchaseDrugVO
                 }).success(function (response) {
-                    $scope.revise = response;
+                    $scope.showModalButton1(response.slogan);
+                    $scope.find($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
                 })
             }
-            //修改
-            $scope.reviseSave = function () {
-                var purchaseOrders = $scope.revise;
-                var judge = $scope.toVerification(purchaseOrders);
-
-                if (judge) {
-                    $http({
-                        url: "/PurchaseOrders/changePurchaseOrders",
-                        method: "post",
-                        params: purchaseOrders
-                    }).success(function (response) {
-                        $scope.showModalButton1(response.slogan);
-                        $("#modification").modal('hide');//此处为添加框，关闭添加框
-                        $scope.find($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
-                    })
-                }
-            }
             //删除
-            $scope.removeOne = function (poId) {
+            $scope.removeOne = function () {
                 showModal({
                     title: "温馨提示",  //提示的标题
                     content: "确认要删除吗？",  //提示的内容
@@ -191,20 +193,68 @@
                     confirmColor: '#fff',
                     confirmBgColor: '#ff1d31',
                     success: function (res) {
-                        if (res.confirm) {
-                            $http({
-                                url: "/PurchaseOrders/removePurchaseOrders",
-                                method: "post",
-                                params: {"poId": poId}
-                            }).success(function (response) {
-                                $scope.showModalButton1(response.slogan);
-                                $scope.find($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
-                            })
+                        $scope.dmIdList=[];
+                        var checkBoxs=document.getElementsByName("checkbox");
+                        for (var i = 0; i <checkBoxs.length ; i++) {
+                            if (checkBoxs[i].checked){
+                                $scope.dmIdList.push(checkBoxs[i].value);
+                            }
                         }
+                        var dmIdList = $scope.dmIdList;
+                        console.log(dmIdList)
+                        if (dmIdList=='') {
+                            $scope.showModalButton1("请选择数据！")
+                        }else {
+                            if (res.confirm) {
+                                $http({
+                                    url: "/PurchaseDrug/removeUpdatePurchaseDrug",
+                                    method: "post",
+                                    params: {pdId: dmIdList}
+                                }).success(function (response) {
+                                    $scope.showModalButton3(response.slogan,response.count);
+                                    $scope.find($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
+                                })
+                            }
+                        }
+
                     }
                 });
 
             }
+
+            //保存采购量
+            $scope.saveAmount = function(){
+                $scope.dmIdList=[];
+                $scope.dealPriceList=[];
+                $scope.purchaseQuantityList=[];
+                var checkbox=document.getElementsByName("checkbox");
+                var dealPrice = document.getElementsByName("dealPrice");
+                var purchaseQuantity = document.getElementsByName("purchaseQuantity");
+                for (var i = 0; i <checkbox.length ; i++) {
+                    if (checkbox[i].checked){
+                        if(checkbox[i].value==""){
+                            $scope.showModalButton1("请选择相应药品");
+                        }else {
+                            $scope.dmIdList.push(checkbox[i].value);
+                        }
+                        if(dealPrice[i].value==""){
+                            $scope.showModalButton1("请填写交易价格");
+                        }else {
+                            $scope.dealPriceList.push(dealPrice[i].value);
+                        }
+                        if(purchaseQuantity[i].value==""){
+                            $scope.showModalButton1("请填写交易量");
+                        }else {
+                            $scope.purchaseQuantityList.push(purchaseQuantity[i].value);
+                        }
+
+                    }
+                }
+                console.log("dmIdList:"+$scope.dmIdList);
+                console.log("dealPriceList:"+$scope.dealPriceList);
+                console.log("purchaseQuantityList:"+$scope.purchaseQuantityList);
+            }
+
             //详情页
             $scope.detailedOne = function (poId) {
                 window.location.href = "/PurchaseDrug/toDrugInformation?poId=" + poId;
@@ -213,7 +263,31 @@
         });
 
     </script>
+    <script type="text/javascript">
+        //获取checkbox按钮组
+        var allpro = document.getElementsByName("checkbox");
+        //全选方法
+        function All() {
+            //获取全选按钮
+            var all = document.getElementById("pitchOn");
+            //全选按钮被选中时，遍历所有按钮
+            if (all.checked) {
+                for (var i = 0; i < allpro.length; i++) {
+                    if (allpro[i].type=="checkbox") {
+                        allpro[i].checked=true;
+                    }
+                }
+                //全选按钮未被选中时
+            }else{
+                for (var i = 0; i < allpro.length; i++) {
+                    if (allpro[i].type=="checkbox") {
+                        allpro[i].checked=false;
+                    }
+                }
+            }
+        }
 
+    </script>
 
 </head>
 <body ng-app="myApp" ng-controller="myContr">
@@ -247,29 +321,18 @@
             <td class="contents"><input ng-model="drug.commodityName"  class="form-control"/></td>
         </tr>
         <tr>
-            <td class="introduce">中标价格:</td>
-            <td class="contents"><input ng-model="drug.biddingPriceStart"  />至<input ng-model="drug.biddingPriceEnd"  />$</td>
             <td class="introduce">药品类别:</td>
             <td class="contents">
-                <select ng-model="drug.drugCategorys" class="form-control">
-                    <option value="">请选择</option>
-                    <option ng-repeat=""></option>
+                <select ng-model="drug.drugCategory" class="form-control">
+                    <option value="">全部</option>
+                    <option ng-repeat="drugCategory in drugCategoryName" ng-value="drugCategory.dicId">{{drugCategory.dictionariesName}}</option>
                 </select>
             </td>
-        </tr>
-        <tr>
-            <td class="introduce">药品交易状态:</td>
+            <td class="introduce">采购状态:</td>
             <td class="contents">
-                <select ng-model="drug.drugState" class="form-control">
-                    <option value="">请选择</option>
-                    <option ng-repeat=""></option>
-                </select>
-            </td>
-            <td class="introduce">供货状态:</td>
-            <td class="contents">
-                <select ng-model="drug.drugState" class="form-control">
-                    <option value="">请选择</option>
-                    <option ng-repeat=""></option>
+                <select ng-model="drug.purchaseState" class="form-control">
+                    <option value="">全部</option>
+                    <option ng-repeat="purchaseState in purchaseStateName" ng-value="purchaseState.dicId">{{purchaseState.dictionariesName}}</option>
                 </select>
             </td>
         </tr>
@@ -289,11 +352,11 @@
     <table id="dataList" class="table">
         <thead>
        <div style="margin-top: 20px">
-           <input type="checkbox" name="pitchOn" onchange="childrenCheck()">全选
-           <input type="checkbox" name="pitchOn" onchange="childrenCheck()">反选
+           <input type="checkbox" id="pitchOn" onclick="All()">全选
+           <input type="checkbox" name="pitchOne" onchange="childrenCheck()">反选
            <button style="margin-left: 10px" type="button" class="btn btn-primary btn-sm" ng-click="submit()">添加</button>
-           <button style="margin-left: 10px" type="button" class="btn btn-primary btn-sm">删除</button>
-           <button style="margin-left: 10px" type="button" class="btn btn-primary btn-sm">保存采购量</button>
+           <button style="margin-left: 10px" type="button" class="btn btn-danger btn-sm" ng-click="removeOne()">删除</button>
+           <button style="margin-left: 10px" type="button" class="btn btn-primary btn-sm" ng-click="saveAmount()">保存采购量</button>
            <button style="margin-left: 10px" type="button" class="btn btn-primary btn-sm">到期未送货</button>
        </div>
 
@@ -319,7 +382,7 @@
 
         <tbody id="tbody">
         <tr ng-repeat="pd in lists">
-            <td><input type="checkbox" name="pitchOn" value="{{pd.pdId}}" ></td>
+            <td><input type="checkbox" name="checkbox" ng-value="pd.pdId" ></td>
             <td>{{pd.serialNumber}}</td>
             <td>{{pd.commonName}}</td>
             <td>{{pd.dosageForm}}</td>
@@ -328,11 +391,18 @@
             <td>{{pd.coefficient}}</td>
             <td>{{pd.productionName}}</td>
             <td>{{pd.bidPrice}}</td>
-            <td>{{pd.dealPrice}}</td>
-            <td>{{pd.purchaseQuantity}}</td>
+            <!--{{pd.dealPrice}}-->
+            <td><input type="text" name="dealPrice" style="width: 50px;" ng-value="pd.dealPrice"></td>
+            <!--{{pd.purchaseQuantity}}-->
+            <td><input type="text" name="purchaseQuantity" style="width: 50px;" ng-value="pd.purchaseQuantity"></td>
             <td>{{pd.purchaseTotalAmount}}</td>
             <td>{{pd.supplierName}}</td>
-            <td>修改供货企业</td>
+            <td>
+                <button class="btn btn-warning" data-toggle="modal" data-target="#modification"
+                        ng-click="reviseMassage(pd.pdId,pd.drugId,pd.supplierId)">修改供货企业
+                </button>
+            </td>
+
             <td>{{pd.purchaseStateName}}</td>
             <td>
                 <button class="btn btn-success" ng-click="detailedOne(po.poId)" data-toggle="modal">详细</button>
@@ -342,151 +412,23 @@
     </table>
     <tm-pagination conf="paginationConf"></tm-pagination>
 </div>
-
-<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog" style="width:80%;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button id="bt1" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="myModalLabel">采购单添加</h3>
-            </div>
-            <div class="modal-body">
-
-                <table class="table table-bordered table-striped">
-                    <tr>
-                        <td>医院编号:</td>
-                        <td><input name="hospitalNumber" ng-model="hospital.hospitalNumber" class="form-control"
-                                   disabled="disabled"></td>
-                        <td>医院名称:</td>
-                        <td><input name="hospitalName" ng-model="hospital.hospitalName" class="form-control"
-                                   disabled="disabled">
-                        </td>
-                    </tr>
-                    <tr>
-
-                        <td>采购单编号:</td>
-                        <td><input name="purchaseNumber"
-                                   ng-model="entity.purchaseNumber" class="form-control" disabled="disabled"></td>
-                        <td>采购单名称:</td>
-                        <td><input name="purchaseName" ng-model="entity.purchaseName" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>供货时间:</td>
-                        <td><input name="beginTime"
-                                   ng-model="entity.beginTime" type="date">-
-                            <input name="endTime"
-                                   ng-model="entity.endTime" type="date">
-                        </td>
-                        <td>建单时间:</td>
-                        <td><input name="fundTime"
-                                   ng-model="entity.fundTime" class="form-control" disabled="disabled"></td>
-
-                    </tr>
-                    <tr>
-                        <td>联系人:</td>
-                        <td><input name="linkmanName"
-                                   ng-model="entity.linkmanName" class="form-control"></td>
-                        <td>联系电话:</td>
-                        <td><input name="linkmanPhone"
-                                   ng-model="entity.linkmanPhone" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>采购单状态:</td>
-                        <td><input name="purchaseState"
-                                   ng-model="entity.purchaseState" class="form-control" disabled="disabled"></td>
-                        <td>提交时间:</td>
-                        <td><input name="modifiedTime"
-                                   ng-model="entity.modifiedTime" class="form-control" disabled="disabled"></td>
-
-                    </tr>
-                    <tr>
-                        <td>备注:</td>
-                        <td><input name="postscript"
-                                   ng-model="entity.postscript" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>审核人:</td>
-                        <td><input name="userId"
-                                   ng-model="entity.userId" class="form-control" disabled="disabled"></td>
-                        <td>审核时间:</td>
-                        <td><input name="auditTime"
-                                   ng-model="entity.auditTime" class="form-control" disabled="disabled"></td>
-
-                    </tr>
-                    <tr>
-                        <td>审核意见:</td>
-                        <td><input name="auditOpinion"
-                                   ng-model="entity.auditOpinion" class="form-control" disabled="disabled"></td>
-                    </tr>
-                </table>
-
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary" ng-click="submit()">提交</button>
-                <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">关闭</button>
-            </div>
-        </div>
-    </div>
-</div>
 <div class="modal fade" id="modification" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog" style="width:80%;">
         <div class="modal-content">
             <div class="modal-header">
                 <button id="bt" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="myModalLabe">采购单修改</h3>
+                <h3 id="myModalLabe">供货商修改</h3>
             </div>
             <div class="modal-body">
                 <table class="table table-bordered table-striped">
                     <tr>
-                        <td>医院编号:</td>
-                        <td><input ng-model="revise.hospitalNumber" class="form-control" disabled="disabled"></td>
-                        <td>医院名称:</td>
-                        <td><input ng-model="revise.hospitalName" class="form-control" disabled="disabled">
+                        <td>供货商名称:</td>
+                        <td>
+                            <select ng-model="purchaseDrugVO.supplierId" class="form-control">
+                                <option value="">全部</option>
+                                <option ng-repeat="supplierName in SupplierNameList" ng-value="supplierName.spId" ng-selected="purchaseDrugVO.supplierId==supplierName.spId">{{supplierName.supplierName}}</option>
+                            </select>
                         </td>
-                    </tr>
-                    <tr>
-
-                        <td>采购单编号:</td>
-                        <td><input ng-model="revise.purchaseNumber" class="form-control" disabled="disabled"></td>
-                        <td>采购单名称:</td>
-                        <td><input ng-model="revise.purchaseName" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>供货时间:</td>
-                        <td><input ng-model="revise.beginTime" type="date">-
-                            <input ng-model="revise.endTime" type="date">
-                        </td>
-                        <td>建单时间:</td>
-                        <td><input ng-model="revise.fundTime" class="form-control" disabled="disabled"></td>
-
-                    </tr>
-                    <tr>
-                        <td>联系人:</td>
-                        <td><input ng-model="revise.linkmanName" class="form-control"></td>
-                        <td>联系电话:</td>
-                        <td><input ng-model="revise.linkmanPhone" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>采购单状态:</td>
-                        <td><input ng-model="revise.purchaseState" class="form-control" disabled="disabled"></td>
-                        <td>提交时间:</td>
-                        <td><input ng-model="revise.modifiedTime" class="form-control" disabled="disabled"></td>
-
-                    </tr>
-                    <tr>
-                        <td>备注:</td>
-                        <td><input ng-model="revise.postscript" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>审核人:</td>
-                        <td><input ng-model="revise.userId" class="form-control" disabled="disabled"></td>
-                        <td>审核时间:</td>
-                        <td><input ng-model="revise.auditTime" class="form-control" disabled="disabled"></td>
-
-                    </tr>
-                    <tr>
-                        <td>审核意见:</td>
-                        <td><input ng-model="revise.auditOpinion" class="form-control" disabled="disabled"></td>
                     </tr>
                 </table>
             </div>

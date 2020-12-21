@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * 采购单——药品关联表
@@ -56,14 +59,14 @@ public class PurchaseDrugController {
     }
 
     /**
-     * 添加药品 有问题
-     * @param purchaseDrug 药品信息
+     * 添加药品
+     * @param dmIdList 药品信息
      * @return 是否成功信息
      */
     @RequestMapping("/addPurchaseDrug")
     @ResponseBody
-    public Message addPurchaseDrug(PurchaseDrug purchaseDrug){
-        return purchaseDrugService.addPurchaseDrug(purchaseDrug);
+    public Message addPurchaseDrug(@RequestParam(value = "purchaseId")Integer purchaseId,@RequestParam(value = "dmIdList") List<Integer> dmIdList){
+        return purchaseDrugService.addPurchaseDrug(purchaseId,dmIdList);
     }
 
     /**
@@ -73,7 +76,7 @@ public class PurchaseDrugController {
      */
     @RequestMapping("/removeUpdatePurchaseDrug")
     @ResponseBody
-    public Message removeUpdatePurchaseDrug(Integer pdId){
+    public Message removeUpdatePurchaseDrug(@RequestParam(value = "pdId") List<Integer> pdId){
         return purchaseDrugService.removeUpdatePurchaseDrug(pdId);
     }
 
@@ -98,6 +101,19 @@ public class PurchaseDrugController {
     public PurchaseDrugVO findPurchaseDrug(Integer pdId){
         return purchaseDrugService.findPurchaseDrug(pdId);
 
+    }
+
+    /**
+     * 修改供货商
+     * @param pdId 表的id
+     * @param drugId 药品id
+     * @param supplierId 供货商id
+     * @return
+     */
+    @RequestMapping("/changeSupplier")
+    @ResponseBody
+    public Message changeSupplier(@RequestParam(value = "pdId") Integer pdId,@RequestParam(value = "drugId") Integer drugId,@RequestParam(value = "supplierId") Integer supplierId){
+        return purchaseDrugService.changeSupplier(pdId,drugId,supplierId);
     }
 
 }
