@@ -49,7 +49,7 @@
     where so_id = #{soId,jdbcType=INTEGER}
   </select>
   <select id="fandPayment" resultMap="BaseMap">
-    SELECT so_id,drug_id,payment_number,payment_name,hospital_number,hospital_name,payment_linkman,payment_phone,payment_state
+    SELECT so_id,drug_id,payment_number,payment_name,hospital_number,hospital_name,payment_linkman,payment_phone,payment_state,establish_time
      FROM payment pa LEFT JOIN hospital ho on pa.drug_id=ho.hp_id
      <where>
     <if test="paymentNumber != null  and paymentNumber !=''">

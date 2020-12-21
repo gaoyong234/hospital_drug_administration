@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../../static/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <link rel="stylesheet" href="../../static/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../static/plugins/adminLTE/css/AdminLTE.css">
+    <link rel="stylesheet" href="../../static/plugins/adminLTE/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="../../static/css/style.css">
+    <link rel="stylesheet" href="../../static/plugins/angularjs/toaster.min.css">
+    <script src="../../static/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+    <script src="../../static/plugins/angularjs/angular.min.js"></script>
+    <link rel="stylesheet" href="../../static/plugins/angularjs/pagination.css">
+    <script type="text/javascript" src="../../static/plugins/angularjs/pagination.js"></script>
+    <script>
+        var app= angular.module("myApp",["pagination"]);
+        app.controller("myContr",function ($scope,$http) {
+            $scope.paginationConf = {
+                currentPage: 1,  				//当前页
+                totalItems: 10,					//总记录数
+                itemsPerPage: 10,				//每页记录数
+                perPageOptions: [5, 10, 20, 30, 40, 50], //分页选项，下拉选择一页多少条记录
+                onChange: function () {
+                    $scope.find($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage)
+                }
+            }
+            $scope.drug = {
+                pageNum: 0,
+                pageSize: 10
+            }
+            //查询页面,以及分页功能
+            $scope.find = function (pageNum, items) {
+                if (pageNum == null || pageNum == "") {
+                    pageNum = 1;
+                }
+                $scope.drug.pageNum = pageNum;
+                $scope.drug.pageSize = items;
+                var supplier = $scope.supp;
+                $http({
+                    url: "/supplier/conditionfand",
+                    method: "post",
+                    params: supplier
+                    ,
+                }).success(function (response) {
+                    $scope.lists = response.list;
+                    $scope.item = new Date();
+                    $scope.paginationConf.totalItems = response.total;
+                })
+
+            }
+            //页面加载时运行,查找字典表
+            $scope.itemsdiction=function () {
+                $http({
+                    url:"/items/itemsdiction",
+                    method:"get",
+                    params:{},
+                }).success(function (response) {
+                    $scope.dictarr1=[]
+                    $scope.dictarr2=[]
+                    $scope.dictarr3=[]
+
+                    for (var i = 0; i < response.length; i++) {
+                        if (response[i].dictionariesId==1){
+                            $scope.dictarr1.push(response[i])
+                        }else if(response[i].dictionariesId==2){
+                            $scope.dictarr2.push(response[i])
+                        }else if(response[i].dictionariesId==3){
+                            $scope.dictarr3.push(response[i])
+                        }
+                    }
+                })
+            }
+        })
+
+    </script>
+</head>
+<body ng-app="myApp" ng-controller="myContr" ng-init="itemsdiction()">
+<span th:text="${soId}" style="visibility: hidden"></span>
+<div>
+    <h5 class="alert alert-infoalert alert-info">结算药品查询</h5>
+    <table class="table table-bordered table-striped">
+        <tr>
+            <td>采购单编号:<input ng-model="paydrug.purchaseNumber" class="form-control"></td>
+            <td>采购单名称:<input ng-model="paydrug.purchaseName" class="form-control"></td>
+        </tr>
+        <tr>
+            <td>采购状态:<input ng-model="paydrug.hospitalNumber" class="form-control">
+            </td>
+            <td>采购医院:<input ng-model="paydrug.hospitalName" class="form-control"></td>
+        </tr>
+        <tr>
+            <td>开始采购时间:<input ng-model="paydrug.beginTime" class="form-control">
+            </td>
+            <td>结束采购时间:<input ng-model="paydrug.endTime" class="form-control"></td>
+        </tr>
+        <tr>
+            <td>药品品目号:<input ng-model="paydrug.diId" class="form-control"></td>
+            <td>通用名:<input ng-model="paydrug.commonName" class="form-control"></td>
+
+        </tr>
+        <tr>
+            <td>剂型:<input ng-model="paydrug.dosageForm" class="form-control"></td>
+            <td>规格:<input ng-model="paydrug.speciflcation" class="form-control"></td>
+        </tr>
+        <tr>
+            <td>单位:<select ng-model="paydrug.unitId" class="form-control">
+                <option ng-repeat="di in dictarr3" ng-value="di.dicId">{{di.dictionariesName}}</option>
+            </select></td>
+            <td>转换系数:<input ng-model="paydrug.coefficient" class="form-control"></td>
+        </tr>
+        <tr>
+            <td>药品类别:<select ng-model="paydrug.drugCategoryName" class="form-control">
+                <option ng-repeat="di in dictarr1" ng-value="di.dicId">{{di.dictionariesName}}</option>
+            </select>
+            </td>
+            <td>
+                状态:<select ng-model="paydrug.drugStateName" class="form-control">
+                <option ng-repeat="di in dictarr2" ng-value="di.dicId">{{di.dictionariesName}}</option>
+            </select>
+            </td>
+        </tr>
+        <tr>
+            <td>入库时间<input class="form-control">至<input class="form-control"></td>
+            <td>商品批号<input ng-model="drugBatchNumber" class="form-control"></td>
+        </tr>
+        <tr>
+            <td>发票号或入库单号<input ng-model="invoice" class="form-control"></td>
+            <td>供货商<select ng-model="supplierName" class="form-control">
+                <option>123</option>
+            </select></td>
+        </tr>
+        <tr>
+            <td colspan="1" align="right"> <button type="button" class="btn1" ng-click="find()">查询</button></td>
+        </tr>
+    </table>
+</div>
+<div>
+    <button type="button" class="btn1" data-toggle="modal" data-target="#addition" ng-click="addClick()">添加
+    </button>
+    <button type="button" class="btn1" data-toggle="modal" data-target="#introduce" ng-click="loadlick()">导入
+    </button>
+</div>
+<div>
+    <table id="dataList" class="table">
+        <thead>
+        <tr>
+            <th><input type="checkbox"></th>
+            <th>采购单编号</th>
+            <th>采购单名称</th>
+            <th>采购医院</th>
+            <th>流水号</th>
+            <th>通用名</th>
+            <th>商品名</th>
+            <th>中标价</th>
+            <th>交易价</th>
+            <th>采购量</th>
+            <th>采购金额</th>
+            <th>入库量</th>
+            <th>实际交易金额</th>
+            <th>发票号或入库单号</th>
+            <th>药品批号</th>
+            <th>药品有效期</th>
+            <th>退货量</th>
+            <th>退货金额</th>
+            <th>剂型</th>
+            <th>规格</th>
+            <th>单位</th>
+            <th>转换系数</th>
+            <th>质量层次</th>
+            <th>生产企业</th>
+            <th>供货企业</th>
+            <th>开始采购时间</th>
+            <th>结束采购时间</th>
+            <th>采购状态</th>
+            <th>详细</th>
+        </tr>
+
+        </thead>
+
+        <tbody id="tbody">
+        <tr ng-repeat="x in lists">
+            <td><input type="checkbox"></td>
+            <td>{{x.purchaseNumber}}</td>
+            <td>{{x.purchaseName}}</td>
+            <td>{{x.hospitalName}}</td>
+            <td>{{x.serialNumber}}</td>
+            <td>{{x.commonName}}</td>
+            <td>{{x.commodityName}}</td>
+            <td>{{x.bidPrice}}</td>
+            <td>{{x.dealPrice}}</td>
+            <td>{{x.purchaseQuantity}}</td>
+            <td>{{x.purchaseTotalAmount}}</td>
+            <td>{{x.storageVolume}}</td>
+            <td>实际交易金额</td>
+            <td>{{x.invoice}}</td>
+            <td>{{x.drugBatchNumber}}</td>
+            <td>{{x.effectiveTime}}</td>
+            <td>{{x.salesReturnQuantity}}</td>
+            <td>{{x.salesReturnMoney}}</td>
+            <td>{{x.dosageForm}}</td>
+            <td>{{x.speciflcation}}</td>
+            <td>{{x.unitId}}</td>
+            <td>{{x.coefficient}}</td>
+            <td>{{x.qualityLevel}}</td>
+            <td>{{x.companyName}}</td>
+            <td>{{x.supplierName}}</td>
+
+            <td>{{x.beginTime}}</td>
+            <td>{{x.endTime}}</td>
+            <td>{{x.purchase_state}}</td>
+
+            <td><button class="btn btn-success" data-toggle="modal" data-target="#chage" ng-click="chage(x.diId)" >查看</button></td>
+        </tr>
+        </tbody>
+    </table>
+    <tm-pagination conf="paginationConf"></tm-pagination>
+</div>
+</body>
+</html>
