@@ -15,4 +15,7 @@ public class Message {
     //提示语句
     private String slogan;
 
+    //修改了多少条语句
+    private Integer count;
+
 }

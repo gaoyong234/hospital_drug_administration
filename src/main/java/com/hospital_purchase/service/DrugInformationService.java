@@ -36,4 +36,6 @@ public interface DrugInformationService {
     void downloadTemplate(HttpServletResponse response) throws IOException;
     //gy模糊查询
     PageInfo<DrugMessageVO> findAllDrugInfo(Integer pageNum,Integer pageSize,DrugMessageVO drugMessageVO);
+    //gy查单条
+    DrugMessageVO findDrugById(Integer id);
 }

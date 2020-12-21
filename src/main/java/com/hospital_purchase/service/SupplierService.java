@@ -20,4 +20,6 @@ public interface SupplierService {
     Integer addSupplier(Supplier supplier);
 
     Integer expurgate(Integer spId);
+
+    List<Supplier> findAllSupplierName();
 }

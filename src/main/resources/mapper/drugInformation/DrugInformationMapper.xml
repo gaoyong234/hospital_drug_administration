@@ -197,6 +197,27 @@
       and dm.del_id = 0
     </where>
   </select>
+  <select id="selectDrugById" resultMap="BaseMap">
+     SELECT
+    dm_id,drug_items_id,supplier_id,dm.company_name,di.commodity_name,bidding_price,quality_level,
+    found_time,approval_number,is_entrance,pack_unit,retail_provenance,heckout_number,
+    product_explain,approval_time,packaging_texture,newest_price,is_checkout,
+    drug_valid_time,quality_level_explain,
+    product_photo,dm.modified_time,dm.del_id,
+    serial_number,common_name,dosage_form,speciflcation,unit_id,
+    d.dictionaries_name company,coefficient,production_name,drug_category,
+    dict.dictionaries_name drug_category_name,
+    drug_state,dicti.dictionaries_name drug_state_name,sup.supplier_name
+    FROM drug_message dm
+    LEFT JOIN drug_items di on di.di_id = dm.drug_items_id
+    LEFT JOIN dictionaries d on di.unit_id = d.dic_id
+    LEFT JOIN dictionaries dic on dm.quality_level = dic.dic_id
+    LEFT JOIN dictionaries dict on di.drug_category = dict.dic_id
+    LEFT JOIN dictionaries dicti on dicti.dic_id = di.drug_state
+    LEFT JOIN supplier sup on dm.supplier_id = sup.sp_id
+    where dm_id=#{id}
+    and dm.del_id=0
+  </select>
 <!--  导出-->
   <select id="selectAllDrugInformationDataVo" resultMap="BaseResultMapTwo">
     SELECT di.di_id,di.serial_number,di.common_name,di.dosage_form,di.speciflcation,

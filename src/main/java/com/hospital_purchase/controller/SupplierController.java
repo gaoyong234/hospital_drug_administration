@@ -85,4 +85,14 @@ public class SupplierController {
     public Integer expurgate(Integer spId){
         return supplierService.expurgate(spId);
     }
+
+    /**
+     * 查询供货商名称
+     * @return
+     */
+    @RequestMapping("/findAllSupplierName")
+    @ResponseBody
+    public List findAllSupplierName(){
+        return supplierService.findAllSupplierName();
+    }
 }

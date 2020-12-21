@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../../static/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <link rel="stylesheet" href="../../static/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../static/plugins/adminLTE/css/AdminLTE.css">
+    <link rel="stylesheet" href="../../static/plugins/adminLTE/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="../../static/css/style.css">
+    <link rel="stylesheet" href="../../static/plugins/angularjs/toaster.min.css">
+    <script src="../../static/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+    <script src="../../static/plugins/angularjs/angular.min.js"></script>
+    <link rel="stylesheet" href="../../static/plugins/angularjs/pagination.css">
+    <script type="text/javascript" src="../../static/plugins/angularjs/pagination.js"></script>
+    <script src="../../static/js/showLoading.js" type="text/javascript" charset="utf-8"></script>
+    <style>
+        label {
+            float: left;
+            width: 10em;
+            margin-right: 1em;
+            text-align: right;
+        }
+        .contents{
+            text-align:left;
+        }
+        .introduce{
+            text-align:right;
+        }
+    </style>
+    <script>
+        var app = angular.module("myApp", ["pagination"]);
+        app.controller("myContr", function ($scope, $http) {
+            $scope.entity = {};
+            $scope.paginationConf = {
+                currentPage: 1,  				//当前页
+                totalItems: 10,					//总记录数
+                itemsPerPage: 10,				//每页记录数
+                perPageOptions: [5, 10, 20, 30, 40, 50], //分页选项，下拉选择一页多少条记录
+                onChange: function () {
+                    $scope.find($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage)
+                }
+            }
+            $scope.dictionaries = {
+                pageNum: 0,
+                pageSize: 10
+            }
+            //获取全部信息
+            $scope.find = function (pageNum, items) {
+                if (pageNum == null || pageNum == "") {
+                    pageNum = 1;
+                }
+                $scope.dictionaries.pageNum = pageNum;
+                $scope.dictionaries.pageSize = items;
+                var dictionariesMessage = $scope.dictionaries;
+                //console.log(dictionariesMessage)
+                $http({
+                    url: "/drugInformation/findAllDrugInfo",
+                    method: "post",
+                    params: dictionariesMessage
+                }).success(function (response) {
+                    $scope.lists = response.list;
+                    $scope.paginationConf.totalItems = response.total;
+                })
+
+            }
+            //返回结果提示
+            $scope.showModalButton1 = function (slogan) {
+                showModal({
+                    title: "温馨提示",  //提示的标题
+                    content: slogan,  //提示的内容
+                    showCancel: false,  //是否显示取消按钮，默认为 true
+                    cancelText: '取消',  //取消按钮的文字，默认为"取消"，最多 4 个字符
+                    cancelColor: "#fff",  //取消按钮的文字颜色，默认为"#000000"
+                    cancelBgColor: '#4c4c4c',  //取消按钮的背景颜色
+                    confirmText: '确定',
+                    confirmColor: '#fff',
+                    confirmBgColor: '#ff130a',
+                    success: function () {
+
+                    }
+                });
+            }
+            //删除提示
+            $scope.showModalButton2 = function () {
+                showModal({
+                    title: "温馨提示",  //提示的标题
+                    content: "确认要删除吗？",  //提示的内容
+                    showCancel: true,  //是否显示取消按钮，默认为 true
+                    cancelText: '取消',  //取消按钮的文字，默认为"取消"，最多 4 个字符
+                    cancelColor: "#fff",  //取消按钮的文字颜色，默认为"#000000"
+                    cancelBgColor: '#4c4c4c',  //取消按钮的背景颜色
+                    confirmText: '确定',
+                    confirmColor: '#fff',
+                    confirmBgColor: '#ff1d31',
+                    success: function (res) {
+                        if (res.confirm) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                });
+            }
+            //返回结果提示
+            $scope.showModalButton3 = function (slogan,count) {
+                showModal({
+                    title: "温馨提示",  //提示的标题
+                    content: slogan+"共添加了"+count+"条数据",  //提示的内容
+                    showCancel: false,  //是否显示取消按钮，默认为 true
+                    cancelText: '取消',  //取消按钮的文字，默认为"取消"，最多 4 个字符
+                    cancelColor: "#fff",  //取消按钮的文字颜色，默认为"#000000"
+                    cancelBgColor: '#4c4c4c',  //取消按钮的背景颜色
+                    confirmText: '确定',
+                    confirmColor: '#fff',
+                    confirmBgColor: '#ff130a',
+                    success: function () {
+                        var purchaseId= $("#purchaseId").val();
+                        window.location.href="/PurchaseDrug/toDrugInformation?poId="+purchaseId;
+                    }
+                });
+            }
+            //查所有药品类别
+            $http({
+                url: "/Dictionaries/findChildByParentId",
+                method: "post",
+                params: {"dictionariesId": 1}
+            }).success(function (response) {
+                $scope.childDictionariesDrugCategoryName = response;
+            })
+            //查所有交易状态
+            $http({
+                url: "/Dictionaries/findChildByParentId",
+                method: "post",
+                params: {"dictionariesId": 11}
+            }).success(function (response) {
+                $scope.childDictionariesTransactionStatus = response;
+            })
+            //查所有交易状态
+            $http({
+                url: "/Dictionaries/findChildByParentId",
+                method: "post",
+                params: {"dictionariesId": 7}
+            }).success(function (response) {
+                $scope.childDictionariesSupplyStatus = response;
+            })
+
+
+            //查看
+            $scope.detailedMassage=function(dicId){
+                $http({
+                    url: "",
+                    method: "post",
+                    params: {"dicId": dicId}
+                }).success(function (response) {
+                    $scope.information = response;
+                })
+            };
+            $scope.dmIdList=[];
+            //添加药品
+            $scope.addDrug = function () {
+               var purchaseId= $("#purchaseId").val();
+                var checkBoxs=document.getElementsByName("checkbox");
+                for (var i = 0; i <checkBoxs.length ; i++) {
+                    if (checkBoxs[i].checked){
+                        $scope.dmIdList.push(checkBoxs[i].value);
+                    }
+                }
+                var dmIdList = $scope.dmIdList;
+                if (dmIdList=='') {
+                    $scope.showModalButton1("请选择数据！")
+                }else {
+                    $http({
+                        url:"/PurchaseDrug/addPurchaseDrug",
+                        method: "post",
+                        params: {purchaseId:purchaseId,dmIdList:dmIdList}
+                    }).success(function (response) {
+                        $scope.showModalButton3(response.slogan,response.count);
+                    })
+                }
+
+
+            }
+        });
+
+    </script>
+    <script type="text/javascript">
+        //获取checkbox按钮组
+        var allpro = document.getElementsByName("checkbox");
+        //全选方法
+        function All() {
+            //获取全选按钮
+            var all = document.getElementById("pitchOn");
+            //全选按钮被选中时，遍历所有按钮
+            if (all.checked) {
+                for (var i = 0; i < allpro.length; i++) {
+                    if (allpro[i].type=="checkbox") {
+                        allpro[i].checked=true;
+                    }
+                }
+                //全选按钮未被选中时
+            }else{
+                for (var i = 0; i < allpro.length; i++) {
+                    if (allpro[i].type=="checkbox") {
+                        allpro[i].checked=false;
+                    }
+                }
+            }
+        }
+
+    </script>
+
+</head>
+<body ng-app="myApp" ng-controller="myContr">
+<div>
+    <h5 class="alert alert-infoalert alert-info">药品详情</h5>
+    <table class="table table-bordered table-striped">
+        <tr>
+            <td class="introduce">流 水 号:</td>
+            <td class="contents"><input ng-model="dictionaries.serialNumber"  class="form-control"/></td>
+            <td class="introduce">通 用 名:</td>
+            <td class="contents"><input ng-model="dictionaries.commonName"  class="form-control"/></td>
+        </tr>
+        <tr>
+            <td class="introduce">剂    型:</td>
+            <td class="contents"><input ng-model="dictionaries.dosageForm"  class="form-control"/></td>
+            <td class="introduce">规    格:</td>
+            <td class="contents"><input ng-model="dictionaries.speciflcation"  class="form-control"/></td>
+        </tr>
+        <tr>
+            <td class="introduce">单    位:</td>
+            <td class="contents"><input ng-model="dictionaries.company"  class="form-control"/></td>
+            <td class="introduce">转换系数:</td>
+            <td class="contents"><input ng-model="dictionaries.coefficient"  class="form-control"/></td>
+        </tr>
+        <tr>
+            <td class="introduce">生产企业:</td>
+            <td class="contents"><input ng-model="dictionaries.productionName"  class="form-control"/></td>
+            <td class="introduce">商品名称:</td>
+            <td class="contents"><input ng-model="dictionaries.commodityName"  class="form-control"/></td>
+        </tr>
+        <tr>
+            <td class="introduce">中标价格:</td>
+            <td class="contents"><input ng-model="dictionaries.biddingPriceBegin"  />至<input ng-model="dictionaries.biddingPriceEnd"  />$</td>
+            <td class="introduce">药品类别:</td>
+            <td class="contents">
+                <select ng-model="dictionaries.drugCategory" class="form-control">
+                    <option value="">请选择</option>
+                    <option ng-repeat="drugCategoryName in childDictionariesDrugCategoryName" ng-value="drugCategoryName.dicId">{{drugCategoryName.dictionariesName}}</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="introduce">药品交易状态:</td>
+            <td class="contents">
+                <select ng-model="dictionaries.drugState" class="form-control">
+                    <option value="">请选择</option>
+                    <option ng-repeat="transactionStatus in childDictionariesTransactionStatus" ng-value="transactionStatus.dicId">{{transactionStatus.dictionariesName}}</option>
+                </select>
+            </td>
+            <td class="introduce">供货状态:</td>
+            <td class="contents">
+                <select ng-model="dictionaries.drugState" class="form-control">
+                    <option value="">请选择</option>
+                    <option ng-repeat="supplyStatus in childDictionariesSupplyStatus" ng-value="supplyStatus.dicId">{{supplyStatus.dictionariesName}}</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td colspan="1" align="right">
+                <button type="button" class="btn btn-success" ng-click="find()">查询</button>
+            </td>
+            <td></td>
+            <td></td>
+        </tr>
+
+    </table>
+</div>
+<div>
+    <input type="hidden" th:value="${purchaseId}" ng-model="dictionaries.purchaseId" id="purchaseId">
+    <button type="button" class="btn btn-primary" style="margin-left: 35px" ng-click="addDrug()">添加采购药品
+    </button>
+</div>
+<div>
+    <table id="dataList" class="table">
+        <thead>
+        <tr>
+            <th><input type="checkbox" id="pitchOn" onclick="All()">全选</th>
+            <th>药品流水号</th>
+            <th>通用名</th>
+            <th>剂型</th>
+            <th>规格</th>
+            <th>单位</th>
+            <th>转换系数</th>
+            <th>生产企业</th>
+            <th>商品名称</th>
+            <th>中标价</th>
+            <th>药品类别</th>
+            <th>交易状态</th>
+            <th>供货商</th>
+            <th>供货状态</th>
+            <th>详细</th>
+        </tr>
+        </thead>
+
+        <tbody id="tbody">
+        <tr ng-repeat="drugMessage in lists" id="listCheckbox">
+            <td><input type="checkbox" name="checkbox" ng-value="drugMessage.dmId"/></td>
+            <td>{{drugMessage.serialNumber}}</td>
+            <td>{{drugMessage.commonName}}</td>
+            <td>{{drugMessage.dosageForm}}</td>
+            <td>{{drugMessage.speciflcation}}</td>
+            <td>{{drugMessage.company}}</td>
+            <td>{{drugMessage.coefficient}}</td>
+            <td>{{drugMessage.productionName}}</td>
+            <td>{{drugMessage.commodityName}}</td>
+            <td>{{drugMessage.biddingPrice}}</td>
+            <td>{{drugMessage.drugCategoryName}}</td>
+            <td>{{drugMessage.drugState}}</td>
+            <td>{{drugMessage.supplierName}}</td>
+            <td>{{drugMessage.dicId}}</td>
+            <td>
+                <button class="btn btn-success" ng-click="detailedOne(po.poId)" data-toggle="modal">详细</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <tm-pagination conf="paginationConf"></tm-pagination>
+</div>
+
+<div class="modal fade" id="detailed" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button id="btn" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabe2">字典详细数据</h3>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered table-striped">
+                    <tr>
+                        <td>字典名称:</td>
+                        <td>
+                            <input name="dictionariesName" ng-model="information.dictionariesName" class="form-control" disabled="disabled"></td>
+                    </tr>
+                    <tr>
+                        <td>父级字典名称:</td>
+                        <td>
+                            <input name="parentName" ng-model="information.parentName" class="form-control" disabled="disabled">
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>添加时间:</td>
+                        <td>
+                            <input name="createTime" ng-model="information.createTime" class="form-control" disabled="disabled">
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>修改时间:</td>
+                        <td>
+                            <input name="modifiedTime" ng-model="information.modifiedTime" class="form-control" disabled="disabled">
+                        </td>
+
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -3,9 +3,12 @@ package com.hospital_purchase.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hospital_purchase.dao.PurchaseDurgDao.PurchaseDrugDaoMapper;
+import com.hospital_purchase.dao.drugInformation.DrugInformationMapper;
 import com.hospital_purchase.pojo.PurchaseDrug;
+import com.hospital_purchase.pojo.PurchaseOrders;
 import com.hospital_purchase.service.PurchaseDrugService;
 import com.hospital_purchase.util.ReturnUtil;
+import com.hospital_purchase.vo.DrugMessageVO;
 import com.hospital_purchase.vo.Message;
 import com.hospital_purchase.vo.PurchaseDrugVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +21,8 @@ import java.util.List;
 public class PurchaseDrugServiceImpl implements PurchaseDrugService {
     @Autowired
     private PurchaseDrugDaoMapper purchaseDrugDaoMapper;
+    @Autowired
+    private DrugInformationMapper drugInformationMapper;
 
     @Override
     public PageInfo<PurchaseDrugVO> findAllDrugByPurchase(Integer pageNum, Integer pageSize, PurchaseDrugVO purchaseDrugVO) {
@@ -28,17 +33,36 @@ public class PurchaseDrugServiceImpl implements PurchaseDrugService {
     }
 
     @Override
-    public Message addPurchaseDrug(PurchaseDrug purchaseDrug) {
-        purchaseDrug.setCreateTime(new Date());
-        Integer num = purchaseDrugDaoMapper.insertPurchaseDrug(purchaseDrug);
-        Message message = ReturnUtil.returnDataOperation("添加", num);
+    public Message addPurchaseDrug(Integer purchaseId, List<Integer> dmIdList) {
+        int count = 0;
+        for (int i = 0; i < dmIdList.size(); i++) {
+            PurchaseDrug purchaseDrug = new PurchaseDrug();
+            DrugMessageVO drugMessageVO = drugInformationMapper.selectDrugById(dmIdList.get(i));
+            purchaseDrug.setPurchaseId(purchaseId);
+            purchaseDrug.setDrugId(dmIdList.get(i));
+            purchaseDrug.setSupplierId(drugMessageVO.getSupplierId());
+            purchaseDrug.setBidPrice(drugMessageVO.getBiddingPrice());
+            purchaseDrug.setPurchaseState(62);
+            purchaseDrug.setCreateTime(new Date());
+            if(purchaseDrugDaoMapper.insertPurchaseDrug(purchaseDrug)>0){
+                count++;
+            }
+        }
+        Message message = ReturnUtil.returnDataOperation("添加", count);
         return message;
     }
 
     @Override
-    public Message removeUpdatePurchaseDrug(Integer pdId) {
-        Integer num = purchaseDrugDaoMapper.delUpdatePurchaseDrug(pdId);
-        Message message = ReturnUtil.returnDataOperation("删除", num);
+    public Message removeUpdatePurchaseDrug(List<Integer> pdId) {
+        int count = 0;
+        for (int i = 0; i < pdId.size(); i++) {
+            Integer num = purchaseDrugDaoMapper.delUpdatePurchaseDrug(pdId.get(i));
+            if (num>0){
+                count++;
+            }
+        }
+
+        Message message = ReturnUtil.returnDataOperation("删除", count);
         return message;
     }
 
@@ -54,5 +78,12 @@ public class PurchaseDrugServiceImpl implements PurchaseDrugService {
     public PurchaseDrugVO findPurchaseDrug(Integer pdId) {
         PurchaseDrugVO purchaseDrugVO = purchaseDrugDaoMapper.selectPurchaseDrug(pdId);
         return purchaseDrugVO;
+    }
+
+    @Override
+    public Message changeSupplier(Integer pdId, Integer drugId, Integer supId) {
+        Integer num = purchaseDrugDaoMapper.updateSupplier(pdId,drugId, supId);
+        Message message = ReturnUtil.returnDataOperation("修改供货商", num);
+        return message;
     }
 }

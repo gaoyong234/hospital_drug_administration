@@ -107,4 +107,9 @@ public class DrugInformationServiceImpl implements DrugInformationService {
         PageInfo<DrugMessageVO > pageInfo = new PageInfo<DrugMessageVO>(drugItemsList);
         return pageInfo;
     }
+
+    @Override
+    public DrugMessageVO findDrugById(Integer id) {
+        return drugInformationMapper.selectDrugById(id);
+    }
 }

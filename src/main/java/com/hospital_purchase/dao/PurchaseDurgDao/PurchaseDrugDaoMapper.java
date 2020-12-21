@@ -2,6 +2,7 @@ package com.hospital_purchase.dao.PurchaseDurgDao;
 
 import com.hospital_purchase.pojo.PurchaseDrug;
 import com.hospital_purchase.vo.PurchaseDrugVO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -16,5 +17,7 @@ public interface PurchaseDrugDaoMapper {
     Integer updatePurchaseDrug(PurchaseDrug purchaseDrug);
     //查询单条数据
     PurchaseDrugVO selectPurchaseDrug(Integer pdId);
+    //修改供货商
+    Integer updateSupplier(@Param(value = "pdId") Integer pdId,@Param(value = "drugId") Integer drugId ,@Param(value = "supId") Integer supId);
 
 }
