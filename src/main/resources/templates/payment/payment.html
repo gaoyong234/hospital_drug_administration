@@ -39,7 +39,7 @@
                 var newTime = dateYear + "-" + dateMonth + "-" + dateDate + " " + dateHours + ":" + dateMinutes + ":" + dateSeconds;
                 $scope.hospital = response;
                 $scope.entity.purchaseName = response.hospitalName + newTime + "结算单";
-                console.log(response)
+
             })
 
             $scope.paginationConf={
@@ -70,16 +70,17 @@
                 }).success(function (response) {
                     $scope.lists=response.list;
                     $scope.paginationConf.totalItems=response.total;
+
                 })
 
             }
             //删除供货商
-            $scope.expurgate=function (spId) {
+            $scope.expurgate=function (soId) {
                 if (confirm("是否确认删除?")){
                     $http({
                         url: "/payment/expurgate",
                         method: "get",
-                        params: {"spId":spId}
+                        params: {"soId":soId}
                     }).success(function (response) {
                         if (response>0){
                             $scope.find();
@@ -88,6 +89,18 @@
                         }
                     })
                 }
+            }
+
+            $scope.amend=function (soId) {
+                $http({
+                    url:"/payment/findpayment",
+                    method:"get",
+                    params:{"soId": soId}
+                    ,
+                }).success(function (response) {
+                    $scope.onePayment=response;
+                    console.log(response)
+                })
             }
 
         })
@@ -172,10 +185,10 @@
             <td>{{x.hospitalName}}</td>
             <td>{{x.paymentLinkman}}</td>
             <td>{{x.paymentPhone}}</td>
-            <td>{{x.paymentState==2 ? '已确认结算':'未确认结算'}}</td>
-            <td><button class="btn btn-success" data-toggle="modal" data-target="#chage" ng-click="chage(x.spId)" >查看</button></td>
-            <td><button class="btn btn-warning" data-toggle="modal" data-target="#more" ng-click="amend(x.spId)">修改</button></td>
-            <td><button class="btn btn-danger" data-toggle="modal" ng-click="expurgate(x.spId)">删除</button></td>
+            <td>{{x.paymentState=='2' ? '已确认结算':'未确认结算'}}</td>
+            <td><button class="btn btn-success" data-toggle="modal" data-target="#chage" ng-click="chage(x.soId)" >查看</button></td>
+            <td><button class="btn btn-warning" data-toggle="modal" data-target="#more" ng-click="amend(x.soId)">修改</button></td>
+            <td><button class="btn btn-danger" data-toggle="modal" ng-click="expurgate(x.soId)">删除</button></td>
         </tr>
         </tbody>
     </table>
@@ -221,8 +234,8 @@
                         </tr>
                         <tr>
                             <td>结算单状态:</td>
-                            <td><select  name="paymentState" ng-model="entity.purchaseState" class="form-control" disabled="disabled">
-                                <option value="1">未结算</option>
+                            <td><select  name="paymentState" ng-model="entity.paymentState" class="form-control" disabled="disabled">
+                                <option value="1" >未结算</option>
                                 <option value="2">已结算</option>
                             </select></td>
                             <td>提交时间:</td>
@@ -267,66 +280,52 @@
         <div class="modal-content" >
             <div class="modal-header">
                 <button id="bt" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="myModalLabe">修改供货商信息</h3>
+                <h3 id="myModalLabe">修改结算单信息</h3>
             </div>
             <div class="modal-body">
                 <form id="inserInto">
-                    <table class="table table-bordered table-striped"  >
-                        <input ng-model="insersupp.spId" name="spId" type="text" style="visibility: hidden">
+                    <table class="table table-bordered table-striped">
                         <tr>
-                            <td>供货商名称:<input ng-model="insersupp.supplierName" name="supplierName" class="form-control" ></td>
-                            <td>地址:<input ng-model="insersupp.supplierSite" name="supplierSite" class="form-control"></td>
-                            <td>联系人:<input ng-model="insersupp.supplierLinkman" name="supplierLinkman" class="form-control"></td>
+                            <td>医院编号:</td>
+                            <td><input  name="hospitalNumber" ng-model="onePayment.hospitalNumber"  class="form-control" disabled="disabled"></td>
+                            <td>医院名称:</td>
+                            <td><input name="hospitalName" ng-model="onePayment.hospitalName" class="form-control" disabled="disabled">
+                            </td>
                         </tr>
                         <tr>
-                            <td>许可证:<input ng-model="insersupp.licence" name="licence" class="form-control"></td>
-                            <td>许可证到期时间:<input type="date" ng-model="insersupp.licenceTime" name="licenceTime" class="form-control"></td>
-                            <td>联系电话:<input ng-model="insersupp.supplierPhone" name="supplierPhone" class="form-control"></td>
+
+                            <td>结算单编号:</td>
+                            <td><input  name="paymentNumber" ng-model="onePayment.paymentNumber" class="form-control" disabled="disabled"></td>
+                            <td>结算单名称:</td>
+                            <td><input  name="paymentName" ng-model="onePayment.paymentName" class="form-control" ></td>
                         </tr>
                         <tr>
-                            <td>企业类型:<select ng-model="insersupp.enterpriseCategory" name="enterpriseCategory" class="form-control">
-                                <option ng-repeat="di in dictarr1" ng-selected="di.dicId==insersupp.enterpriseCategory" ng-value="di.dicId">{{di.dictionariesName}}</option>
+                            <td>结算时间:</td>
+                            <td><input  name="paymentTime" ng-model="onePayment.paymentTime"  type="date">-
+                            </td>
+                            <td>建单时间:</td>
+                            <td><input  name="establishTime" ng-model="onePayment.establishTime" class="form-control" disabled="disabled"></td>
+                        </tr>
+                        <tr>
+                            <td>联系人:</td>
+                            <td><input  name="paymentLinkman" ng-model="onePayment.paymentLinkman" class="form-control"></td>
+                            <td>联系电话:</td>
+                            <td><input  name="paymentPhone" ng-model="onePayment.paymentPhone" class="form-control"></td>
+                        </tr>
+                        <tr>
+                            <td>结算单状态:</td>
+                            <td><select  name="paymentState" ng-model="entity.purchaseState" class="form-control" disabled="disabled">
+                                <option value="1" >未结算</option>
+                                <option value="2" >已结算</option>
                             </select></td>
-                            <td>企业联系人:<input ng-model="insersupp.enterpriseLinkman" name="enterpriseLinkman" class="form-control"></td>
-                            <td>企业电话:<input ng-model="insersupp.enterprisePhone" name="enterprisePhone" class="form-control"></td>
+                            <td>提交时间:</td>
+                            <td><input  name="presentTime" ng-model="entity.presentTime" class="form-control" disabled="disabled">
+                            </td>
                         </tr>
                         <tr>
-                            <td>经营范围:<input ng-model="insersupp.manageScope" name="manageScope" class="form-control"></td>
-                            <td>注册地址:<input ng-model="insersupp.registeredAddress" name="registeredAddress" class="form-control"></td>
-                            <td>联系地址:<input ng-model="insersupp.relationSite" name="relationSite" class="form-control"></td>
-                        </tr>
-                        <tr>
-                            <td>邮政编码:<input ng-model="insersupp.postalCode" name="postalCode" class="form-control"></td>
-                            <td>总资产(万元):<input ng-model="insersupp.totalAssets" name="totalAssets" class="form-control"></td>
-                            <td>企业传真:<input ng-model="insersupp.sobeyFax" name="sobeyFax" class="form-control"></td>
-                        </tr>
-                        <tr>
-                            <td>法人代表姓名:<input ng-model="insersupp.legalPersonName" name="legalPersonName" class="form-control"></td>
-                            <td>法人身份证:<input ng-model="insersupp.legalPersonNumber" name="legalPersonNumber" class="form-control"></td>
-                            <td>企业注册资金(万元):<input ng-model="insersupp.enterpriseRegisterCapital" name="enterpriseRegisterCapital" class="form-control"></td>
-                        </tr>
-                        <tr>
-                            <td>上年度销售金额(万元):<input ng-model="insersupp.lastYearMoney" name="lastYearMoney" class="form-control"></td>
-                            <td>电子邮箱:<input ng-model="insersupp.emailAddress" name="emailAddress" class="form-control"></td>
-                            <td>网址:<input ng-model="insersupp.enterpriseUrl" name="enterpriseUrl" class="form-control"></td>
-                        </tr>
-                        <tr>
-                            <td>企业代码证号:<input ng-model="insersupp.enterpriseCode" name="enterpriseCode" class="form-control"></td>
-                            <td>企业代码有效期:<input type="date" ng-model="insersupp.enterpriseCodeTime" name="enterpriseCodeTime" class="form-control"></td>
-                            <td>营业执照:<input ng-model="insersupp.businessLicense" name="businessLicense" class="form-control"></td>
-                        </tr>
-                        <tr>
-                            <td>营业执照有效期:<input type="date" ng-model="insersupp.businessLicenseTime" name="businessLicenseTime" class="form-control"></td>
-                            <td>是否有企业信用证:<select ng-model="insersupp.isLetterOfCredit" name="isLetterOfCredit" class="form-control">
-                                <option value="0">是</option>
-                                <option value="1">否</option>
-                            </select></td>
-                            <td>信用证号:<input ng-model="insersupp.letterCreditNumber" name="letterCreditNumber" class="form-control"></td>
-                        </tr>
-                        <tr>
-                            <td>信用证有效期:<input type="date" ng-model="insersupp.letterCreditTime" name="letterCreditTime" class="form-control"></td>
-                            <td>固定资产(万元):<input ng-model="insersupp.fixedAssets" name="fixedAssets" class="form-control"></td>
-                            <td>公司简介(中文):<input ng-model="insersupp.companyProfile" name="companyProfile" class="form-control"></td>
+                            <td>备注:</td>
+                            <td><input  name="presentRemarks" ng-model="entity.presentRemarks" class="form-control" ></td>
+                            <input ng-model="hospital.hpId" name="drugId" type="text" style="visibility: hidden">
                         </tr>
                     </table>
                 </form>

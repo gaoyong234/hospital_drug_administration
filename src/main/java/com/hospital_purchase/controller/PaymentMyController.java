@@ -43,7 +43,24 @@ public class PaymentMyController {
     @ResponseBody
     public Integer addPayment(PaymentVo payment){
         payment.setPaymentNumber(Identities.randomLong("结算单"));
+        payment.setEstablishTime(new Date());
         return paymentMyService.addPayment(payment);
     }
 
+    /**
+     * 根据ID删除某条数据,
+     * @param soId 要删除的数据的ID
+     * @return 数据库更新条数,判断是否操作成功
+     */
+    @RequestMapping("expurgate")
+    @ResponseBody
+    public Integer expurgate(Integer soId){
+        return paymentMyService.expurgate(soId);
+    }
+
+    @RequestMapping("findpayment")
+    @ResponseBody
+    public PaymentVo findPayment(Integer soId){
+        return paymentMyService.findpayment(soId);
+    }
 }
