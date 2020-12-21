@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
 import java.util.Date;
@@ -58,9 +59,27 @@ public class PaymentMyController {
         return paymentMyService.expurgate(soId);
     }
 
+    /**
+     * 根据ID查找结算单
+     * @param soId 前端传回的ID
+     * @return 返回一个查到的实体类
+     */
     @RequestMapping("findpayment")
     @ResponseBody
     public PaymentVo findPayment(Integer soId){
         return paymentMyService.findpayment(soId);
+    }
+
+    /**
+     * 跳转页面
+     * @param soId 前端传入的采购单id
+     * @return 返回一个页面
+     */
+    @RequestMapping("addDrug")
+    public ModelAndView addDrug(Integer soId){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("soId",soId);
+        modelAndView.setViewName("/payment/addDrug");
+        return modelAndView;
     }
 }

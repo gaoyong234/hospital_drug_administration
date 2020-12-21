@@ -99,8 +99,40 @@
                     ,
                 }).success(function (response) {
                     $scope.onePayment=response;
-                    console.log(response)
                 })
+            }
+
+
+            $scope.chage=function(soId){
+                window.location.href="/payment/addDrug?soId="+soId;
+            }
+
+            $scope.ngsave=function () {
+                var pay=$scope.onePayment;
+                var list = $scope.lists;
+                for (var i = 0; i < list.length; i++) {
+                    if (list[i].soId == pay.soId) {
+                        var con=angular.copy(list[i])
+                        break;
+                    }
+                }
+
+                if (angular.equals(con,pay)){
+                    alert("无数据更新")
+                }else {
+                $http({
+                    url:"/payment/inserPayment",
+                    method:"post",
+                    params: pay
+                }).success(function (response) {
+                    if (response>0){
+                        alert("修改成功")
+                    }else{
+                        alert("修改失败")
+                    }
+                })
+                }
+
             }
 
         })
@@ -171,7 +203,7 @@
             <th>联系人</th>
             <th>联系电话</th>
             <th>结算单状态</th>
-            <th>详细</th>
+            <th>添加药品</th>
             <th>修改</th>
             <th>删除</th>
         </tr>
@@ -186,7 +218,7 @@
             <td>{{x.paymentLinkman}}</td>
             <td>{{x.paymentPhone}}</td>
             <td>{{x.paymentState=='2' ? '已确认结算':'未确认结算'}}</td>
-            <td><button class="btn btn-success" data-toggle="modal" data-target="#chage" ng-click="chage(x.soId)" >查看</button></td>
+            <td><button class="btn btn-success" ng-click="chage(x.soId)" >添加药品</button></td>
             <td><button class="btn btn-warning" data-toggle="modal" data-target="#more" ng-click="amend(x.soId)">修改</button></td>
             <td><button class="btn btn-danger" data-toggle="modal" ng-click="expurgate(x.soId)">删除</button></td>
         </tr>
@@ -213,7 +245,6 @@
                             </td>
                         </tr>
                         <tr>
-
                             <td>结算单编号:</td>
                             <td><input  name="paymentNumber" ng-model="entity.purchaseNumber" class="form-control" disabled="disabled"></td>
                             <td>结算单名称:</td>
@@ -285,6 +316,7 @@
             <div class="modal-body">
                 <form id="inserInto">
                     <table class="table table-bordered table-striped">
+                        <input ng-model="onePayment.soId" name="soId" style="visibility: hidden">
                         <tr>
                             <td>医院编号:</td>
                             <td><input  name="hospitalNumber" ng-model="onePayment.hospitalNumber"  class="form-control" disabled="disabled"></td>
@@ -314,17 +346,17 @@
                         </tr>
                         <tr>
                             <td>结算单状态:</td>
-                            <td><select  name="paymentState" ng-model="entity.purchaseState" class="form-control" disabled="disabled">
+                            <td><select  name="paymentState" ng-model="onePayment.paymentState" class="form-control" disabled="disabled">
                                 <option value="1" >未结算</option>
                                 <option value="2" >已结算</option>
                             </select></td>
                             <td>提交时间:</td>
-                            <td><input  name="presentTime" ng-model="entity.presentTime" class="form-control" disabled="disabled">
+                            <td><input  name="presentTime" ng-model="onePayment.presentTime" class="form-control" disabled="disabled">
                             </td>
                         </tr>
                         <tr>
                             <td>备注:</td>
-                            <td><input  name="presentRemarks" ng-model="entity.presentRemarks" class="form-control" ></td>
+                            <td><input  name="presentRemarks" ng-model="onePayment.presentRemarks" class="form-control" ></td>
                             <input ng-model="hospital.hpId" name="drugId" type="text" style="visibility: hidden">
                         </tr>
                     </table>
@@ -332,79 +364,6 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-success" data-dismiss="modal" ng-click="ngsave()">保存</button>
-                <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="chage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog" style="width:80%;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button id="btbton" type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h3>查看页面</h3>
-            </div>
-            <div class="modal-body">
-                <table class="table table-bordered table-striped"  >
-                    <tr>
-                        <td>供货商名称:<input ng-model="chagesupp.supplierName" name="supplierName" class="form-control" ></td>
-                        <td>地址:<input ng-model="chagesupp.supplierSite" name="supplierSite" class="form-control"></td>
-                        <td>联系人:<input ng-model="chagesupp.supplierLinkman" name="supplierLinkman" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>许可证:<input ng-model="chagesupp.licence" name="licence" class="form-control"></td>
-                        <td>许可证到期时间:<input ng-model="chagesupp.licenceTime" name="licenceTime" class="form-control"></td>
-                        <td>联系电话:<input ng-model="chagesupp.supplierPhone" name="supplierPhone" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>企业类型:<select ng-model="chagesupp.enterpriseCategory" name="enterpriseCategory" class="form-control">
-                            <option ng-repeat="di in dictarr1" ng-selected="di.dicId==chagesupp.enterpriseCategory" ng-value="di.dicId">{{di.dictionariesName}}</option>
-                        </select></td>
-                        <td>企业联系人:<input ng-model="chagesupp.enterpriseLinkman" name="enterpriseLinkman" class="form-control"></td>
-                        <td>企业电话:<input ng-model="chagesupp.enterprisePhone" name="enterprisePhone" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>经营范围:<input ng-model="chagesupp.manageScope" name="manageScope" class="form-control"></td>
-                        <td>注册地址:<input ng-model="chagesupp.registeredAddress" name="registeredAddress" class="form-control"></td>
-                        <td>联系地址:<input ng-model="chagesupp.relationSite" name="relationSite" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>邮政编码:<input ng-model="chagesupp.postalCode" name="postalCode" class="form-control"></td>
-                        <td>总资产(万元):<input ng-model="chagesupp.totalAssets" name="totalAssets" class="form-control"></td>
-                        <td>企业传真:<input ng-model="chagesupp.sobeyFax" name="sobeyFax" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>法人代表姓名:<input ng-model="chagesupp.legalPersonName" name="legalPersonName" class="form-control"></td>
-                        <td>法人身份证:<input ng-model="chagesupp.legalPersonNumber" name="legalPersonNumber" class="form-control"></td>
-                        <td>企业注册资金(万元):<input ng-model="chagesupp.enterpriseRegisterCapital" name="enterpriseRegisterCapital" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>上年度销售金额(万元):<input ng-model="chagesupp.lastYearMoney" name="lastYearMoney" class="form-control"></td>
-                        <td>电子邮箱:<input ng-model="chagesupp.emailAddress" name="emailAddress" class="form-control"></td>
-                        <td>网址:<input ng-model="chagesupp.enterpriseUrl" name="enterpriseUrl" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>企业代码证号:<input ng-model="chagesupp.enterpriseCode" name="enterpriseCode" class="form-control"></td>
-                        <td>企业代码有效期:<input ng-model="chagesupp.enterpriseCodeTime" name="enterpriseCodeTime" class="form-control"></td>
-                        <td>营业执照:<input ng-model="chagesupp.businessLicense" name="businessLicense" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>营业执照有效期:<input ng-model="chagesupp.businessLicenseTime" name="businessLicenseTime" class="form-control"></td>
-                        <td>是否有企业信用证:<select ng-model="chagesupp.isLetterOfCredit" name="isLetterOfCredit" class="form-control">
-                            <option value="0">是</option>
-                            <option value="1">否</option>
-                        </select></td>
-                        <td>信用证号:<input ng-model="chagesupp.letterCreditNumber" name="letterCreditNumber" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td>信用证有效期:<input ng-model="chagesupp.letterCreditTime" name="letterCreditTime" class="form-control"></td>
-                        <td>固定资产(万元):<input ng-model="chagesupp.fixedAssets" name="fixedAssets" class="form-control"></td>
-                        <td>公司简介(中文):<input ng-model="chagesupp.companyProfile" name="companyProfile" class="form-control"></td>
-                    </tr>
-                </table>
-            </div>
-            <div class="modal-footer">
                 <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
             </div>
         </div>
