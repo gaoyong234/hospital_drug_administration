@@ -1,5 +1,11 @@
 package com.hospital_purchase.common;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.xml.crypto.Data;
+import java.util.Date;
+
 public class PurchaseStorageDto {
 
     private Integer stId;
@@ -7,6 +13,8 @@ public class PurchaseStorageDto {
     private Integer storageVolume;
     private String invoice;
     private String drugBatchNumber;
+    private String purchaseState;
+    private String effectiveTime;// 有效期
 
     public Integer getStId() {
         return stId;
@@ -46,5 +54,21 @@ public class PurchaseStorageDto {
 
     public void setDrugBatchNumber(String drugBatchNumber) {
         this.drugBatchNumber = drugBatchNumber;
+    }
+
+    public String getPurchaseState() {
+        return purchaseState;
+    }
+
+    public void setPurchaseState(String purchaseState) {
+        this.purchaseState = purchaseState;
+    }
+
+    public String getEffectiveTime() {
+        return effectiveTime;
+    }
+
+    public void setEffectiveTime(String effectiveTime) {
+        this.effectiveTime = effectiveTime;
     }
 }

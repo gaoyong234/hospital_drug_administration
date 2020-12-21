@@ -17,6 +17,6 @@ public interface StorageMapper {
     int updateByPrimaryKeySelective(Storage record);
 
     int updateByPrimaryKey(Storage record);
-
+    //采购单入库操作
     Integer stockInPurchaseInfo(@Param("list") List<Storage> list);
 }

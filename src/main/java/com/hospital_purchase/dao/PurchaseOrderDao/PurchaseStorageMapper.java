@@ -11,4 +11,6 @@ public interface PurchaseStorageMapper {
     List<PurchaseStorageVO> findPurchaseStorage(PurchaseStorageVO purchaseStorageVO);
     //按id查找采购数据
     List<PurchaseStorageVO> findPurchaseDataById(@Param("poId") List<Integer> poId);
+    //采购单入库成功后修改状态
+    Integer updatePurchaseDataById(List<Object> list1);
 }

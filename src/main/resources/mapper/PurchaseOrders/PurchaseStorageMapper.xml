@@ -22,7 +22,7 @@
       <result column="storage_volume" jdbcType="INTEGER" property="storageVolume" />
       <result column="invoice" jdbcType="VARCHAR" property="invoice" />
       <result column="drug_batch_number" jdbcType="VARCHAR" property="drugBatchNumber" />
-      <result column="effective_time" jdbcType="TIMESTAMP" property="effectiveTime" />
+      <result column="effective_time" jdbcType="VARCHAR" property="effectiveTime" />
       <result column="production_name" jdbcType="VARCHAR" property="productionName" />
       <result column="hospital_name" jdbcType="VARCHAR" property="hospitalName" />
       <result column="begin_time" jdbcType="TIMESTAMP" property="beginTime" />
@@ -109,7 +109,7 @@
             <if test="supplierName != null and supplierName != ''">
                 and su.sp_id = #{supplierName}
             </if>
-            and po.del_id = 0
+            and po.del_id = 0 and po.purchase_state = #{purchaseState}
         </where>
     </select>
     <select id="findPurchaseDataById" resultMap="BaseResultMap">
@@ -137,4 +137,15 @@
             #{poId}
         </foreach>
     </select>
+    <update id="updatePurchaseDataById" parameterType="java.util.List">
+        <foreach collection="list" item="param" index= "index" open="" close="" separator =";">
+            update purchase_orders
+            <set>
+                purchase_state = #{param.purchaseState}
+            </set>
+            <where>
+                po_id = #{param.poId}
+            </where>
+        </foreach>
+    </update>
 </mapper>
