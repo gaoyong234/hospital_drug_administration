@@ -17,5 +17,8 @@ public interface PurchaseOrdersService {
 
     PurchaseOrdersVO getPurchaseOrdersById(Integer id);
 
+    //修改采购单状态
+    Message changePurchaseDrugState(Integer poId);
+
 
 }

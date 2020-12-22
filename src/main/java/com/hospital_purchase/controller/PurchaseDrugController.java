@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,7 +82,7 @@ public class PurchaseDrugController {
     }
 
     /**
-     *  修改信息   有问题
+     *  修改信息
      * @param purchaseDrug
      * @return
      */
@@ -115,5 +116,20 @@ public class PurchaseDrugController {
     public Message changeSupplier(@RequestParam(value = "pdId") Integer pdId,@RequestParam(value = "drugId") Integer drugId,@RequestParam(value = "supplierId") Integer supplierId){
         return purchaseDrugService.changeSupplier(pdId,drugId,supplierId);
     }
+
+    /**
+     * 修改采购价格，采购数量
+     * @param pdIds 采购单id集合
+     * @param dealPrices 采购价格集合
+     * @param counts 采购量集合
+     * @return 成功几条
+     */
+    @RequestMapping("/changePurchaseDrugDealPriceAndPurchaseQuantity")
+    @ResponseBody
+    public Message changePurchaseDrugDealPriceAndPurchaseQuantity(@RequestParam(value = "pdIds") List<Integer> pdIds,@RequestParam(value = "dealPrices") List<BigDecimal> dealPrices,@RequestParam(value = "counts") List<Integer> counts){
+        return purchaseDrugService.changePurchaseDrugDealPriceAndPurchaseQuantity(pdIds,dealPrices,counts);
+    }
+
+
 
 }

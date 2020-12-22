@@ -60,4 +60,10 @@ public class PurchaseOrdersServiceImpl implements PurchaseOrdersService {
     public PurchaseOrdersVO getPurchaseOrdersById(Integer id) {
         return purchaseOrdersDaoMapper.selectPurchaseOrdersById(id);
     }
+    @Override
+    public Message changePurchaseDrugState(Integer poId) {
+        Integer num = purchaseOrdersDaoMapper.updatePurchaseDrugState(poId);
+        Message message = ReturnUtil.returnDataOperation("采购单提交", num);
+        return message;
+    }
 }

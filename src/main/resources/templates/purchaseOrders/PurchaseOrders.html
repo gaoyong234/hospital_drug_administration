@@ -304,7 +304,7 @@
             <td>{{po.fundTime}}</td>
             <td>{{po.submitTime}}</td>
             <td>{{po.auditTime}}</td>
-            <td>{{po.purchaseState}}</td>
+            <td>{{po.purchaseStateName}}</td>
             <td><button class="btn btn-success"  ng-click="detailedOne(po.poId)" data-toggle="modal" >详细</button></td>
             <td><button class="btn btn-warning" data-toggle="modal" data-target="#modification" ng-click="reviseMassage(po.poId)">修改</button></td>
             <td><button class="btn btn-danger"  ng-click="removeOne(po.poId)">删除</button></td>
@@ -437,7 +437,7 @@
                     </tr>
                     <tr>
                         <td>采购单状态:</td>
-                        <td><input  ng-model="revise.purchaseState" class="form-control" disabled="disabled"></td>
+                        <td><input  ng-model="revise.purchaseStateName" class="form-control" disabled="disabled"></td>
                         <td>提交时间:</td>
                         <td><input  ng-model="revise.modifiedTime" class="form-control" disabled="disabled"></td>
 

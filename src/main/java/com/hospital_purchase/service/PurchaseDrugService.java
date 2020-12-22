@@ -5,6 +5,7 @@ import com.hospital_purchase.pojo.PurchaseDrug;
 import com.hospital_purchase.vo.Message;
 import com.hospital_purchase.vo.PurchaseDrugVO;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 
@@ -21,4 +22,10 @@ public interface PurchaseDrugService {
     PurchaseDrugVO findPurchaseDrug(Integer pdId);
 
     Message changeSupplier(Integer pdId, Integer drugId, Integer supId);
+
+    //添加入库量、交易价格
+    Message changePurchaseDrugDealPriceAndPurchaseQuantity(List<Integer> pdIds, List<BigDecimal> dealPrices,List<Integer> counts);
+
+
+
 }
