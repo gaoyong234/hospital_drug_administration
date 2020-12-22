@@ -37,11 +37,11 @@
                 }
                 $scope.drug.pageNum = pageNum;
                 $scope.drug.pageSize = items;
-                var supplier = $scope.supp;
+                var paydrug = $scope.paydrug;
                 $http({
-                    url: "/supplier/conditionfand",
+                    url: "/paydrug/findAll",
                     method: "post",
-                    params: supplier
+                    params: paydrug
                     ,
                 }).success(function (response) {
                     $scope.lists = response.list;
@@ -122,14 +122,13 @@
             </td>
         </tr>
         <tr>
-            <td>入库时间<input class="form-control">至<input class="form-control"></td>
-            <td>商品批号<input ng-model="drugBatchNumber" class="form-control"></td>
+            <td>入库时间<input ng-model="paydrug.storageq_time" class="form-control">至<input ng-model="paydrug..storagej_time" class="form-control"></td>
+            <td>商品批号<input ng-model="paydrug.drugBatchNumber" class="form-control"></td>
         </tr>
         <tr>
-            <td>发票号或入库单号<input ng-model="invoice" class="form-control"></td>
-            <td>供货商<select ng-model="supplierName" class="form-control">
-                <option>123</option>
-            </select></td>
+            <td>发票号或入库单号<input ng-model="paydrug.invoice" class="form-control"></td>
+            <td>供货商<input ng-model="paydrug.supplierName" class="form-control">
+            </td>
         </tr>
         <tr>
             <td colspan="1" align="right"> <button type="button" class="btn1" ng-click="find()">查询</button></td>
@@ -206,7 +205,6 @@
             <td>{{x.qualityLevel}}</td>
             <td>{{x.companyName}}</td>
             <td>{{x.supplierName}}</td>
-
             <td>{{x.beginTime}}</td>
             <td>{{x.endTime}}</td>
             <td>{{x.purchase_state}}</td>
