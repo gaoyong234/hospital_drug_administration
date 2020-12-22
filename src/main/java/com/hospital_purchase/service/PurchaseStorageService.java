@@ -17,5 +17,4 @@ public interface PurchaseStorageService {
     Integer updatePurchaseDataById(List<Object> list1);
 
 
-    Integer stockInPurchaseInfo(List<Storage> list);
 }
