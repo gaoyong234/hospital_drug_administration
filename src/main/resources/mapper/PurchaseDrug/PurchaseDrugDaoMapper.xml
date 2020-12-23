@@ -241,4 +241,11 @@
     and drug_id=#{drugId}
     and del_id=0
   </update>
+  <update id="updatePurchaseDrugDealPriceAndPurchaseQuantity" parameterType="com.hospital_purchase.pojo.PurchaseDrug">
+    update purchase_drug
+    set deal_price = #{dealPrice},purchase_quantity=#{purchaseQuantity},purchase_total_amount=#{purchaseTotalAmount}
+    where pd_id=#{pdId}
+    and del_id=0
+  </update>
+
 </mapper>

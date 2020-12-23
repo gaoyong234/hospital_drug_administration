@@ -146,5 +146,9 @@ public class UserLoginController {
 
         return userService.findOneUserById(usId);
     }
-
+    @RequestMapping("/logOut")
+    public String logOut(HttpSession httpSession){
+        httpSession.removeAttribute("admin");
+        return "index";
+    }
 }

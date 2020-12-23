@@ -88,7 +88,7 @@
             $scope.showModalButton3 = function (slogan,count) {
                 showModal({
                     title: "温馨提示",  //提示的标题
-                    content: slogan+"共删除"+count+"条数据",  //提示的内容
+                    content: slogan+"共"+count+"条数据",  //提示的内容
                     showCancel: false,  //是否显示取消按钮，默认为 true
                     cancelText: '取消',  //取消按钮的文字，默认为"取消"，最多 4 个字符
                     cancelColor: "#fff",  //取消按钮的文字颜色，默认为"#000000"
@@ -224,8 +224,11 @@
 
             //保存采购量
             $scope.saveAmount = function(){
+                //关联表id
                 $scope.dmIdList=[];
+                //交易价格集合
                 $scope.dealPriceList=[];
+                //交易量集合
                 $scope.purchaseQuantityList=[];
                 var checkbox=document.getElementsByName("checkbox");
                 var dealPrice = document.getElementsByName("dealPrice");
@@ -243,18 +246,56 @@
                             $scope.dealPriceList.push(dealPrice[i].value);
                         }
                         if(purchaseQuantity[i].value==""){
-                            $scope.showModalButton1("请填写交易量");
+                            $scope.showModalButton1("请填写采购量");
                         }else {
                             $scope.purchaseQuantityList.push(purchaseQuantity[i].value);
                         }
 
                     }
                 }
-                console.log("dmIdList:"+$scope.dmIdList);
-                console.log("dealPriceList:"+$scope.dealPriceList);
-                console.log("purchaseQuantityList:"+$scope.purchaseQuantityList);
+                var pdIds = $scope.dmIdList;
+                var dealPrices = $scope.dealPriceList;
+                var purchaseQuantitys = $scope.purchaseQuantityList;
+                if (pdIds!='') {
+
+                    $http({
+                        url: "/PurchaseDrug/changePurchaseDrugDealPriceAndPurchaseQuantity",
+                        method: "post",
+                        params: {pdIds: pdIds,dealPrices:dealPrices,counts:purchaseQuantitys}
+                    }).success(function (response) {
+                        $scope.showModalButton3(response.slogan,response.count);
+                        $scope.find($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
+                    })
+                }else {
+                    $scope.showModalButton1("请选择相应药品");
+                }
             }
 
+            //提交采购单
+            $scope.submitPurchaseOrders = function(){
+                //采购单id
+                var  purchaseId= $("#purchaseId").val();
+                $http({
+                    url: "/PurchaseOrders/changePurchaseDrugState",
+                    method: "post",
+                    params: {"poId": purchaseId}
+                }).success(function (response) {
+                    showModal({
+                        title: "温馨提示",  //提示的标题
+                        content: response.slogan,  //提示的内容
+                        showCancel: false,  //是否显示取消按钮，默认为 true
+                        cancelText: '取消',  //取消按钮的文字，默认为"取消"，最多 4 个字符
+                        cancelColor: "#fff",  //取消按钮的文字颜色，默认为"#000000"
+                        cancelBgColor: '#4c4c4c',  //取消按钮的背景颜色
+                        confirmText: '确定',
+                        confirmColor: '#fff',
+                        confirmBgColor: '#ff130a',
+                        success: function () {
+                            window.location.href = "/PurchaseOrders/toPurchaseOrders"
+                        }
+                    });
+                })
+            }
             //详情页
             $scope.detailedOne = function (poId) {
                 window.location.href = "/PurchaseDrug/toDrugInformation?poId=" + poId;
@@ -358,6 +399,7 @@
            <button style="margin-left: 10px" type="button" class="btn btn-danger btn-sm" ng-click="removeOne()">删除</button>
            <button style="margin-left: 10px" type="button" class="btn btn-primary btn-sm" ng-click="saveAmount()">保存采购量</button>
            <button style="margin-left: 10px" type="button" class="btn btn-primary btn-sm">到期未送货</button>
+           <button style="margin-left: 10px" type="button" class="btn btn-primary btn-sm" ng-click="submitPurchaseOrders()">提交采购单</button>
        </div>
 
         <tr>

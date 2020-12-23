@@ -14,5 +14,7 @@ public interface PurchaseOrdersDaoMapper {
     PurchaseOrdersVO selectPurchaseOrdersById(Integer poId);
     //加删除
     Integer updatePurchaseOrders(Integer poId);
+    //修改采购单状态
+    Integer updatePurchaseDrugState(Integer poId);
 
 }

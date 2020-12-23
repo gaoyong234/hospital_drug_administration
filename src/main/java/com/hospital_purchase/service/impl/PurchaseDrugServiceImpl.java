@@ -14,6 +14,7 @@ import com.hospital_purchase.vo.PurchaseDrugVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -86,4 +87,26 @@ public class PurchaseDrugServiceImpl implements PurchaseDrugService {
         Message message = ReturnUtil.returnDataOperation("修改供货商", num);
         return message;
     }
+
+    @Override
+    public Message changePurchaseDrugDealPriceAndPurchaseQuantity(
+            List<Integer> pdIds, List<BigDecimal> dealPrices, List<Integer> counts) {
+        Integer count=0;
+        PurchaseDrug purchaseDrug=new PurchaseDrug();
+        for (int i = 0; i < pdIds.size(); i++) {
+            purchaseDrug.setPdId(pdIds.get(i));
+            purchaseDrug.setDealPrice(dealPrices.get(i));
+            purchaseDrug.setPurchaseQuantity(counts.get(i));
+            BigDecimal decimal = dealPrices.get(i).multiply(new BigDecimal(counts.get(i)));
+            purchaseDrug.setPurchaseTotalAmount(decimal);
+            Integer num = purchaseDrugDaoMapper.updatePurchaseDrugDealPriceAndPurchaseQuantity(purchaseDrug);
+            if (num>0){
+                count++;
+            }
+        }
+        Message message = ReturnUtil.returnDataOperation("修改", count);
+        return message;
+    }
+
+
 }
