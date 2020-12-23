@@ -1,55 +1,26 @@
 package com.hospital_purchase.pojo;
 
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.Date;
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class Role {
     private Integer roId;
 
     private String roleName;
-
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date creationTime;
-
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date modificationTime;
 
     private Integer delId;
 
-    public Integer getRoId() {
-        return roId;
-    }
-
-    public void setRoId(Integer roId) {
-        this.roId = roId;
-    }
-
-    public String getRoleName() {
-        return roleName;
-    }
-
-    public void setRoleName(String roleName) {
-        this.roleName = roleName == null ? null : roleName.trim();
-    }
-
-    public Date getCreationTime() {
-        return creationTime;
-    }
-
-    public void setCreationTime(Date creationTime) {
-        this.creationTime = creationTime;
-    }
-
-    public Date getModificationTime() {
-        return modificationTime;
-    }
-
-    public void setModificationTime(Date modificationTime) {
-        this.modificationTime = modificationTime;
-    }
-
-    public Integer getDelId() {
-        return delId;
-    }
-
-    public void setDelId(Integer delId) {
-        this.delId = delId;
-    }
 }

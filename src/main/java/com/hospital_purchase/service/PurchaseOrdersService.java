@@ -19,6 +19,8 @@ public interface PurchaseOrdersService {
 
     //修改采购单状态
     Message changePurchaseDrugState(Integer poId);
+    //采购单审核
+    Message updatePurchaseDrugAudit(PurchaseOrders purchaseOrders);
 
 
 }

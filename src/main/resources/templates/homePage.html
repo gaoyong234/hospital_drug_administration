@@ -40,7 +40,7 @@
         function logOut(){
             showModal({
                 title: "温馨提示",  //提示的标题
-                content: "确认要删除吗？",  //提示的内容
+                content: "确认要注销吗？",  //提示的内容
                 showCancel: true,  //是否显示取消按钮，默认为 true
                 cancelText: '取消',  //取消按钮的文字，默认为"取消"，最多 4 个字符
                 cancelColor: "#fff",  //取消按钮的文字颜色，默认为"#000000"
@@ -162,7 +162,7 @@
                     </a>
                     <ul class="treeview-menu">
                         <li>
-                            <a href="/drugInformation/toDrugInformation" target="iframe">
+                            <a href="/drugInformation/toDrugInfo" target="iframe">
                                 <i class="fa fa-circle-o"></i> 药品信息查询
                             </a>
                         </li>
@@ -385,6 +385,11 @@
                         <li>
                             <a href="/LimitFunctionController/toLimit" target="iframe">
                                 <i class="fa fa-circle-o"></i> 所有功能
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/Role/toRole" target="iframe">
+                                <i class="fa fa-circle-o"></i> 角色管理
                             </a>
                         </li>
                     </ul>

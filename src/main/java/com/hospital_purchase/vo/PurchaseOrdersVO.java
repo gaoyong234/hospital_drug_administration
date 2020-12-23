@@ -62,4 +62,7 @@ public class PurchaseOrdersVO {
     @JsonFormat(pattern = "yyyy-MM-dd",timezone="GMT+8")
     private Date beginTime;
 
+    //用户名称
+    private String userName;
+
 }

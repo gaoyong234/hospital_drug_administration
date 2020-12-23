@@ -2,6 +2,7 @@ package com.hospital_purchase.dao.PurchaseOrderDao;
 
 
 
+import com.hospital_purchase.pojo.PurchaseOrders;
 import com.hospital_purchase.vo.PurchaseOrdersVO;
 
 import java.util.List;
@@ -16,5 +17,7 @@ public interface PurchaseOrdersDaoMapper {
     Integer updatePurchaseOrders(Integer poId);
     //修改采购单状态
     Integer updatePurchaseDrugState(Integer poId);
+    //采购单审核
+    Integer updatePurchaseDrugAudit(PurchaseOrders purchaseOrders);
 
 }
