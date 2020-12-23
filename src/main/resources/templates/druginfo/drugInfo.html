@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../static/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <link rel="stylesheet" href="../static/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/plugins/adminLTE/css/AdminLTE.css">
+    <link rel="stylesheet" href="../static/plugins/adminLTE/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../static/plugins/angularjs/toaster.min.css">
+    <script src="../static/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+    <script src="../static/plugins/angularjs/angular.min.js"></script>
+    <link rel="stylesheet" href="../static/plugins/angularjs/pagination.css">
+    <script type="text/javascript" src="../static/plugins/angularjs/pagination.js"></script>
+    <script type="text/javascript" src="../../static/renponsetable/js/pageMe.js"></script>
+    <style>
+        label { float: left; width: 10em; margin-right: 1em; text-align: right; }
+
+        /*分页样式*/
+        /* 外面盒子样式---自己定义 */
+        .page_div{margin:20px 10px 20px 0;color:#666}
+        /* 页数按钮样式 */
+        .page_div button{display:inline-block;min-width:30px;height:28px;cursor:pointer;color:#666;font-size:13px;line-height:28px;background-color:#f9f9f9;border:1px solid #dce0e0;text-align:center;margin:0 4px;-webkit-appearance: none;-moz-appearance: none;appearance: none;}
+        #firstPage,#lastPage,#nextPage,#prePage{width:50px;color:#0073A9;border:1px solid #0073A9}
+        #nextPage,#prePage{width:70px}
+        .page_div .current{background-color:#0073A9;border-color:#0073A9;color:#FFF}
+        /* 页面数量 */
+        .totalPages{margin:0 10px}
+        .totalPages span,.totalSize span{color:#0073A9;margin:0 5px}
+        /*button禁用*/
+        .page_div button:disabled{opacity:.5;cursor:no-drop}
+    </style>
+    <script>
+        var app = angular.module("myApp",[]);
+        app.controller("myContr",function ($scope,$http) {
+            var demo=false;
+            $(function () {
+                $scope.query(1);
+                $scope.findQualityLevel();
+                $scope.findDrugCategory();
+                //判断添加的信息不能为空
+                $("#addition input").blur(function () {
+                    $(this).next().html("");
+                    $(this).next().css("color","black");
+                    if (this.value!=null&&this.value!=""){
+                        demo=true;
+                    }else{
+                        $(this).next().html("不能为空");
+                        $(this).next().css("color","red");
+                        demo=false;
+                    }
+                })
+            })
+            //模糊查询list
+            $scope.fuzzyQuery  ={
+                pageNum:0,
+                pageSize:5
+            }
+            //查询全部药品信息
+            $scope.query = function(pageNum){
+                $scope.fuzzyQuery.pageNum = pageNum;
+                var dataList = $scope.fuzzyQuery;
+                $http({
+                    url:"/drugInformation/findAllDrugInfoLike",
+                    method:"get",
+                    params:dataList
+                }).then(function successCallback(response) {
+                    $scope.list = response.data.list
+                    for (var i = 0; i < $scope.list.length; i++) {
+                        if ($scope.list[i].drugState ==0){
+                            $scope.list[i].drugState = "正常"
+                        }
+                        if ($scope.list[i].drugState ==1){
+                            $scope.list[i].drugState = "交易暂停"
+                        }
+                    }
+                    //分页// pageMe.js 使用方法
+                    $("#pages").paging({
+                        pageNum: response.data.pageNum, // 当前页面
+                        totalNum: response.data.pages, // 总页码
+                        totalList: response.data.total, // 记录总数量
+                        callback: function (pageNum) { //回调函数
+                            console.log(pageNum);
+                            $scope.query(pageNum);
+                        }
+                    });
+                },function errorCallback(response) {
+
+                });
+            };
+            //新增药品信息
+            $scope.addDrugInfo = function () {
+                var serialNumber=$("[name='serialNumber']").val();
+                var commonName=$("[name='commonName']").val();
+                var dosageForm=$("[name='dosageForm']").val();
+                var company=$("[name='company']").val();
+                var speciflcation=$("[name='speciflcation']").val();
+                if (company == "盒"){company = 28}
+                if (company == "瓶"){company = 29}
+                if (company == "支"){company = 30}
+                if (company == "只"){company = 31}
+                var coefficient=$("[name='coefficient']").val();
+                var productionName=$("[name='productionName']").val();
+                var commodityName=$("[name='commodityName']").val();
+                var biddingPrice=$("[name='biddingPrice']").val();
+                var approvalNumber=$("[name='approvalNumber']").val();
+                var approvalTime=$("[name='approvalTime']").val();
+                var isEntrance=$("input[name='isEntrance']:checked").val();
+                var packagingTexture=$("[name='packagingTexture']").val();
+                var packUnit=$("[name='packUnit']").val();
+                var newestPrice=$("[name='newestPrice']").val();
+                var retailProvenance=$("[name='retailProvenance']").val();
+                var qualityLevels=$("[name='qualityLevels']").val();
+                var qualityLevelExplain=$("[name='qualityLevelExplain']").val();
+                var isCheckout=$("input[name='isCheckout']:checked").val();
+                var heckoutNumber=$("[name='heckoutNumber']").val();
+                var drugValidTime=$("[name='drugValidTime']").val();
+                var productExplain=$("[name='productExplain']").val();
+                var drugCategory=$("[name='drugCategorys']").val();
+                var drugState=$("[name='drugStates']").val();
+               /* console.log(serialNumber,commonName,dosageForm,speciflcation,company,coefficient,productionName,commodityName,biddingPrice,approvalNumber,
+                    approvalTime,isEntrance,packagingTexture,packUnit,newestPrice,retailProvenance,qualityLevels,qualityLevelExplain,isCheckout,
+                    heckoutNumber,drugValidTime,productExplain,drugCategory,drugState)*/
+                demo = serialNumber != null && serialNumber != '' && commonName != null && commonName != '' && dosageForm != null && dosageForm != '' &&
+                    company != null && company != '' && coefficient != null && coefficient != '' && productionName != null && productionName != '' &&
+                    commodityName != null && commodityName != '' && biddingPrice != null && biddingPrice != '' && approvalNumber != null && approvalNumber != '' && approvalTime != null &&
+                    approvalTime != '' && isEntrance != null && isEntrance != '' && packagingTexture != null && packagingTexture != '' && packUnit != null &&
+                    packUnit != '' && newestPrice != null && newestPrice != ''
+                    && retailProvenance != null && retailProvenance != ''
+                    && qualityLevels != null && qualityLevels != ''
+                    && qualityLevelExplain != null && qualityLevelExplain != ''
+                    && isCheckout != null && isCheckout != ''
+                    && heckoutNumber != null && heckoutNumber != ''
+                    && drugValidTime != null && drugValidTime != ''
+                    && productExplain != null && productExplain != ''
+                    && drugCategory != null && drugCategory != ''
+                    && speciflcation != null && speciflcation != ''
+                    && drugState != null && drugState != '';
+                if (demo){
+                    if (confirm("确定添加？")){
+                        $.ajax({
+                            url:"/drugInformation/findDrugItemsInfo",
+                            type:"get",
+                            datatype:"json",
+                            success:function (data) {
+                                var dataList = data;
+                                var msg = 0;
+                                $.each(dataList,function (index,item) {
+                                    if (dataList[index].serialNumber == serialNumber){
+                                        document.getElementById("headLeft").innerHTML="失败提示信息"
+                                        document.getElementById("headline").innerHTML="您的操作失败,请尝试刷新页面,重新操作"
+                                        document.getElementById("whether").innerHTML="药品品目已存在:{"+"通用名:【"+dataList[index].commonName+"】"+"  剂型:"+"【"+dataList[index].dosageForm+"】"+" 规格:"+"【"+dataList[index].speciflcation+"】"+" 单位:"+"【"+dataList[index].speciflcation+"】"+
+                                            "转换系数:【"+dataList[index].coefficient+"】"+" 生产企业名称:【"+dataList[index].productionName+"】"+" 商品名称:【"+dataList[index].commodityName+"】"+"}"
+                                        msg = 1;
+                                    }
+                                });
+                                if(msg<=0){
+                                    var addform = $("#addForm").serialize();
+                                    //console.log(JSON.stringify(addform));
+                                    $.ajax({
+                                        url: "/drugInformation/addDrugInformation",
+                                        dataType: "json",
+                                        type: "post",
+                                        data: addform,
+                                        success: function (data) {
+                                            if (data > 0) {
+                                                document.getElementById("headLeft").innerHTML="医院信息添加"
+                                                document.getElementById("headline").innerHTML="成功提示信息"
+                                                document.getElementById("whether").innerHTML="您的操作成功"
+                                                /*document.getElementById("addForm").reset();*/
+                                                $scope.query(1);
+                                            } else {
+                                                document.getElementById("headLeft").innerHTML="医院信息添加"
+                                                document.getElementById("headline").innerHTML="失败提示信息"
+                                                document.getElementById("whether").innerHTML="您的操作失败,请尝试刷新页面,重新操作"
+                                            }
+                                        },error:function (data) {
+                                            alert("系统异常，请联系管理员！")
+                                        }
+                                    })
+                                }
+                            },error:function (data) {
+                                alert("系统异常，请联系管理员！")
+                            }
+                        })
+                    }
+                }else {
+                    document.getElementById("headLeft").innerHTML="医院信息添加"
+                    document.getElementById("headline").innerHTML="失败提示信息"
+                    document.getElementById("whether").innerHTML="因数据不完整,您的操作失败,请尝试刷新页面,重新操作"
+                }
+
+            }
+            //修改根据主键id查询数据
+            $scope.updateDrugInfo=function (diId) {
+                $http({
+                    url:"/drugInformation/queryDrugInfoById",
+                    method:"get",
+                    params:{"diId": diId}
+                }).success(function (response) {
+                   /* $("input[name='isEntrance'][value='"+response.isEntrance.isEntrance+"']").prop("checked","checked");*/
+                    if (response.qualityLevel.dictionariesName == "国家一类新药"){
+                        response.qualityLevel.dictionariesName = 36
+                    }
+                    if (response.qualityLevel.dictionariesName == "国家科学进步奖"){
+                        response.qualityLevel.dictionariesName = 37
+                    }
+                    if (response.qualityLevel.dictionariesName == "专利"){
+                        response.qualityLevel.dictionariesName = 38
+                    }
+                    if (response.qualityLevel.dictionariesName == "原研"){
+                        response.qualityLevel.dictionariesName = 39
+                    }
+                    if (response.qualityLevel.dictionariesName == "单独定价"){
+                        response.qualityLevel.dictionariesName = 40
+                    }
+                    if (response.qualityLevel.dictionariesName == "国家一类新药"){
+                        response.qualityLevel.dictionariesName = 41
+                    }
+                    if (response.qualityLevel.dictionariesName == "GMP"){
+                        response.qualityLevel.dictionariesName = 42
+                    }
+                    if (response.drugCategorys.dictionariesName == "儿童用药"){
+                        response.drugCategorys.dictionariesName = 21
+                    }
+                    if (response.drugCategorys.dictionariesName == "孕妇用药"){
+                        response.drugCategorys.dictionariesName = 22
+                    }
+                    if (response.drugCategorys.dictionariesName == "营养治疗药"){
+                        response.drugCategorys.dictionariesName = 23
+                    }
+                    if (response.drugCategorys.dictionariesName == "化疗药"){
+                        response.drugCategorys.dictionariesName = 24
+                    }
+                    if (response.drugCategorys.dictionariesName == "精神药物"){
+                        response.drugCategorys.dictionariesName = 25
+                    }
+                    if (response.drugState == 0){
+                        response.drugState = "正常"
+                    }
+                    if (response.drugState == 1){
+                        response.drugState = "交易暂停"
+                    }
+                    $scope.dritem=response;
+                })
+            }
+            //修改
+            $scope.updateSave = function () {
+                var updateList=$scope.dritem;
+                var unitId = updateList.company.dictionariesName
+                var biddingPrice = updateList.biddingPrice.biddingPrice
+                var approvalNumber = updateList.approvalNumber.approvalNumber
+                var approvalTime = updateList.approvalTime.approvalTime
+                var isEntrance = updateList.isEntrances.isEntrance
+                var packagingTexture = updateList.packagingTexture.packagingTexture
+                var packUnit = updateList.packUnit.packUnit
+                var newestPrice = updateList.newestPrice.newestPrice
+                var retailProvenance = updateList.retailProvenance.retailProvenance
+                var isCheckout = updateList.isCheckouts.isCheckout
+                var heckoutNumber = updateList.heckoutNumber.heckoutNumber
+                var drugValidTime = updateList.drugValidTime.drugValidTime
+                var productExplain = updateList.productExplain.productExplain
+                if(unitId == "盒"){unitId = 28}
+                if(unitId == "瓶"){unitId = 29}
+                if(unitId == "支"){unitId = 30}
+                if(unitId == "只"){unitId = 31}
+                var list = $scope.list;
+                if (updateList.drugState == "正常"){
+                    updateList.drugState = 0
+                }
+                if (updateList.drugState == "交易暂停"){
+                    updateList.drugState = 1
+                }
+                var obj = {
+                    "diId":updateList.diId,
+                    "serialNumber":updateList.serialNumber,
+                    "commonName": updateList.commonName,
+                    "dosageForm": updateList.dosageForm,
+                    "speciflcation": updateList.speciflcation,
+                    "unitId":unitId,
+                    "coefficient":updateList.coefficient,
+                    "productionName":updateList.productionName,
+                    "commodityName":updateList.commodityName,
+                    "biddingPrice":biddingPrice,
+                    "approvalNumber":approvalNumber,
+                    "approvalTime":approvalTime,
+                    "isEntrance":isEntrance,
+                    "packagingTexture":packagingTexture,
+                    "packUnit":packUnit,
+                    "newestPrice":newestPrice,
+                    "retailProvenance":retailProvenance,
+                    "isCheckout":isCheckout,
+                    "heckoutNumber":heckoutNumber,
+                    "drugValidTime":drugValidTime,
+                    "productExplain":productExplain,
+                    "drugState":updateList.drugState
+                };
+                for (var i = 0; i < list.length; i++) {
+                    if (list[i].diId == $scope.dritem.diId) {
+                        $scope.list = list[i];
+                        break;
+                    }
+                }
+                if ($scope.list.serialNumber==updateList.serialNumber && $scope.list.commonName==updateList.commonName && $scope.list.dosageForm==updateList.dosageForm &&
+                    $scope.list.speciflcation==updateList.speciflcation && $scope.list.company.dictionariesName==updateList.company.dictionariesName && $scope.list.coefficient==updateList.coefficient &&
+                    $scope.list.productionName==updateList.productionName && $scope.list.commodityName==updateList.commodityName && $scope.list.biddingPrice.biddingPrice==updateList.biddingPrice.biddingPrice &&
+                    $scope.list.approvalNumber.approvalNumber==updateList.approvalNumber.approvalNumber && $scope.list.approvalTime.approvalTime==updateList.approvalTime.approvalTime && $scope.list.isEntrances.isEntrance==updateList.isEntrances.isEntrance &&
+                    $scope.list.packagingTexture.packagingTexture==updateList.packagingTexture.packagingTexture && $scope.list.packUnit.packUnit==updateList.packUnit.packUnit){
+                    alert("请修改后提交");
+                    $scope.query(1);
+                }else{
+                    if (obj.serialNumber != null && obj.commonName != null && obj.dosageForm != null &&
+                        obj.speciflcation != null && obj.unitId != null && obj.coefficient != null &&
+                        obj.productionName != null && obj.commodityName != null && obj.biddingPrice != null &&
+                        obj.approvalNumber != null && obj.approvalTime != null && obj.isEntrance != null &&
+                        obj.packagingTexture != null && obj.packUnit != null){
+                        if (confirm("确定修改？")){
+                            $http({
+                                url:"/drugInformation/updateDrugInformation",
+                                method:"post",
+                                params: obj,
+                                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                                transformRequest: function(obj) {
+                                    var str = [];
+                                    for (var s in obj) {
+                                        str.push(encodeURIComponent(s) + "=" + encodeURIComponent(obj[s]));
+                                    }
+                                    return str.join("&");
+                                }
+                            }).then(function successCallback(response) {
+                                console.log(response);
+                                if (response.data>0){
+                                    alert("修改成功")
+                                    $scope.query(1);
+                                }else {
+                                    alert("修改失败")
+                                }
+                            })
+                        }
+                    }else {
+                        alert("请完善信息后保存!")
+                    }
+                }
+            }
+            //删除
+            $scope.delDrugInfo = function (id) {
+                if (confirm("确定删除?")){
+                    $http({
+                        url:"/drugInformation/delDrugInformation",
+                        method:"post",
+                        params: {"id":id},
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        transformRequest: function(obj) {
+                            var str = [];
+                            for (var s in obj) {
+                                str.push(encodeURIComponent(s) + "=" + encodeURIComponent(obj[s]));
+                            }
+                            return str.join("&");
+                        }
+                    }).then(function successCallback(response) {
+                        console.log(response);
+                        if (response.data>0){
+                            alert("删除成功")
+                            $scope.query(1);
+                        }else {
+                            alert("删除失败")
+                        }
+                    })
+                }
+            }
+            //
+            $scope.chage = function (diId){
+                $scope.updateDrugInfo(diId)
+            }
+            //查询质量层次
+            $scope.findQualityLevel = function(){
+                $http({
+                    url:"/drugInformation/findQualityLevel",
+                    method:"get"
+                }).then(function successCallback(response) {
+                    $scope.qualityLevel =[];
+                    for (var i = 0; i <response.data.length ; i++) {
+                        if (response.data[i].dictionariesId==5){
+                            $scope.qualityLevel.push(response.data[i])
+                        }
+                    }
+                })
+            }
+            //查询药品类别
+            $scope.findDrugCategory = function(){
+                $http({
+                    url:"/drugInformation/findDrugCategorys",
+                    method:"get"
+                }).then(function successCallback(response) {
+                    $scope.drugCategorys=[];
+                    for (var i = 0; i <response.data.length ; i++) {
+                        if (response.data[i].dictionariesId==1){
+                            $scope.drugCategorys.push(response.data[i])
+                        }
+                    }
+                })
+            }
+        })
+
+        //导入excel文件
+        function excelUpload() {
+            var file =  $("#files")[0].files[0];
+            var formData = new FormData();
+            formData.append("fileName",file);
+            if (confirm("确定导入？")){
+                $.ajax({
+                    url:"/drugInformation/uploadFiles",
+                    type:"post",
+                    dataType:"json",
+                    data:formData,
+                    cache: false,   //上传文件无需缓存
+                    processData: false,   // 用于对参数进行序列化处理，这里必须设为false
+                    contentType:false,// 必须
+                    success:function (data) {
+                        alert("导入成功");
+                        console.log(data);
+                        //window.location.reload();
+                    },error:function (data) {
+                        console.log(data);
+                    }
+                })
+            }
+        }
+        //导入excel下载模板
+        function downloadTemplate() {
+            window.location.href="/drugInformation/downloadTemplate";
+        }
+        //导出Excel1文件
+        function ExportExcel() {
+            window.location.href="/drugInformation/ExportExcel";
+        }
+    </script>
+</head>
+<body ng-app="myApp" ng-controller="myContr">
+    <div>
+        <h5 class="alert alert-infoalert alert-info">药品信息维护</h5>
+        <table class="table table-bordered table-striped">
+    <tr>
+        <td>流水号:<input ng-model="fuzzyQuery.serialNumber"></td>
+        <td>通用名:<input ng-model="fuzzyQuery.commonName"></td>
+        <td>剂型:<input ng-model="fuzzyQuery.dosageForm"></td>
+        <td>规格:<input ng-model="fuzzyQuery.speciflcation"></td>
+    </tr>
+    <tr>
+        <td>单位:<input ng-model="fuzzyQuery.company"></td>
+        <td>转换系数:<input ng-model="fuzzyQuery.coefficient"></td>
+        <td>生产企业:<input ng-model="fuzzyQuery.productionName"></td>
+        <td>商品名称:<input ng-model="fuzzyQuery.commodityName"></td>
+    </tr>
+    <tr>
+        <td>中标价格:<input type="text" ng-model="fuzzyQuery.biddingPriceStart" style="width: 65px"/>至<input type="text" ng-model="fuzzyQuery.biddingPriceEnd" style="width: 65px"/>$</td>
+        <td>质量层次:
+            <select ng-model="fuzzyQuery.qualityLevel">
+                <option value="">全部</option>
+                <option ng-repeat="quality in qualityLevel" ng-value="quality.dicId">{{quality.dictionariesName}}</option>
+            </select>
+        </td>
+        <td>药品类别:
+            <select ng-model="fuzzyQuery.drugCategorys">
+                <option value="">全部</option>
+                <option ng-repeat="drugCategory in drugCategorys" ng-value="drugCategory.dicId">{{drugCategory.dictionariesName}}</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td>交易状态:
+            <select ng-model="fuzzyQuery.drugState">
+                <option value="">全部</option>
+                <option value="0">正常</option>
+                <option value="1">交易暂停</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1" align="right"> <button type="button" class="btn1" ng-click="query()">查询</button></td>
+        <td> <button class="layui-btn" onclick="ExportExcel();">导出Excel</button></td>
+    </tr>
+</table>
+    </div>
+    <div>
+        <button type="button" class="btn1" data-toggle="modal" data-target="#addition" ng-click="addClick()">添加
+        </button>
+        <button type="button" class="btn1" data-toggle="modal" data-target="#introduce" ng-click="loadlick()">导入
+        </button>
+    </div>
+    <div>
+        <table id="dataList" class="table">
+            <thead>
+                <tr>
+                    <th>流水号</th>
+                    <th>通用名</th>
+                    <th>剂型</th>
+                    <th>规格</th>
+                    <th>单位</th>
+                    <th>转换系数</th>
+                    <th>生产企业</th>
+                    <th>商品名称</th>
+                    <th>中标价格</th>
+                    <th>质量层次</th>
+                    <th>药品类别</th>
+                    <th>交易状态</th>
+                </tr>
+            </thead>
+        <tbody id="tbody">
+            <tr ng-repeat="x in list">
+                <td>{{x.serialNumber}}</td>
+                <td>{{x.commonName}}</td>
+                <td>{{x.dosageForm}}</td>
+                <td>{{x.speciflcation}}</td>
+                <td>{{x.company.dictionariesName}}</td>
+                <td>{{x.coefficient}}</td>
+                <td>{{x.productionName}}</td>
+                <td>{{x.commodityName}}</td>
+                <td>{{x.biddingPrice.biddingPrice}}</td>
+                <td>{{x.qualityLevel.dictionariesName}}</td>
+                <td>{{x.drugCategorys.dictionariesName}}</td>
+                <td>{{x.drugState}}</td>
+                <td><button class="btn btn-success" data-toggle="modal" data-target="#chage" ng-click="chage(x.diId)" >查看</button>
+                <button class="btn btn-warning" data-toggle="modal" data-target="#more" ng-click="updateDrugInfo(x.diId)">修改</button>
+                <button class="btn btn-danger" data-toggle="modal" ng-click="delDrugInfo(x.diId)">删除</button></td>
+            </tr>
+        </tbody>
+    </table>
+        <tm-pagination conf="paginationConf"></tm-pagination>
+    </div>
+    <!--分页-->
+    <div id="pages" class="page_div"></div>
+    <!--添加-->
+    <div class="modal fade" id="addition" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width:80%;">
+            <div class="modal-content" >
+                <div class="modal-header">
+                <button id="bt1" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel">添加药品信息</h3>
+            </div>
+            <div class="modal-body">
+                <form id="addForm">
+                <table class="table table-bordered table-striped"  >
+                    <tr>
+                        <td>流水号:</td>
+                        <td><input name="serialNumber" onblur class="form-control">
+                            <span></span></td>
+                        <td>通用名:</td>
+                        <td><input name="commonName" onblur  class="form-control" >
+                        <span></span></td>
+                    </tr>
+                    <tr>
+                        <td>剂型:</td>
+                        <td><input name="dosageForm" onblur   class="form-control" >
+                        <span></span></td>
+                        <td>规格:</td>
+                        <td><input name="speciflcation" onblur   class="form-control"  >
+                        <span></span></td>
+                    </tr>
+                    <tr>
+                        <td>单位:</td>
+                        <td><input type="text" name="company" onblur   class="form-control" >
+                            <span></span></td>
+                        <td>转换系数:</td>
+                        <td><input type="text" name="coefficient" onblur   class="form-control" >
+                            <span></span></td>
+                    </tr>
+                    <tr>
+                        <td>生产企业:</td>
+                        <td><input name="productionName" onblur   class="form-control" >
+                        <span></span></td>
+                        <td>商品名称:</td>
+                        <td><input name="commodityName" onblur   class="form-control" >
+                            <span></span></td>
+                    </tr>
+                    <tr>
+                        <td>中标价格:</td>
+                        <td><input name="biddingPrice" onblur   class="form-control" >
+                           <span></span></td>
+                        <td>批准文号:</td>
+                        <td><input type="text" name="approvalNumber" onblur   class="form-control" ></td>
+                    </tr>
+                    <tr>
+                        <td>批准文号有效期:</td>
+                        <td><input type="date" name="approvalTime" onblur   class="form-control" ></td>
+                        <td>是否进口药:</td>
+                        <td><input type="radio" name="isEntrance" value="0" onblur>是
+                            <input type="radio" name="isEntrance" value="1" onblur>否
+                            </td>
+                    </tr>
+                    <tr>
+                        <td>包装材质:</td>
+                        <td><input name="packagingTexture" onblur   class="form-control" ></td>
+                        <td>包装单位:</td>
+                        <td><input type="text" name="packUnit" onblur   class="form-control" ></td>
+                    </tr>
+                    <tr>
+                        <td>最新零售价:</td>
+                        <td><input type="text" name="newestPrice" onblur   class="form-control" ></td>
+                        <td>零售价出处:</td>
+                        <td><input type="text" name="retailProvenance" onblur   class="form-control" ></td>
+                    </tr>
+                    <tr>
+                        <td>质量层次:</td>
+                        <td><select name="qualityLevels">
+                                <option value="">请选择</option>
+                                <option ng-repeat="quality in qualityLevel" ng-value="quality.dicId">{{quality.dictionariesName}}</option>
+                            </select>
+                            </td>
+                        <td>质量层次说明:</td>
+                        <td><input type="text" name="qualityLevelExplain" onblur   class="form-control" ></td>
+                    </tr>
+                    <tr>
+                        <td>有无药品检验报告:</td>
+                        <td><input type="radio" name="isCheckout" value="0" onblur>有
+                            <input type="radio" name="isCheckout" value="1" onblur>无
+                            </td>
+                        <td>药品检验报告编码:</td>
+                        <td><input type="text" name="heckoutNumber" onblur   class="form-control" ></td>
+                    </tr>
+                    <tr>
+                        <td>药品检验报告有效期:</td>
+                        <td><input type="date" name="drugValidTime" onblur   class="form-control" ></td>
+                        <td>产品说明:</td>
+                        <td><input type="text" name="productExplain" onblur   class="form-control" ></td>
+                    </tr>
+                    <tr>
+                        <td>药品类别:</td>
+                        <td><select name="drugCategorys">
+                            <option value="">请选择</option>
+                            <option ng-repeat="drugCategory in drugCategorys" ng-value="drugCategory.dicId">{{drugCategory.dictionariesName}}</option>
+                        </select>
+                            </td>
+                        <td>药品交易状态:<select name="drugStates">
+                            <option value="0">正常</option>
+                            <option value="1">交易暂停</option>
+                        </select>
+                            </td>
+                    </tr>
+                </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-toggle="modal" data-dismiss="modal" data-target="#status" ng-click="addDrugInfo()">保存</button>
+                <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">关闭</button>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div class="modal fade" id="status" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="headLeft" type="text" ></h4>
+                <h4 id="headline" type="text" style="width: 100%;height: 45px;display: block;line-height: 45px;text-align: center;"></h4>
+                <p id="whether" type="text" style="width: 100%;height: 45px;display: block;line-height: 45px;text-align: center;"></p>
+                <div>
+                    <p id="lose" ></p>
+                </div>
+                <div style="text-align:center">
+                    <button data-dismiss="modal" aria-hidden="true">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <!--导入的模态框-->
+    <div class="modal fade" id="introduce" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width:80%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="text-primary">药品信息导入</h4>
+                    <br>
+                    <div class="text-center">
+                        下载导入模板文件  <button class="text-primary" onclick="downloadTemplate()">点击下载药品信息导入模板</button><br/>
+                        <span style="color: red">提示:请下载后在模板文件中录入药品信息,在下面的"选择文件"中选择要导入的文件,点击"导入"</span><br/>
+                        <span style="color: red">注意:请下载模板文件后切勿修改excel大单元格格式,导入文件单元格式必须为文本。</span>
+                        <div class="text-center">
+                            <center><input style="display:block" id="files" type="file"></center>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button class="layui-btn" type="button" onclick="excelUpload()">导入</button>
+                        <button class="layui-btn">查看导入失败结果</button>
+                        <button class="layui-btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--修改-->
+    <div class="modal fade" id="more" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width:80%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button id="bt" type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h3 id="myModalLabe">药品信息修改</h3>
+                </div>
+                <div class="modal-body">
+                    <form id="inserInto">
+                        <table class="table table-bordered table-striped"  >
+                            <tr>
+                                <td>流水号:</td>
+                                <td><input ng-model="dritem.serialNumber" name="serialNumber" onblur class="form-control">
+                                    <span></span></td>
+                                <td>通用名:</td>
+                                <td><input ng-model="dritem.commonName" name="commonName" onblur  class="form-control" >
+                                    <span></span></td>
+                            </tr>
+                            <tr>
+                                <td>剂型:</td>
+                                <td><input ng-model="dritem.dosageForm" name="dosageForm" onblur   class="form-control" >
+                                    <span></span></td>
+                                <td>规格:</td>
+                                <td><input ng-model="dritem.speciflcation" name="speciflcation" onblur   class="form-control"  >
+                                    <span></span></td>
+                            </tr>
+                            <tr>
+                                <td>单位:</td>
+                                <td><input ng-model="dritem.company.dictionariesName" type="text" name="company" onblur   class="form-control" >
+                                    <span></span></td>
+                                <td>转换系数:</td>
+                                <td><input ng-model="dritem.coefficient" type="text" name="coefficient" onblur   class="form-control" >
+                                    <span></span></td>
+                            </tr>
+                            <tr>
+                                <td>生产企业:</td>
+                                <td><input ng-model="dritem.productionName" name="productionName" onblur   class="form-control" >
+                                    <span></span></td>
+                                <td>商品名称:</td>
+                                <td><input ng-model="dritem.commodityName" name="commodityName" onblur   class="form-control" >
+                                    <span></span></td>
+                            </tr>
+                            <tr>
+                                <td>中标价格:</td>
+                                <td><input ng-model="dritem.biddingPrice.biddingPrice" name="biddingPrice" onblur   class="form-control" >
+                                    <span></span></td>
+                                <td>批准文号:</td>
+                                <td><input ng-model="dritem.approvalNumber.approvalNumber" type="text" name="approvalNumber" onblur   class="form-control" ></td>
+                            </tr>
+                            <tr>
+                                <td>批准文号有效期:</td>
+                                <td><input ng-model="dritem.approvalTime.approvalTime" type="date" name="approvalTime" onblur   class="form-control" ></td>
+                                <td>是否进口药:</td>
+                                <td><input type="radio" name="isEntrance" ng-checked="0" value="0" onblur>是
+                                    <input type="radio" name="isEntrance" ng-checked="1" value="1" onblur>否
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>包装材质:</td>
+                                <td><input ng-model="dritem.packagingTexture.packagingTexture" name="packagingTexture" onblur   class="form-control" ></td>
+                                <td>包装单位:</td>
+                                <td><input ng-model="dritem.packUnit.packUnit" type="text" name="packUnit" onblur   class="form-control" ></td>
+                            </tr>
+                            <tr>
+                                <td>最新零售价:</td>
+                                <td><input ng-model="dritem.newestPrice.newestPrice" type="text" name="newestPrice" onblur   class="form-control" ></td>
+                                <td>零售价出处:</td>
+                                <td><input ng-model="dritem.retailProvenance.retailProvenance" type="text" name="retailProvenance" onblur   class="form-control" ></td>
+                            </tr>
+                            <tr>
+                                <td>有无药品检验报告:</td>
+                                <td><input type="radio" name="isCheckout" ng-checked="0" value="0" onblur>有
+                                    <input type="radio" name="isCheckout" ng-checked="1" value="1" onblur>无
+                                </td>
+                                <td>药品检验报告编码:</td>
+                                <td><input ng-model="dritem.heckoutNumber.heckoutNumber" type="text" name="heckoutNumber" onblur   class="form-control" ></td>
+                            </tr>
+                            <tr>
+                                <td>药品检验报告有效期:</td>
+                                <td><input ng-model="dritem.drugValidTime.drugValidTime" type="date" name="drugValidTime" onblur   class="form-control" ></td>
+                                <td>产品说明:</td>
+                                <td><input ng-model="dritem.productExplain.productExplain" type="text" name="productExplain" onblur   class="form-control" ></td>
+                            </tr>
+                            <tr>
+                                <td>药品交易状态:</td>
+                                <td><select ng-model="dritem.drugState" name="drugState">
+                                    <option ng-value="">{{dritem.drugState}}</option>
+                                    <option value="0">正常</option>
+                                    <option value="1">交易暂停</option>
+                                </select>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success" data-dismiss="modal" ng-click="updateSave()">保存</button>
+                    <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="chage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <!--查看-->
+    <div class="modal-dialog" style="width:80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button id="bton" type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h3>查看</h3>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered table-striped"  >
+                    <tr>
+                        <td>流水号:</td>
+                        <td><input ng-model="dritem.serialNumber" disabled="disabled" name="serialNumber" onblur class="form-control">
+                            <span></span></td>
+                        <td>通用名:</td>
+                        <td><input ng-model="dritem.commonName" disabled="disabled"  name="commonName" onblur  class="form-control" >
+                            <span></span></td>
+                    </tr>
+                    <tr>
+                        <td>剂型:</td>
+                        <td><input ng-model="dritem.dosageForm" disabled="disabled" name="dosageForm" onblur   class="form-control" >
+                            <span></span></td>
+                        <td>规格:</td>
+                        <td><input ng-model="dritem.speciflcation" disabled="disabled" name="speciflcation" onblur   class="form-control"  >
+                            <span></span></td>
+                    </tr>
+                    <tr>
+                        <td>单位:</td>
+                        <td><input ng-model="dritem.company.dictionariesName" disabled="disabled" type="text" name="company" onblur   class="form-control" >
+                            <span></span></td>
+                        <td>转换系数:</td>
+                        <td><input ng-model="dritem.coefficient" type="text" disabled="disabled" name="coefficient" onblur   class="form-control" >
+                            <span></span></td>
+                    </tr>
+                    <tr>
+                        <td>生产企业:</td>
+                        <td><input ng-model="dritem.productionName" disabled="disabled" name="productionName" onblur   class="form-control" >
+                            <span></span></td>
+                        <td>商品名称:</td>
+                        <td><input ng-model="dritem.commodityName" disabled="disabled" name="commodityName" onblur   class="form-control" >
+                            <span></span></td>
+                    </tr>
+                    <tr>
+                        <td>中标价格:</td>
+                        <td><input ng-model="dritem.biddingPrice.biddingPrice" disabled="disabled" name="biddingPrice" onblur   class="form-control" >
+                            <span></span></td>
+                        <td>批准文号:</td>
+                        <td><input ng-model="dritem.approvalNumber.approvalNumber" disabled="disabled" type="text" name="approvalNumber" onblur   class="form-control" ></td>
+                    </tr>
+                    <tr>
+                        <td>批准文号有效期:</td>
+                        <td><input ng-model="dritem.approvalTime.approvalTime" disabled="disabled" type="date" name="approvalTime" onblur   class="form-control" ></td>
+                        <td>是否进口药:</td>
+                        <td><input type="radio" name="isEntrance" ng-checked="0" disabled="disabled" value="0" onblur>是
+                            <input type="radio" name="isEntrance" ng-checked="1" disabled="disabled" value="1" onblur>否
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>包装材质:</td>
+                        <td><input ng-model="dritem.packagingTexture.packagingTexture" disabled="disabled" name="packagingTexture" onblur   class="form-control" ></td>
+                        <td>包装单位:</td>
+                        <td><input ng-model="dritem.packUnit.packUnit" type="text" disabled="disabled" name="packUnit" onblur   class="form-control" ></td>
+                    </tr>
+                    <tr>
+                        <td>最新零售价:</td>
+                        <td><input ng-model="dritem.newestPrice.newestPrice" disabled="disabled" type="text" name="newestPrice" onblur   class="form-control" ></td>
+                        <td>零售价出处:</td>
+                        <td><input ng-model="dritem.retailProvenance.retailProvenance" disabled="disabled" type="text" name="retailProvenance" onblur   class="form-control" ></td>
+                    </tr>
+                    <tr>
+                        <td>有无药品检验报告:</td>
+                        <td><input type="radio" name="isCheckout" ng-checked="0" disabled="disabled" value="0" onblur>有
+                            <input type="radio" name="isCheckout" ng-checked="1" disabled="disabled" value="1" onblur>无
+                        </td>
+                        <td>药品检验报告编码:</td>
+                        <td><input ng-model="dritem.heckoutNumber.heckoutNumber" disabled="disabled" type="text" name="heckoutNumber" onblur   class="form-control" ></td>
+                    </tr>
+                    <tr>
+                        <td>药品检验报告有效期:</td>
+                        <td><input ng-model="dritem.drugValidTime.drugValidTime" disabled="disabled" type="date" name="drugValidTime" onblur   class="form-control" ></td>
+                        <td>产品说明:</td>
+                        <td><input ng-model="dritem.productExplain.productExplain" disabled="disabled" type="text" name="productExplain" onblur   class="form-control" ></td>
+                    </tr>
+                    <tr>
+                        <td>药品交易状态:</td>
+                        <td><select ng-model="dritem.drugState" disabled="disabled" name="drugState">
+                            <option ng-value="">{{dritem.drugState}}</option>
+                            <option value="0">正常</option>
+                            <option value="1">交易暂停</option>
+                        </select></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" data-dismiss="modal" >确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

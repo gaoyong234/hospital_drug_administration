@@ -1,9 +1,11 @@
 package com.hospital_purchase.service;
 
 import com.github.pagehelper.PageInfo;
+import com.hospital_purchase.common.DrugInformationDto;
 import com.hospital_purchase.pojo.Dictionaries;
 import com.hospital_purchase.pojo.DrugItems;
 import com.hospital_purchase.pojo.DrugMessage;
+import com.hospital_purchase.vo.DrugInfoVO;
 import com.hospital_purchase.vo.DrugInformationVO;
 import com.hospital_purchase.vo.DrugMessageVO;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -38,4 +40,6 @@ public interface DrugInformationService {
     PageInfo<DrugMessageVO> findAllDrugInfo(Integer pageNum,Integer pageSize,DrugMessageVO drugMessageVO);
     //gy查单条
     DrugMessageVO findDrugById(Integer id);
+    //修改根据主键id查询数据
+    DrugInfoVO queryDrugInfoById(Integer diId);
 }

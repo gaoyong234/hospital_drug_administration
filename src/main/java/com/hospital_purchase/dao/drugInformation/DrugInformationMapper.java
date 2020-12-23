@@ -1,4 +1,6 @@
 package com.hospital_purchase.dao.drugInformation;
+import com.hospital_purchase.common.DrugInformationDto;
+import com.hospital_purchase.vo.DrugInfoVO;
 import com.hospital_purchase.vo.DrugInformationExcelVO;
 import com.hospital_purchase.pojo.DrugItems;
 import com.hospital_purchase.vo.DrugInformationVO;
@@ -34,4 +36,6 @@ public interface DrugInformationMapper {
     List<DrugMessageVO> findAllDrugInfo(DrugMessageVO DrugMessageVO);
     //根据id查单条
     DrugMessageVO selectDrugById(Integer id);
+    //修改根据主键id查询数据
+    DrugInfoVO queryDrugInfoById(Integer diId);
 }

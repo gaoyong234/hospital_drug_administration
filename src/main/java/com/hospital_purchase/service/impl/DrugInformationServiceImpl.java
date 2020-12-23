@@ -2,7 +2,9 @@ package com.hospital_purchase.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hospital_purchase.common.DrugInformationDto;
 import com.hospital_purchase.util.DrugInformationTemplateUtil;
+import com.hospital_purchase.vo.DrugInfoVO;
 import com.hospital_purchase.vo.DrugInformationExcelVO;
 import com.hospital_purchase.dao.drugInformation.DictionariesInfoMapper;
 import com.hospital_purchase.dao.drugInformation.DrugInformationMapper;
@@ -111,5 +113,10 @@ public class DrugInformationServiceImpl implements DrugInformationService {
     @Override
     public DrugMessageVO findDrugById(Integer id) {
         return drugInformationMapper.selectDrugById(id);
+    }
+
+    @Override
+    public DrugInfoVO queryDrugInfoById(Integer diId) {
+        return drugInformationMapper.queryDrugInfoById(diId);
     }
 }
