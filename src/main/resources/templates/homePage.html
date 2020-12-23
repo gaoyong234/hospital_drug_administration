@@ -16,6 +16,7 @@
 
     <script src="../static/plugins/jQuery/jquery-2.2.3.min.js"></script>
     <script src="../static/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../static/js/showLoading.js" type="text/javascript" charset="utf-8"></script>
 
     <link rel="stylesheet" href="../static/plugins/angularjs/toaster.min.css">
     <script type="text/javascript" src="../static/plugins/angularjs/angular.min.js"></script>
@@ -34,6 +35,27 @@
             if (document.getElementById) {
                 iframeid.height = document.documentElement.clientHeight;
             }
+        }
+        //删除提示
+        function logOut(){
+            showModal({
+                title: "温馨提示",  //提示的标题
+                content: "确认要删除吗？",  //提示的内容
+                showCancel: true,  //是否显示取消按钮，默认为 true
+                cancelText: '取消',  //取消按钮的文字，默认为"取消"，最多 4 个字符
+                cancelColor: "#fff",  //取消按钮的文字颜色，默认为"#000000"
+                cancelBgColor: '#4c4c4c',  //取消按钮的背景颜色
+                confirmText: '确定',
+                confirmColor: '#fff',
+                confirmBgColor: '#ff1d31',
+                success: function (res) {
+                    if (res.confirm) {
+                        window.location.href = "/userController/logOut"
+                    } else {
+
+                    }
+                }
+            });
         }
 
     </script>
@@ -69,7 +91,7 @@
                         <ul class="dropdown-menu">
                             <li class="user-footer">
                                 <div class="pull-right">
-                                    <a href="/logout" class="btn btn-default btn-flat">注销</a>
+                                    <button class="btn btn-default btn-flat" onclick="logOut()">注销</button>
                                 </div>
                             </li>
                         </ul>
@@ -91,8 +113,6 @@
                     <img src="../static/img/user2-160x160.jpg" class="img-circle" alt="User Image">
                 </div>
                 <div class="pull-left info">
-                    <p></p>
-                    <a href="#"><i class="fa fa-circle text-success"></i> 在线</a>
                 </div>
             </div>
             <ul class="sidebar-menu">
@@ -108,22 +128,22 @@
 				   		 	</span>
                     </a>
                     <ul class="treeview-menu">
-                        <li id="admin-login">
+                        <li>
                             <a href="/items/durgItemsInquire" target="iframe">
                                 <i class="fa fa-circle-o"></i> 药品品目查询
-                            </ a>
+                            </a>
                         </li>
-                        <li id="admin-login">
+                        <li>
                             <a href="registrationOfCasesAjax.html" target="iframe">
                                 <i class="fa fa-circle-o"></i> 药品品目添加
                             </a>
                         </li>
-                        <li id="admin-login">
+                        <li>
                             <a href="daily_audit.html" target="iframe">
                                 <i class="fa fa-circle-o"></i> 药品品目修改
                             </a>
                         </li>
-                        <li id="admin-login">
+                        <li>
                             <a href="special_audit.html" target="iframe">
                                 <i class="fa fa-circle-o"></i> 药品品目删除
                             </a>
@@ -141,22 +161,22 @@
 				   		 	</span>
                     </a>
                     <ul class="treeview-menu">
-                        <li id="admin-login">
+                        <li>
                             <a href="/drugInformation/toDrugInformation" target="iframe">
                                 <i class="fa fa-circle-o"></i> 药品信息查询
                             </a>
                         </li>
-                        <li id="admin-login">
+                        <li>
                             <a href="registrationOfCasesAjax.html" target="iframe">
                                 <i class="fa fa-circle-o"></i> 药品信息添加
                             </a>
                         </li>
-                        <li id="admin-login">
+                        <li>
                             <a href="daily_audit.html" target="iframe">
                                 <i class="fa fa-circle-o"></i> 药品信息修改
                             </a>
                         </li>
-                        <li id="admin-login">
+                        <li>
                             <a href="special_audit.html" target="iframe">
                                 <i class="fa fa-circle-o"></i> 药品信息删除
                             </a>
@@ -174,32 +194,22 @@
 				   		 	</span>
                     </a>
                     <ul class="treeview-menu">
-                        <li id="admin-login">
+                        <li>
                             <a href="/PurchaseOrders/toPurchaseOrders" target="iframe">
                                 <i class="fa fa-circle-o"></i> 采购单详情页
                             </a>
                         </li>
-                        <li id="admin-login">
-                            <a href="new_case_management_form.html" target="iframe">
-                                <i class="fa fa-circle-o"></i> 采购单维护
-                            </a>
-                        </li>
-                        <li id="admin-login">
-                            <a href="new_case_management_form.html" target="iframe">
-                                <i class="fa fa-circle-o"></i> 采购单提交
-                            </a>
-                        </li>
-                        <li id="admin-login">
-                            <a href="new_case_management_form.html" target="iframe">
+                        <li>
+                            <a href="/PurchaseOrders/auditPurchaseOrders" target="iframe">
                                 <i class="fa fa-circle-o"></i> 采购单审核
                             </a>
                         </li>
-                        <li id="admin-login">
+                        <li>
                             <a href="new_case_management_form.html" target="iframe">
                                 <i class="fa fa-circle-o"></i> 发货
                             </a>
                         </li>
-                        <li id="admin-login">
+                        <li>
                             <a href="/purchaseStorage/toPurchaseStorage" target="iframe">
                                 <i class="fa fa-circle-o"></i> 入库
                             </a>
@@ -216,7 +226,7 @@
 				   		 	</span>
                     </a>
                     <ul class="treeview-menu">
-                        <li id="admin-login">
+                        <li>
                             <a href="audit_ncm_form.html" target="iframe">
                                 <i class="fa fa-circle-o"></i> 供货审核
                             </a>
@@ -234,27 +244,27 @@
 				   		 	</span>
                     </a>
                     <ul class="treeview-menu">
-                        <li id="admin-login">
+                        <l>
                             <a href="notification_case_management.html" target="iframe">
                                 <i class="fa fa-circle-o"></i> 按采购单查询
                             </a>
-                        </li>
-                        <li id="admin-login">
+                        </l>
+                        <li>
                             <a href="notification_case_management.html" target="iframe">
                                 <i class="fa fa-circle-o"></i> 按供货商统计交易情况
                             </a>
                         </li>
-                        <li id="admin-login">
+                        <li>
                             <a href="notification_case_management.html" target="iframe">
                                 <i class="fa fa-circle-o"></i> 按医院统计交易情况
                             </a>
                         </li>
-                        <li id="admin-login">
+                        <li>
                             <a href="notification_case_management.html" target="iframe">
                                 <i class="fa fa-circle-o"></i> 按药品统计交易情况
                             </a>
                         </li>
-                        <li id="admin-login">
+                        <li>
                             <a href="notification_case_management.html" target="iframe">
                                 <i class="fa fa-circle-o"></i> 交易明细查询
                             </a>
@@ -271,22 +281,22 @@
 				   		 	</span>
                     </a>
                     <ul class="treeview-menu">
-                        <li id="admin-login">
+                        <li>
                             <a href="sta" target="iframe">
                                 <i class="fa fa-circle-o"></i> 创建结算单
                             </a>
                         </li>
-                        <li id="admin-login">
+                        <li>
                             <a href="audit_ncm_form.html" target="iframe">
                                 <i class="fa fa-circle-o"></i> 结算单维护
                             </a>
                         </li>
-                        <li id="admin-login">
+                        <li>
                             <a href="/payment/paymenthome" target="iframe">
                                 <i class="fa fa-circle-o"></i> 结算单提交
                             </a>
                         </li>
-                        <li id="admin-login">
+                        <li>
                             <a href="stf" target="iframe">
                                 <i class="fa fa-circle-o"></i> 结算单确认
                             </a>
@@ -304,22 +314,22 @@
 				   		 	</span>
                     </a>
                     <ul class="treeview-menu">
-                        <li id="admin-login">
+                        <li>
                             <a href="/returnOrder/toReturnOrderInterface" target="iframe">
                                 <i class="fa fa-circle-o"></i> 创建退货单
                             </a>
                         </li>
-                        <li id="admin-login">
+                        <li>
                             <a href="/returnOrder/toReturnOrderMaintain" target="iframe">
                                 <i class="fa fa-circle-o"></i> 退货单维护
                             </a>
                         </li>
-                        <li id="admin-login">
+                        <li>
                             <a href="case_management.html" target="iframe">
                                 <i class="fa fa-circle-o"></i> 退货单提交
                             </a>
                         </li>
-                        <li id="admin-login">
+                        <li>
                             <a href="case_management.html" target="iframe">
                                 <i class="fa fa-circle-o"></i> 退货单确认
                             </a>
@@ -337,42 +347,42 @@
 				   		 	</span>
                     </a>
                     <ul class="treeview-menu">
-                        <li id="admin-login">
+                        <li>
                             <a href="/hospitalManage/toHospitalSystem" target="iframe">
                                 <i class="fa fa-circle-o"></i> 医院管理
                             </a>
                         </li>
-                        <li id="admin-login">
+                        <li>
                             <a href="supplier/resupplier" target="iframe">
                                 <i class="fa fa-circle-o"></i> 供货商管理
                             </a>
                         </li>
-                        <li id="admin-login">
+                        <li>
                             <a href="pending_bank_cases.html" target="iframe">
                                 <i class="fa fa-circle-o"></i> 监督单位管理
                             </a>
                         </li>
-                        <li id="admin-login">
+                        <li>
                             <a href="/userController/manageUser" target="iframe">
                                 <i class="fa fa-circle-o"></i> 用户管理
                             </a>
                         </li>
-                        <li id="admin-login">
+                        <li>
                             <a href="pending_bank_cases.html" target="iframe">
                                 <i class="fa fa-circle-o"></i> 系统参数配置
                             </a>
                         </li>
-                        <li id="admin-login">
+                        <li>
                             <a href="/Dictionaries/toDictionaries" target="iframe">
                                 <i class="fa fa-circle-o"></i> 数据字典
                             </a>
                         </li>
-                        <li id="admin-login">
+                        <li>
                             <a href="pending_bank_cases.html" target="iframe">
                                 <i class="fa fa-circle-o"></i> 区域管理
                             </a>
                         </li>
-                        <li id="admin-login">
+                        <li>
                             <a href="/LimitFunctionController/toLimit" target="iframe">
                                 <i class="fa fa-circle-o"></i> 所有功能
                             </a>

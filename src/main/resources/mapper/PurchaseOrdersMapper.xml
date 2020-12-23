@@ -91,9 +91,6 @@
       <if test="auditOpinion != null">
         audit_opinion,
       </if>
-      <if test="purchaseState != null">
-        purchase_state,
-      </if>
       <if test="modifiedTime != null">
         modified_time,
       </if>
@@ -109,6 +106,7 @@
       <if test="delId != null">
         del_id,
       </if>
+      purchase_state
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="poId != null">
@@ -147,9 +145,6 @@
       <if test="auditOpinion != null">
         #{auditOpinion,jdbcType=VARCHAR},
       </if>
-      <if test="purchaseState != null">
-        #{purchaseState,jdbcType=INTEGER},
-      </if>
       <if test="modifiedTime != null">
         #{modifiedTime,jdbcType=TIMESTAMP},
       </if>
@@ -165,6 +160,7 @@
       <if test="delId != null">
         #{delId,jdbcType=INTEGER},
       </if>
+      106
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.hospital_purchase.pojo.PurchaseOrders">

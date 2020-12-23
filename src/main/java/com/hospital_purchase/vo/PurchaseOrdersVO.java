@@ -39,8 +39,10 @@ public class PurchaseOrdersVO {
     private Date auditTime;
 
     private String auditOpinion;
-
+    //采购单状态
     private Integer purchaseState;
+    //采购单状态名称
+    private String purchaseStateName;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd",timezone="GMT+8")
     private Date modifiedTime;

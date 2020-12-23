@@ -23,11 +23,23 @@ public class PurchaseOrdersController {
     @Autowired
     private PurchaseOrdersService purchaseOrdersService;
 
-
+    /**
+     * 跳转到采购单页面
+     * @return
+     */
     @RequestMapping(value = "/toPurchaseOrders", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
     public String toPurchaseOrders(){
 
         return "PurchaseOrders/purchaseOrders";
+    }
+
+    /**
+     * 跳转到采购单审核页面
+     * @return
+     */
+    @RequestMapping("/auditPurchaseOrders")
+    public String toAuditPurchaseOrders(){
+        return "PurchaseOrders/auditPurchaseOrders";
     }
 
     /**
@@ -64,7 +76,6 @@ public class PurchaseOrdersController {
     @RequestMapping("/addPurchaseOrders")
     @ResponseBody
     public Message addPurchaseOrders(PurchaseOrders purchaseOrders, HttpSession httpSession){
-        System.out.println(purchaseOrders);
         User admin = (User) httpSession.getAttribute("admin");
         purchaseOrders.setHospitalId(admin.getHospitalId());
 
@@ -93,5 +104,15 @@ public class PurchaseOrdersController {
     public PurchaseOrdersVO getOnePurchaseOrders(Integer poId){
 
         return purchaseOrdersService.getPurchaseOrdersById(poId);
+    }
+    /**
+     * 修改采购订单的采购状态
+     * @param poId 采购单id
+     * @return
+     */
+    @RequestMapping("/changePurchaseDrugState")
+    @ResponseBody
+    public Message changePurchaseDrugState(Integer poId){
+        return purchaseOrdersService.changePurchaseDrugState(poId);
     }
 }
