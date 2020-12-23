@@ -60,7 +60,7 @@
                     $scope.dictarr1=[]
                     $scope.dictarr2=[]
                     $scope.dictarr3=[]
-
+                    $scope.dictarr5=[]
                     for (var i = 0; i < response.length; i++) {
                         if (response[i].dictionariesId==1){
                             $scope.dictarr1.push(response[i])
@@ -68,16 +68,28 @@
                             $scope.dictarr2.push(response[i])
                         }else if(response[i].dictionariesId==3){
                             $scope.dictarr3.push(response[i])
+                        }else if(response[i].dictionariesId==5){
+                            $scope.dictarr5.push(response[i])
                         }
                     }
                 })
+            }
+            $scope.choose1=false;
+            $scope.choose2=false;
+            $scope.childrenCheck=function () {
+                var fa = $scope.choose;
+                if (fa) {
+                    $scope.choose2=true;
+                } else {
+                    $scope.choose2=false;
+                }
             }
         })
 
     </script>
 </head>
 <body ng-app="myApp" ng-controller="myContr" ng-init="itemsdiction()">
-<span th:text="${soId}" style="visibility: hidden"></span>
+
 <div>
     <h5 class="alert alert-infoalert alert-info">结算药品查询</h5>
     <table class="table table-bordered table-striped">
@@ -91,9 +103,9 @@
             <td>采购医院:<input ng-model="paydrug.hospitalName" class="form-control"></td>
         </tr>
         <tr>
-            <td>开始采购时间:<input ng-model="paydrug.beginTime" class="form-control">
+            <td>开始采购时间:<input type="date" ng-model="paydrug.beginTime" class="form-control">
             </td>
-            <td>结束采购时间:<input ng-model="paydrug.endTime" class="form-control"></td>
+            <td>结束采购时间:<input type="date" ng-model="paydrug.endTime" class="form-control"></td>
         </tr>
         <tr>
             <td>药品品目号:<input ng-model="paydrug.diId" class="form-control"></td>
@@ -111,18 +123,23 @@
             <td>转换系数:<input ng-model="paydrug.coefficient" class="form-control"></td>
         </tr>
         <tr>
+            <td>生产企业:<input ng-model="paydrug.productionName" class="form-control"></td>
+            <td>商品名:<input ng-model="paydrug.commodityName" class="form-control"></td>
+        </tr>
+        <tr>
+            <td>
+                质量层次:<select ng-model="paydrug.qualityLevel" class="form-control">
+                <option ng-repeat="di in dictarr5" ng-value="di.dicId">{{di.dictionariesName}}</option>
+            </select>
+            </td>
             <td>药品类别:<select ng-model="paydrug.drugCategoryName" class="form-control">
                 <option ng-repeat="di in dictarr1" ng-value="di.dicId">{{di.dictionariesName}}</option>
             </select>
             </td>
-            <td>
-                状态:<select ng-model="paydrug.drugStateName" class="form-control">
-                <option ng-repeat="di in dictarr2" ng-value="di.dicId">{{di.dictionariesName}}</option>
-            </select>
-            </td>
+
         </tr>
         <tr>
-            <td>入库时间<input ng-model="paydrug.storageq_time" class="form-control">至<input ng-model="paydrug..storagej_time" class="form-control"></td>
+            <td>入库时间<input type="date" ng-model="paydrug.storageq_time" class="form-control">至<input type="date" ng-model="paydrug..storagej_time" class="form-control"></td>
             <td>商品批号<input ng-model="paydrug.drugBatchNumber" class="form-control"></td>
         </tr>
         <tr>
@@ -136,16 +153,15 @@
     </table>
 </div>
 <div>
-    <button type="button" class="btn1" data-toggle="modal" data-target="#addition" ng-click="addClick()">添加
-    </button>
-    <button type="button" class="btn1" data-toggle="modal" data-target="#introduce" ng-click="loadlick()">导入
+    <input type="hidden" th:value="${soId}" ng-model="soId" id="soId">
+    <button type="button" class="btn1" data-toggle="modal" data-target="#addition" ng-click="addClick()">添加至结算单
     </button>
 </div>
 <div>
     <table id="dataList" class="table">
         <thead>
         <tr>
-            <th><input type="checkbox"></th>
+            <th><input type="checkbox" ng-model="choose" ng-checked="choose1" ng-change="childrenCheck()"></th>
             <th>采购单编号</th>
             <th>采购单名称</th>
             <th>采购医院</th>
@@ -180,7 +196,7 @@
 
         <tbody id="tbody">
         <tr ng-repeat="x in lists">
-            <td><input type="checkbox"></td>
+            <td><input type="checkbox" ng-checked="choose2" value="{{x.dmId}}"></td>
             <td>{{x.purchaseNumber}}</td>
             <td>{{x.purchaseName}}</td>
             <td>{{x.hospitalName}}</td>
@@ -203,11 +219,12 @@
             <td>{{x.unitId}}</td>
             <td>{{x.coefficient}}</td>
             <td>{{x.qualityLevel}}</td>
-            <td>{{x.companyName}}</td>
+            <td>{{x.productionName}}</td>
             <td>{{x.supplierName}}</td>
             <td>{{x.beginTime}}</td>
             <td>{{x.endTime}}</td>
-            <td>{{x.purchase_state}}</td>
+            <td>已入库未结算</td>
+<!--            <td>{{x.purchaseState}}</td>-->
 
             <td><button class="btn btn-success" data-toggle="modal" data-target="#chage" ng-click="chage(x.diId)" >查看</button></td>
         </tr>

@@ -17,11 +17,19 @@ public class PayDrugVo {
 
     private Integer diId;//药品品目
 
+    private Integer poId;//采购单ID
+
+    private Integer dmId;//药品ID
+
+    private Integer soId;//结算单ID
+
     private String purchaseNumber;//采购单编码
 
     private String purchaseName;//采购单名称
 
     private String hospitalName;//采购医院
+
+    private Integer hospitalId;//采购医院ID
 
     private String serialNumber;//流水号
 
@@ -29,30 +37,15 @@ public class PayDrugVo {
 
     private String commodityName;//商品名
 
-    private BigDecimal biddingPrice;//中标价格
+    private BigDecimal bidPrice;//中标价格
 
     private BigDecimal dealPrice;//交易价格
 
     //实际交易金额
+
     private String drugCategory;
 
     private Integer drugState;
-
-    public Integer getDrugState() {
-        return drugState;
-    }
-
-    public void setDrugState(Integer drugState) {
-        this.drugState = drugState;
-    }
-
-    public String getDrugCategory() {
-        return drugCategory;
-    }
-
-    public void setDrugCategory(String drugCategory) {
-        this.drugCategory = drugCategory;
-    }
 
     private Integer purchaseQuantity;//采购量
 
@@ -102,6 +95,44 @@ public class PayDrugVo {
 
     private BigDecimal salesReturnMoney;//退货金额
 
+    private  String drugCategoryName;
 
-
- }
+    @Override
+    public String toString() {
+        return "PayDrugVo{" +
+                "pdId=" + pdId +
+                ", diId=" + diId +
+                ", purchaseNumber='" + purchaseNumber + '\'' +
+                ", purchaseName='" + purchaseName + '\'' +
+                ", hospitalName='" + hospitalName + '\'' +
+                ", hospitalId=" + hospitalId +
+                ", serialNumber='" + serialNumber + '\'' +
+                ", commonName='" + commonName + '\'' +
+                ", commodityName='" + commodityName + '\'' +
+                ", bidPrice=" + bidPrice +
+                ", dealPrice=" + dealPrice +
+                ", drugCategory='" + drugCategory + '\'' +
+                ", drugState=" + drugState +
+                ", purchaseQuantity=" + purchaseQuantity +
+                ", purchaseTotalAmount=" + purchaseTotalAmount +
+                ", storageVolume=" + storageVolume +
+                ", invoice='" + invoice + '\'' +
+                ", drugBatchNumber='" + drugBatchNumber + '\'' +
+                ", effectiveTime='" + effectiveTime + '\'' +
+                ", dosageForm='" + dosageForm + '\'' +
+                ", speciflcation='" + speciflcation + '\'' +
+                ", unitId='" + unitId + '\'' +
+                ", coefficient=" + coefficient +
+                ", qualityLevel='" + qualityLevel + '\'' +
+                ", productionName='" + productionName + '\'' +
+                ", supplierName='" + supplierName + '\'' +
+                ", beginTime=" + beginTime +
+                ", endTime=" + endTime +
+                ", storageqTime=" + storageqTime +
+                ", storagejTime=" + storagejTime +
+                ", purchaseState='" + purchaseState + '\'' +
+                ", salesReturnQuantity=" + salesReturnQuantity +
+                ", salesReturnMoney=" + salesReturnMoney +
+                '}';
+    }
+}
