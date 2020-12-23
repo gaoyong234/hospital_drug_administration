@@ -267,6 +267,79 @@
         }
 
     </script>-->
+    <script>
+        var app = angular.module("myApp",[]);
+        app.controller("myContr",function ($scope,$http) {
+            $http({
+                url:"/returnOrder/findReturnOrderDrugInfo",
+                method:"get"
+                /*params:dataList*/
+            }).then(function successCallback(response) {
+                $scope.list = response.data.list
+                for (var i = 0; i < $scope.list.length; i++) {
+                    if ($scope.list[i].purchaseState ==1){
+                        $scope.list[i].purchaseState = "已入库"
+                    }
+                    if ($scope.list[i].purchaseState ==2){
+                        $scope.list[i].purchaseState = "未入库"
+                    }
+                }
+            },function errorCallback(response) {
+
+            });
+        })
+    </script>
+    <script type="text/javascript">
+        //获取checkbox按钮组
+        var allpro = document.getElementsByName("c1");
+        //全选方法
+        function change() {
+            //获取全选按钮
+            var all = document.getElementById("all");
+            //全选按钮被选中时，遍历所有按钮
+            if (all.checked) {
+                for (var i = 0; i < allpro.length; i++) {
+                    if (allpro[i].type=="checkbox") {
+                        allpro[i].checked=true;
+
+                    }
+                }
+                //全选按钮未被选中时
+            }else{
+                for (var i = 0; i < allpro.length; i++) {
+                    if (allpro[i].type=="checkbox") {
+                        allpro[i].checked=false;
+                    }
+                }
+            }
+        }
+        //反选的方法
+        function revs() {
+            //获得反选按钮
+            var reverse = document.getElementById("revcheck");
+            //反选按钮被选中时，遍历所有按钮
+            if (reverse.checked) {
+                for (var i = 0; i < allpro.length; i++) {
+                    if (allpro[i].type=="checkbox"&&allpro[i].checked==true) {
+                        allpro[i].checked= false;
+                    }else if (allpro[i].type=="checkbox"&&allpro[i].checked==false) {
+                        allpro[i].checked= true;
+                    }
+
+                }
+                //反选按钮未被选中时
+            }else{
+                for (var i = 0; i < allpro.length; i++) {
+                    if (allpro[i].type=="checkbox"&&allpro[i].checked==true) {
+                        allpro[i].checked= false;
+                    }else if (allpro[i].type=="checkbox"&&allpro[i].checked==false) {
+                        allpro[i].checked= true;
+                    }
+
+                }
+            }
+        }
+    </script>
 </head>
 <body ng-app="myApp" ng-controller="myContr">
     <div>
@@ -325,6 +398,8 @@
 </table>
     </div>
     <div>
+        <input type="checkbox" name="c0" id="all" value="全选" onclick="change()">全选
+        <input type="checkbox" name="r0" id="revcheck" value="反选" onclick="revs()">反选
         <button type="button" class="btn1" data-toggle="modal" data-target="#addition" ng-click="addClick()">添加
         </button>
         <button type="button" class="btn1" data-toggle="modal" data-target="#introduce" ng-click="loadlick()">导入
@@ -350,9 +425,10 @@
                     <th>实际交易金额</th>
                     <th>发票号或入库单号</th>
                     <th>药品批号</th>
-                    <th>药品有效期</th>
+                    <th>药品有效期(年)</th>
                     <th>剂型</th>
                     <th>规格</th>
+                    <th>单位</th>
                     <th>转换系数</th>
                     <th>质量层次</th>
                     <th>生产企业</th>
@@ -364,18 +440,37 @@
                 </tr>
             </thead>
         <tbody id="tbody">
-            <tr ng-repeat="x in lists">
-                <!--<td>{{x.diId}}</td>
+            <tr ng-repeat="x in list">
+                <td>{{x.srId}}</td>
+                <td><input type="checkbox" name="c1"></td>
+                <td>{{x.purchaseNumber}}</td>
+                <td>{{x.purchaseName}}</td>
+                <td>{{x.hospitalName}}</td>
+                <td>{{x.serialNumber}}</td>
                 <td>{{x.commonName}}</td>
+                <td>{{x.commodityName}}</td>
+                <td>{{x.biddingPrice}}</td>
+                <td>{{x.dealPrice}}</td>
+                <td>{{x.purchaseQuantity}}</td>
+                <td>{{x.purchaseTotalAmount}}</td>
+                <td>{{x.storageVolume}}</td>
+                <td></td>
+                <td>{{x.invoice}}</td>
+                <td>{{x.drugBatchNumber}}</td>
+                <td>{{x.effectiveTime}}</td>
                 <td>{{x.dosageForm}}</td>
                 <td>{{x.speciflcation}}</td>
                 <td>{{x.unitId}}</td>
                 <td>{{x.coefficient}}</td>
-                <td>{{x.drugCategoryName}}</td>
-                <td>{{x.drugStateName}}</td>-->
-                <td><button class="btn btn-success" data-toggle="modal" data-target="#chage" ng-click="chage(x.diId)" >查看</button></td>
-                <td><button class="btn btn-warning" data-toggle="modal" data-target="#more" ng-click="amend(x.diId)">修改</button></td>
-                <td><button class="btn btn-danger" data-toggle="modal" ng-click="expurgate(x.diId)">删除</button></td>
+                <td>{{x.qualityLevel}}</td>
+                <td>{{x.productionName}}</td>
+                <td>{{x.supplierName}}</td>
+                <td>{{x.beginTime}}</td>
+                <td>{{x.endTime}}</td>
+                <td>{{x.purchaseState}}</td>
+                <td><button class="btn btn-success" data-toggle="modal" data-target="#chage" ng-click="chage(x.diId)" >查看</button>
+                <button class="btn btn-warning" data-toggle="modal" data-target="#more" ng-click="amend(x.diId)">修改</button>
+                <button class="btn btn-danger" data-toggle="modal" ng-click="expurgate(x.diId)">删除</button></td>
             </tr>
         </tbody>
     </table>

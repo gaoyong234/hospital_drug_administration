@@ -17,274 +17,85 @@
     <style>
         label { float: left; width: 10em; margin-right: 1em; text-align: right; }
     </style>
-   <!-- <script>
-       var app= angular.module("myApp",["pagination"]);
-       app.controller("myContr",function ($scope,$http) {
-           $scope.paginationConf={
-               currentPage: 1,  				//当前页
-               totalItems: 10,					//总记录数
-               itemsPerPage: 10,				//每页记录数
-               perPageOptions: [5,10, 20, 30, 40, 50], //分页选项，下拉选择一页多少条记录
-               onChange: function () {
-                   $scope.find($scope.paginationConf.currentPage,$scope.paginationConf.itemsPerPage)
-               }
-           }
-           $scope.drug={
-               pageNum:0,
-               pageSize:10
-           }
-           $scope.find=function(pageNum,items) {
-               if (pageNum==null||pageNum==""){
-                   pageNum=1;
-               }
-               $scope.drug.pageNum=pageNum;
-               $scope.drug.pageSize=items;
-               var druglist=$scope.drug;
-               $http({
-                   url:"/items/conditionfand",
-                   method:"post",
-                   params: druglist
-                   ,
-               }).success(function (response) {
-                   $scope.lists=response.list;
-                   $scope.item=new Date();
-                   $scope.paginationConf.totalItems=response.total;
-               })
-
-           }
-            $scope.amend=function (diId) {
-                $http({
-                    url:"/items/fandId",
-                    method:"get",
-                    params:{"diId": diId}
-                    ,
-                }).success(function (response) {
-                    $scope.dritem=response;
-                })
-            }
-            $scope.ngsave=function () {
-                var ditereva=$scope.dritem;
-                var list = $scope.lists;
-                for (var i = 0; i < list.length; i++) {
-                    if (list[i].diId == $scope.dritem.diId) {
-                        $scope.pd = list[i];
-                        break;
-                    }
-                }
-                var equ=$scope.pd.commonName==$scope.dritem.commonName&&$scope.pd.dosageForm==$scope.dritem.dosageForm&&$scope.pd.speciflcation==$scope.dritem.speciflcation&&$scope.pd.unitId==$scope.dritem.unitId&&$scope.pd.coefficient==$scope.dritem.coefficient;
-                var dec=$scope.dritem.commonName!=null&&$scope.dritem.dosageForm!=null&&$scope.dritem.speciflcation!=null&&$scope.dritem.unitId!=null&&$scope.dritem.coefficient!=null&&$scope.dritem.commonName!=""&&$scope.dritem.dosageForm!=""&&$scope.dritem.speciflcation!=""&&$scope.dritem.unitId!=""&&$scope.dritem.coefficient!="";
-                if (equ){
-                    alert("请修改后提交")
-                }else {
-                    if (dec){
-                        $http({
-                            url:"/items/revamp",
-                            method:"post",
-                            params: ditereva
-                            ,
-                        }).success(function (response) {
-                            if (response>0){
-                                alert("修改成功")
-                                $scope.find();
-                            }else {
-                                alert("修改失败")
-                            }
-                        })
-                    }else {
-                        alert("请完善信息后保存!")
-                    }
-                }
-            }
-            $scope.chage=function(diId){
-                var list = $scope.lists;
-                for (var i = 0; i < list.length; i++) {
-                    if (list[i].diId == diId) {
-                        $scope.chagedri = list[i];
-                        break;
-                    }
-                }
-                console.log($scope.chagedri)
-            }
-            $scope.expurgate=function (diId) {
-                if (confirm("是否确认删除?")){
-                    $http({
-                        url: "/items/expurgate",
-                        method: "get",
-                        params: {"diId":diId}
-                    }).success(function (response) {
-                        if (response>0){
-                            $scope.find();
-                        }else {
-                            alert("删除失败")
-                        }
-                    })
-                }
-            }
-           $scope.loadAlllick=function () {
-               if (confirm("是否导出全部数据")) {
-                   window.location.href = "/items/exportExcel";
-               } else {
-                   return false;
-               }
-           }
-           $scope.loadtemplate=function () {
-                window.location.href="/items/loadtemplate";
-           }
-
-       })
-
-
-    </script>
-    <script type="text/javascript">
-        var demo=false;
-        $(function () {
-            $("#addition input").blur(function () {
-                $(this).next().html("");
-                $(this).next().css("color","black");
-                if (this.value!=null&&this.value!=""){
-                    demo=true;
-                }else{
-                    $(this).next().html("不能为空");
-                    $(this).next().css("color","red");
-                    demo=false;
-                }
-            })
-        })
-
-        var lists;
-        function save() {
-           var commonName=$("[name='commonName']").val();
-           var dosageForm=$("[name='dosageForm']").val();
-          var  speciflcation=$("[name='speciflcation']").val();
-           var unitId=$("[name='unitId']").val();
-           var coefficient=$("[name='coefficient']").val();
-          var  drugCategoryName=$("[name='drugCategoryName']").val();
-           var drugStateName=$("[name='drugStateName']").val();
-            demo = commonName != null && commonName != "" && dosageForm != null && dosageForm != "" && speciflcation != null && speciflcation != "" && unitId != null && unitId != "" && coefficient != null && coefficient != "" && drugCategoryName != null && drugCategoryName != "" && drugStateName != null && drugStateName != "";
-            if (demo){
-              conserve()
-            }else {
-                document.getElementById("headLeft").innerHTML="药品品目添加"
-                document.getElementById("headline").innerHTML="失败提示信息"
-                document.getElementById("whether").innerHTML="因数据不完整,您的操作失败,请尝试刷新页面,重新操作"
-            }
-        }
-        function conserve() {
-            var addform = $("#addForm").serialize();
-            $.ajax({
-                url: "/items/addDrugItems",
-                dataType: "json",
-                type: "post",
-                data: addform,
-                success: function (data) {
-                    if (data > 0) {
-                        document.getElementById("headLeft").innerHTML="药品品目添加"
-                        document.getElementById("headline").innerHTML="成功提示信息"
-                        document.getElementById("whether").innerHTML="您的操作成功"
-                        document.getElementById("lose").innerHTML="";
-                    } else {
-                        document.getElementById("headLeft").innerHTML="药品品目添加"
-                        document.getElementById("headline").innerHTML="失败提示信息"
-                        document.getElementById("whether").innerHTML="您的操作失败,请尝试刷新页面,重新操作"
-                    }
-                }
-            })
-        }
-        var lose=0;
-        var dritlist=null;
-        function readAlllick() {
-            dritlist=null;
-            var file = $("#files")[0].files[0];
-            if (file==null){
-                document.getElementById("headLeft").innerHTML="药品品目导入"
-                document.getElementById("headline").innerHTML="失败提示信息"
-                document.getElementById("whether").innerHTML="您的操作失败"
-                document.getElementById("lose").innerHTML="请先选择文件,再点击导入按钮";
-            }else {
-            var formData = new FormData;
-            formData.append("filename", file);
-            $.ajax({
-                url: "/items/readfile",     //路径
-                type: "post",        //格式
-                dataType: "josn",    //数据格式
-                data: formData,  //数据
-                cache: false,   //上传文件无需缓存
-                processData: false,   // 用于对参数进行序列化处理，这里必须设为false
-                contentType: false, // 必须
-                success : function (count) {
-                    var con = count.responseText;
-                    if (con>0){
-                        document.getElementById("headLeft").innerHTML="药品品目导入"
-                        document.getElementById("headline").innerHTML="成功提示信息"
-                        document.getElementById("whether").innerHTML="您的操作成功"
-                        document.getElementById("lose").innerHTML="成功导入"+con+"条数据";
-                    }else {
-                        document.getElementById("headLeft").innerHTML="药品品目导入"
-                        document.getElementById("headline").innerHTML="失败提示信息"
-                        document.getElementById("whether").innerHTML="您的操作失败"
-                        document.getElementById("lose").innerHTML="请确认信息符合导入说明";
-                    }
-                },
-                error:function (count) {
-                    var parse = JSON.parse(count.responseText);
-                    var succeed = parse.succeed;
-                    lose = parse.lose;
-                    dritlist=parse.drugItemsList;
-                    if (succeed>0){
-                        document.getElementById("headLeft").innerHTML="药品品目导入"
-                        document.getElementById("headline").innerHTML="成功提示信息"
-                        document.getElementById("whether").innerHTML="您的操作成功"
-                        document.getElementById("lose").innerHTML="成功导入"+succeed+"条数据,导入失败"+lose+"条";
-                    }else {
-                        document.getElementById("headLeft").innerHTML="药品品目导入"
-                        document.getElementById("headline").innerHTML="失败提示信息"
-                        document.getElementById("whether").innerHTML="您的操作失败"
-                        document.getElementById("lose").innerHTML="请确认信息符合导入说明";
-                    }
-                }
-            })
-            }
-        }
-        function fandLose() {
-            document.getElementById("headLeft").innerHTML="药品品目导入"
-            document.getElementById("headline").innerHTML="失败信息"
-            document.getElementById("whether").innerHTML="您的操作共失败"+lose+"条"
-            console.log(dritlist)
-            var a=""
-            for (var i = 0; i < dritlist.length; i++) {
-                a+="&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp第"+(i+1)+"条:",
-                a+=dritlist[i].commonName+","
-                a+=dritlist[i].dosageForm+","
-                a+=dritlist[i].speciflcation+","
-                a+=dritlist[i].unitId+","
-                a+=dritlist[i].coefficient+","
-                a+=dritlist[i].drugCategoryName
-                if ((i+1)%2==0){
-                    a+="<br>"
-                }
-            }
-            document.getElementById("lose").innerHTML=a
-        }
-
-    </script>-->
     <script>
         var app = angular.module("myApp",[]);
         app.controller("myContr",function ($scope,$http) {
-            $http({
-                url:"//",
-                method:"get"
-                /*params:dataList*/
-            }).then(function successCallback(response) {
-                    console.log(response);
-            },function errorCallback(response) {
 
-            });
+            //获取当前时间
+            function getDate(){
+                var today = new Date();
+                var date;
+                date = (today.getFullYear()) +"-" + (today.getMonth() + 1 ) + "-" + today.getDate() + " " + today.getHours() +":"+ today.getMinutes() +":"+ today.getSeconds();
+                return date;
+            }
+            /*window.setInterval(function(){
+                var quitTime= document.getElementById("quitTime").value=getDate();
+            }, 1000);*/
+            $scope.entity={};
+            //查询要退货的医院信息
+            $http({
+                url:"/Hospital/findOneHospital",
+                method:"get"
+            }).success(function (response) {
+                $scope.userInfo = response
+                $scope.entity.quitState = 1
+                $scope.entity.quitTime = getDate();
+                $scope.entity.quitName = $scope.userInfo.hospitalName + getDate()+ "退货单";
+            })
+            //验证
+            $scope.formValidation = function(entity){
+                var msg = false;
+                var quitNumber = entity.quitNumber
+                var quitName = entity.quitName
+                var linkman = entity.linkman
+                var linkmanPhone = entity.linkmanPhone
+                var remarks = entity.remarks
+                if(quitNumber == null || quitNumber == ''){
+                    alert("请填写退货单编码！");
+                    msg = false;
+                }else if(quitName == null || quitName == ''){
+                    alert("请填写退货单名称！");
+                    msg = false;
+                }else if(linkman == null || linkman == ''){
+                    alert("请填写联系人信息！");
+                    msg = false;
+                }else if(linkmanPhone == null || linkmanPhone == ''){
+                    alert("请填写联系电话！");
+                    msg = false;
+                }else if (remarks == null || remarks == ''){
+                    alert("请填写备注！");
+                    msg = false;
+                }else {
+                    msg = true;
+                }
+                return msg;
+            }
+            //保存退货单
+            $scope.saveReturnOrder = function () {
+                var entity = $scope.entity
+                var msgs = $scope.formValidation(entity);
+                if (msgs){
+                    $http({
+                        url:"/returnOrder/addReturnOrder",
+                        method:"post",
+                        params:entity
+                    }).success(function (response) {
+                        if (response >0){
+                            alert("创建退货单成功，准备跳转到退货单维护界面")
+                            window.location.href = "/returnOrder/toReturnOrderMaintain";
+                        }else {
+                            alert("创建退货单失败，请稍后重试！")
+                        }
+                    })
+                }
+
+            }
         })
     </script>
 </head>
 <body ng-app="myApp" ng-controller="myContr">
     <div>
-        <h5 class="alert alert-infoalert alert-info">退货单管理</h5>
+        <h5 class="alert alert-infoalert alert-info">退货单维护</h5>
         <table class="table table-bordered table-striped">
     <tr>
         <td>采购单编码:<input ng-model="drug.diId"></td>
@@ -407,56 +218,54 @@
                 <table class="table table-bordered table-striped"  >
                     <tr>
                         <td>医院编码:</td>
-                        <td><input name="diId" onblur class="form-control"></td>
+                        <td><input name="hospitalNumber" ng-model="userInfo.hospitalNumber" disabled="disabled" onblur class="form-control"></td>
                         <td>医院名称:</td>
-                        <td><input name="commonName" onblur  class="form-control" >
+                        <td><input name="hospitalName" ng-model="userInfo.hospitalName" onblur disabled="disabled"  class="form-control" >
                         <span></span></td>
                     </tr>
                     <tr>
 
                         <td>退货单编码:</td>
-                        <td><input name="dosageForm" onblur   class="form-control" >
+                        <td><input name="quitNumber" ng-model="entity.quitNumber" onblur   class="form-control" >
                         <span></span></td>
                         <td>退货单名称:</td>
-                        <td><input name="speciflcation" onblur   class="form-control"  >
+                        <td><input name="quitName" ng-model="entity.quitName" value="" onblur   class="form-control"  >
                         <span></span></td>
                     </tr>
                     <tr>
                         <td>退货时间:</td>
-                        <td><input type="date" name="unitId" onblur   class="form-control" >
+                        <td><input type="text" ng-model="entity.quitTime" name="quitTime" disabled="disabled" value="" onblur   class="form-control" >
                             <span></span></td>
                         <td>建单时间:</td>
-                        <td><input type="date" name="coefficient" onblur   class="form-control" >
+                        <td><input type="date" name="fundTime" disabled="disabled" onblur   class="form-control" >
                             <span></span></td>
                     </tr>
                     <tr>
                         <td>联系人:</td>
-                        <td><input name="coefficient" onblur   class="form-control" >
+                        <td><input name="linkman" ng-model="entity.linkman" onblur   class="form-control" >
                         <span></span></td>
                         <td>联系电话:</td>
-                        <td><input name="coefficient" onblur   class="form-control" >
+                        <td><input name="linkmanPhone" ng-model="entity.linkmanPhone" onblur   class="form-control" >
                             <span></span></td>
                     </tr>
                     <tr>
                         <td>退货单状态:</td>
-                        <td><select  name="drugCategoryName" onblur class="form-control" >
-                            <option value="1"></option>
-                            <option value="2"></option>
-                        </select><span></span></td>
+                        <td><input name="quitState" disabled="disabled" value="未提交" onblur   class="form-control" >
+                            <span></span></td>
                         <td>提交时间:</td>
-                        <td><input type="date" name="coefficient" onblur   class="form-control" >
+                        <td><input type="date" name="submitTime" disabled="disabled" onblur   class="form-control" >
                             <span></span></td>
                     </tr>
                     <tr>
                         <td>备注:</td>
-                        <td><input name="coefficient" onblur   class="form-control" >
+                        <td><input name="remarks" ng-model="entity.remarks" onblur   class="form-control" >
                             <span></span></td>
                     </tr>
                 </table>
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" data-toggle="modal" data-dismiss="modal" data-target="#status" onclick="save()">保存</button>
+                <button class="btn btn-primary" data-toggle="modal"  ng-click="saveReturnOrder()">保存退货单</button>
                 <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">关闭</button>
             </div>
         </div>
