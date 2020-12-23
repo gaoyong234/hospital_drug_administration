@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hospital_purchase.dao.UserRole.RoleDaoMapper">
+  <resultMap id="BaseResultMap" type="com.hospital_purchase.pojo.Role">
+    <id column="ro_id" jdbcType="INTEGER" property="roId" />
+    <result column="role_name" jdbcType="VARCHAR" property="roleName" />
+    <result column="creation_time" jdbcType="TIMESTAMP" property="creationTime" />
+    <result column="modification_time" jdbcType="TIMESTAMP" property="modificationTime" />
+    <result column="del_id" jdbcType="INTEGER" property="delId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ro_id, role_name, creation_time, modification_time, del_id
+  </sql>
+  <select id="selectOneRole" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from role
+    where ro_id = #{roId,jdbcType=INTEGER}
+    and del_id=0
+  </select>
+  <insert id="insertRole" parameterType="com.hospital_purchase.pojo.Role">
+    insert into role
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="roId != null">
+        ro_id,
+      </if>
+      <if test="roleName != null">
+        role_name,
+      </if>
+      <if test="creationTime != null">
+        creation_time,
+      </if>
+      <if test="modificationTime != null">
+        modification_time,
+      </if>
+      <if test="delId != null">
+        del_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="roId != null">
+        #{roId,jdbcType=INTEGER},
+      </if>
+      <if test="roleName != null">
+        #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="creationTime != null">
+        #{creationTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modificationTime != null">
+        #{modificationTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delId != null">
+        #{delId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="deleteRole" parameterType="integer">
+    update role
+    set del_id = 1
+    where ro_id=#{roleId}
+  </update>
+  <update id="updateRole" parameterType="com.hospital_purchase.pojo.Role">
+    update role
+    <set>
+      <if test="roleName != null">
+        role_name = #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="creationTime != null">
+        creation_time = #{creationTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modificationTime != null">
+        modification_time = #{modificationTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ro_id = #{roId,jdbcType=INTEGER}
+  </update>
+  <select id="selectAllRole" resultMap="BaseResultMap" parameterType="com.hospital_purchase.pojo.Role">
+    select
+    <include refid="Base_Column_List" />
+    from role
+    <where>
+      <if test="roleName != null and roleName != ''">
+        and role_name like concat("%",#{roleName})
+      </if>
+      and del_id=0
+    </where>
+    order by creation_time DESC
+  </select>
+</mapper>

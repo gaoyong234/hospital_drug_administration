@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../../static/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <link rel="stylesheet" href="../../static/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../static/plugins/adminLTE/css/AdminLTE.css">
+    <link rel="stylesheet" href="../../static/plugins/adminLTE/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="../../static/css/style.css">
+    <link rel="stylesheet" href="../../static/plugins/angularjs/toaster.min.css">
+    <script src="../../static/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+    <script src="../../static/plugins/angularjs/angular.min.js"></script>
+    <link rel="stylesheet" href="../../static/plugins/angularjs/pagination.css">
+    <script type="text/javascript" src="../../static/plugins/angularjs/pagination.js"></script>
+    <script src="../../static/js/showLoading.js" type="text/javascript" charset="utf-8"></script>
+    <style>
+        label {
+            float: left;
+            width: 10em;
+            margin-right: 1em;
+            text-align: right;
+        }
+        .contents{
+            text-align:left;
+        }
+        .introduce{
+            text-align:right;
+        }
+    </style>
+    <script>
+        var app = angular.module("myApp", ["pagination"]);
+        app.controller("myContr", function ($scope, $http) {
+            $scope.entity = {};
+            $scope.paginationConf = {
+                currentPage: 1,  				//当前页
+                totalItems: 10,					//总记录数
+                itemsPerPage: 10,				//每页记录数
+                perPageOptions: [5, 10, 20, 30, 40, 50], //分页选项，下拉选择一页多少条记录
+                onChange: function () {
+                    $scope.find($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage)
+                }
+            }
+            $scope.role = {
+                pageNum: 0,
+                pageSize: 10
+            }
+            //获取全部信息
+            $scope.find = function (pageNum, items) {
+                if (pageNum == null || pageNum == "") {
+                    pageNum = 1;
+                }
+                $scope.role.pageNum = pageNum;
+                $scope.role.pageSize = items;
+                var role = $scope.role;
+                console.log(role)
+                $http({
+                    url: "/Role/findAllRole",
+                    method: "post",
+                    params: role
+                }).success(function (response) {
+                    $scope.lists = response.list;
+                    $scope.paginationConf.totalItems = response.total;
+                })
+
+            }
+            //返回结果提示
+            $scope.showModalButton1 = function (slogan) {
+                showModal({
+                    title: "温馨提示",  //提示的标题
+                    content: slogan,  //提示的内容
+                    showCancel: false,  //是否显示取消按钮，默认为 true
+                    cancelText: '取消',  //取消按钮的文字，默认为"取消"，最多 4 个字符
+                    cancelColor: "#fff",  //取消按钮的文字颜色，默认为"#000000"
+                    cancelBgColor: '#4c4c4c',  //取消按钮的背景颜色
+                    confirmText: '确定',
+                    confirmColor: '#fff',
+                    confirmBgColor: '#ff130a',
+                    success: function () {
+
+                    }
+                });
+            }
+            //删除提示
+            $scope.showModalButton2 = function () {
+                showModal({
+                    title: "温馨提示",  //提示的标题
+                    content: "确认要删除吗？",  //提示的内容
+                    showCancel: true,  //是否显示取消按钮，默认为 true
+                    cancelText: '取消',  //取消按钮的文字，默认为"取消"，最多 4 个字符
+                    cancelColor: "#fff",  //取消按钮的文字颜色，默认为"#000000"
+                    cancelBgColor: '#4c4c4c',  //取消按钮的背景颜色
+                    confirmText: '确定',
+                    confirmColor: '#fff',
+                    confirmBgColor: '#ff1d31',
+                    success: function (res) {
+                        if (res.confirm) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                });
+            }
+           //验证
+            $scope.toVerification = function (role) {
+                var judge = true;
+                var roleName = role.roleName;
+                if (roleName == null || roleName == '') {
+                    $scope.showModalButton1("请填角色名称！");
+                    judge = false;
+                }
+
+                return judge;
+            }
+            //添加
+            $scope.submit = function () {
+                var role = $scope.entity;
+                var judge = $scope.toVerification(role);
+                if (judge) {
+                    $http({
+                        url: "/Role/addRole",
+                        method: "post",
+                        params: role
+                    }).success(function (response) {
+                        $scope.showModalButton1(response.slogan);
+                        $("#editModal").modal('hide');//此处为添加框，关闭添加框
+                        $scope.find($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
+                    })
+                }
+            }
+            //修改显示数据
+            $scope.reviseMassage = function (roId) {
+                $http({
+                    url: "/Role/findOneRole",
+                    method: "post",
+                    params: {"roId": roId}
+                }).success(function (response) {
+                    $scope.revise = response;
+                })
+            }
+            //修改
+            $scope.reviseSave = function () {
+                var role = $scope.revise;
+                var judge = $scope.toVerification(role);
+                if (judge) {
+                    $http({
+                        url: "/Role/changeRole",
+                        method: "post",
+                        params: role
+                    }).success(function (response) {
+                        $scope.showModalButton1(response.slogan);
+                        $("#modification").modal('hide');//，关闭框
+                        $scope.find($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
+                    })
+                }
+            }
+            //查看
+            $scope.detailedMassage=function(roId){
+                $http({
+                    url: "/Role/findOneRole",
+                    method: "post",
+                    params: {"roId": roId}
+                }).success(function (response) {
+                    $scope.information = response;
+                })
+            }
+            //删除
+            $scope.removeOne = function (roId) {
+                showModal({
+                    title: "温馨提示",  //提示的标题
+                    content: "确认要删除吗？",  //提示的内容
+                    showCancel: true,  //是否显示取消按钮，默认为 true
+                    cancelText: '取消',  //取消按钮的文字，默认为"取消"，最多 4 个字符
+                    cancelColor: "#fff",  //取消按钮的文字颜色，默认为"#000000"
+                    cancelBgColor: '#4c4c4c',  //取消按钮的背景颜色
+                    confirmText: '确定',
+                    confirmColor: '#fff',
+                    confirmBgColor: '#ff1d31',
+                    success: function (res) {
+                        if (res.confirm) {
+                            $http({
+                                url: "/Role/removeRole",
+                                method: "post",
+                                params: {"roId": roId}
+                            }).success(function (response) {
+                                $scope.showModalButton1(response.slogan);
+                                $scope.find($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
+                            })
+                        }
+                    }
+                });
+
+            }
+
+
+        });
+
+    </script>
+</head>
+<body ng-app="myApp" ng-controller="myContr">
+<div>
+    <h5 class="alert alert-infoalert alert-info">字典详情页</h5>
+    <table class="table table-bordered table-striped">
+        <tr>
+            <td class="introduce">字典名称:</td>
+            <td class="contents"><input ng-model="role.dictionariesName"  class="form-control"/></td>
+            <td class="introduce">父级字典:</td>
+            <td class="contents">
+                <select ng-model="role.dictionariesId" class="form-control">
+                    <option value="">无</option>
+                    <option ng-repeat="ParentDictionaries in ParentDictionariesList"
+                            ng-value="ParentDictionaries.dicId">{{ParentDictionaries.dictionariesName}}
+                    </option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td colspan="1" align="right">
+                <button type="button" class="btn btn-info" ng-click="find()">查询</button>
+            </td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+<div>
+    <button type="button" class="btn btn-primary" style="margin-left: 35px" data-toggle="modal" data-target="#editModal"
+            ng-click="addClick()">添加
+    </button>
+</div>
+<div>
+    <table id="dataList" class="table">
+        <thead>
+        <tr>
+            <th><input type="checkbox" name="pitchOn" onchange="childrenCheck()"></th>
+            <th>角色id</th>
+            <th>角色名称</th>
+            <th>创建时间</th>
+            <th>查看</th>
+            <th>修改</th>
+            <th>删除</th>
+        </tr>
+        </thead>
+
+        <tbody id="tbody">
+        <tr ng-repeat="role in lists">
+            <td><input type="checkbox" name="pitchOn" value="{{role.roId}}"></td>
+            <td>{{role.roId}}</td>
+            <td>{{role.roleName}}</td>
+            <td>{{role.creationTime}}</td>
+            <td>
+                <button class="btn btn-success" data-toggle="modal" data-target="#detailed" ng-click="detailedMassage(role.roId)">详细</button>
+            </td>
+            <td>
+                <button class="btn btn-warning" data-toggle="modal" data-target="#modification"
+                        ng-click="reviseMassage(role.roId)">修改
+                </button>
+            </td>
+            <td>
+                <button class="btn btn-danger" ng-click="removeOne(role.roId)">删除</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <tm-pagination conf="paginationConf"></tm-pagination>
+</div>
+
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button id="bt1" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel">角色添加</h3>
+            </div>
+            <div class="modal-body">
+
+                <table class="table table-bordered table-striped">
+                    <tr>
+                        <td>角色名称:</td>
+                        <td><input name="roleName" ng-model="entity.roleName" class="form-control"></td>
+                    </tr>
+                </table>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" ng-click="submit()">提交</button>
+                <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modification" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button id="bt" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabe">字典修改</h3>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered table-striped">
+                    <tr>
+                        <td>角色名称:</td>
+                        <td><input name="dictionariesName" ng-model="revise.roleName" class="form-control"></td>
+                    </tr>
+                    <tr>
+                        <td>创建时间:</td>
+                        <td>
+                            <input name="creationTime" ng-model="revise.creationTime" class="form-control" disabled="disabled">
+                        </td>
+
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" data-dismiss="modal" ng-click="reviseSave()">保存</button>
+                <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="detailed" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button id="btn" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabe2">角色详细数据</h3>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered table-striped">
+                    <tr>
+                        <td>角色名称:</td>
+                        <td>
+                            <input name="roleName" ng-model="information.roleName" class="form-control" disabled="disabled"></td>
+                    </tr>
+                    <tr>
+                        <td>创建时间:</td>
+                        <td>
+                            <input name="creationTime" ng-model="information.creationTime" class="form-control" disabled="disabled">
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>修改时间:</td>
+                        <td>
+                            <input name="modificationTime" ng-model="information.modificationTime" class="form-control" disabled="disabled">
+                        </td>
+
+                    </tr>
+
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

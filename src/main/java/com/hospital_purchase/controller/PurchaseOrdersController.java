@@ -115,4 +115,12 @@ public class PurchaseOrdersController {
     public Message changePurchaseDrugState(Integer poId){
         return purchaseOrdersService.changePurchaseDrugState(poId);
     }
+
+    @RequestMapping("/auditPurchaseDrug")
+    @ResponseBody
+    public Message auditPurchaseDrug (PurchaseOrders purchaseOrders,HttpSession httpSession){
+        User admin = (User) httpSession.getAttribute("admin");
+        purchaseOrders.setUserId(admin.getUsId());
+        return purchaseOrdersService.updatePurchaseDrugAudit(purchaseOrders);
+    }
 }

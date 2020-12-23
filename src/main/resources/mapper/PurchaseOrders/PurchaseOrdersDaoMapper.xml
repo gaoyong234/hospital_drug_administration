@@ -43,6 +43,7 @@
     <result column="hospital_number" jdbcType="VARCHAR" property="hospitalNumber"/>
     <result column="hospital_name" jdbcType="VARCHAR" property="hospitalName"/>
     <result column="purchase_state_name" jdbcType="VARCHAR" property="purchaseStateName"/>
+    <result column="user_name" jdbcType="VARCHAR" property="userName"/>
 
   </resultMap>
   <sql id="Base_Column_List">
@@ -52,11 +53,12 @@
 
   <select id="selectPurchaseOrdersList" resultMap="BaseMap" parameterType="com.hospital_purchase.vo.PurchaseOrdersVO">
     select
-     po_id, audit_state, audit_opinion, hospital_id, purchase_name, fund_time, purchase_state,begin_time,end_time,postscript,hospital_number,
-    po.modified_time, po.submit_time, linkman_name, linkman_phone, user_id, audit_time, purchase_number,po.del_id delId,hospital_name,dict.dictionaries_name purchase_state_name
+    po_id, audit_state, audit_opinion, po.hospital_id, purchase_name, fund_time, purchase_state,begin_time,end_time,postscript,hospital_number,
+    po.modified_time, po.submit_time, linkman_name, linkman_phone, user_id, user_name, audit_time, purchase_number,po.del_id delId,hospital_name,dict.dictionaries_name purchase_state_name
     from purchase_orders po
     left join hospital hs on hs.hp_id = po.hospital_id
     LEFT JOIN dictionaries dict on dict.dic_id=po.purchase_state
+    left join user us on us.us_id=po.user_id
     <where>
       <if test="hospitalName!=null  and hospitalName != ''">
         and hospital_name like CONCAT("%",#{hospitalName},"%")
@@ -73,10 +75,11 @@
   </select>
   <select id="selectPurchaseOrdersById" parameterType="integer" resultMap="BaseMap">
     select
-     po_id, audit_state, audit_opinion, hospital_id, purchase_name, fund_time, purchase_state,begin_time,end_time,postscript,hospital_number,
-    po.modified_time, po.submit_time, linkman_name, linkman_phone, user_id, audit_time, purchase_number,po.del_id delId,hospital_name,dict.dictionaries_name purchase_state_name
+     po_id, audit_state, audit_opinion, po.hospital_id, purchase_name, fund_time, purchase_state,begin_time,end_time,postscript,hospital_number,
+    po.modified_time, po.submit_time, linkman_name, linkman_phone, user_id, user_name, audit_time, purchase_number,po.del_id delId,hospital_name,dict.dictionaries_name purchase_state_name
     from purchase_orders po
     left join hospital hs on hs.hp_id = po.hospital_id
+    left join user us on us.us_id=po.user_id
     LEFT JOIN dictionaries dict on dict.dic_id=po.purchase_state
     where po.po_id=#{poId}
     and po.del_id=0
@@ -89,6 +92,12 @@
   <update id="updatePurchaseDrugState" parameterType="integer">
     update purchase_orders
     set purchase_state=107
+    where po_id=#{poId}
+    and del_id=0
+  </update>
+  <update id="updatePurchaseDrugAudit" parameterType="com.hospital_purchase.pojo.PurchaseDrug">
+    update purchase_orders
+    set purchase_state=#{purchaseState},audit_opinion=#{auditOpinion},audit_time=#{auditTime},user_id=#{userId}
     where po_id=#{poId}
     and del_id=0
   </update>

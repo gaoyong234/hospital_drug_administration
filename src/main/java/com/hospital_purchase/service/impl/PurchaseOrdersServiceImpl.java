@@ -66,4 +66,12 @@ public class PurchaseOrdersServiceImpl implements PurchaseOrdersService {
         Message message = ReturnUtil.returnDataOperation("采购单提交", num);
         return message;
     }
+
+    @Override
+    public Message updatePurchaseDrugAudit(PurchaseOrders purchaseOrders) {
+        purchaseOrders.setAuditTime(new Date());
+        Integer num = purchaseOrdersDaoMapper.updatePurchaseDrugAudit(purchaseOrders);
+        Message message = ReturnUtil.returnDataOperation("审核", num);
+        return message;
+    }
 }

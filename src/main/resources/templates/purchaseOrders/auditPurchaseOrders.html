@@ -101,50 +101,13 @@
                 });
             }
 
-            //表单验证
-            $scope.toVerification = function(purchaseOrders){
-                var judge = true;
-                var purchaseName = purchaseOrders.purchaseName;
-                var beginTime = purchaseOrders.beginTime;
-                var endTime = purchaseOrders.endTime;
-                var linkmanName = purchaseOrders.linkmanName;
-                var linkmanPhone = purchaseOrders.linkmanPhone;
-                var postscript =purchaseOrders.postscript;
-                if (purchaseName==null||purchaseName==''){
-                    $scope.showModalButton1("请修改订单名称！");
-                    judge=false;
-                }
-                if (beginTime==null||beginTime==''){
-                    $scope.showModalButton1("请填写订单供货时间！");
-                    judge=false;
-                }
-                if (endTime==null||endTime==''){
-                    $scope.showModalButton1("请填写订单结束供货时间！");
-                    judge=false;
-                }if (linkmanName==null||linkmanName==''){
-                    $scope.showModalButton1("请填写联系人姓名！");
-                    judge=false;
-                }if (linkmanPhone==null||linkmanPhone==''){
-                    $scope.showModalButton1("请填写联系人电话！");
-                    judge=false;
-                }if (postscript==null||postscript==''){
-                    $scope.showModalButton1("请填写备注！");
-                    judge=false;
-                }
-                if (beginTime>endTime){
-                    $scope.showModalButton1("开始时间与结束时间有误！");
-                    judge=false;
-                }
-                return judge;
-            }
-
             //查所有审核状态
             $http({
                 url: "/Dictionaries/findChildByParentId",
                 method: "post",
-                params: {"dictionariesId": 1}
+                params: {"dictionariesId": 12}
             }).success(function (response) {
-                $scope.drugCategoryName = response;
+                $scope.auditName = response;
             })
             //查看数据
             $scope.examineMassage = function (poId) {
@@ -156,24 +119,39 @@
                     $scope.examine=response;
                 })
             }
-            //修改显示数据
+            //表单验证
+            $scope.toVerification = function(purchaseOrders){
+                var judge = true;
+                var auditOpinion = purchaseOrders.auditOpinion;
+               if (auditOpinion==null||auditOpinion==''){
+                    $scope.showModalButton1("请填写审核意见！");
+                    judge=false;
+                }
+                return judge;
+            }
+            //审核显示数据
             $scope.reviseMassage = function (poId) {
                 $http({
                     url: "/PurchaseOrders/getOnePurchaseOrders",
                     method: "post",
                     params: {"poId": poId}
                 }).success(function (response) {
-                    $scope.revise=response;
+                    if(response.purchaseState<107){
+                        $("#modification").modal('hide')
+                        $scope.showModalButton1("请先提交！");
+					}else{
+                        $scope.revise=response;
+					}
+
                 })
             }
-            //修改
+            //审核
             $scope.reviseSave = function () {
                 var purchaseOrders=$scope.revise;
                 var judge =$scope.toVerification(purchaseOrders);
-
                 if(judge) {
                     $http({
-                        url: "/PurchaseOrders/changePurchaseOrders",
+                        url: "/PurchaseOrders/auditPurchaseDrug",
                         method: "post",
                         params: purchaseOrders
                     }).success(function (response) {
@@ -235,7 +213,6 @@
 			<th>审核时间</th>
 			<th>采购单状态</th>
 			<th>查看</th>
-			<th>修改</th>
 			<th>审核</th>
 		</tr>
 		</thead>
@@ -253,21 +230,20 @@
 			<td>{{po.auditTime}}</td>
 			<td>{{po.purchaseStateName}}</td>
 			<td><button class="btn btn-success" data-toggle="modal" data-target="#detailed" ng-click="examineMassage(po.poId)">详细</button></td>
-			<td><button class="btn btn-warning" data-toggle="modal" data-target="#modification" ng-click="reviseMassage(po.poId)">修改</button></td>
-			<td><button class="btn btn-primary" data-toggle="modal" data-target="#audit" ng-click="">审核</button></td>
+			<td><button class="btn btn-warning" data-toggle="modal" data-target="#modification" ng-click="reviseMassage(po.poId)">审核</button></td>
 		</tr>
 		</tbody>
 	</table>
 	<tm-pagination conf="paginationConf"></tm-pagination>
 </div>
 
-<!--修改数据-->
+<!--审核数据-->
 <div class="modal fade" id="modification" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog" style="width:80%;">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button id="bt" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-				<h3 id="myModalLabe">采购单修改</h3>
+				<h3 id="myModalLabe">采购单审核</h3>
 			</div>
 			<div class="modal-body">
 				<table class="table table-bordered table-striped">
@@ -302,7 +278,12 @@
 					</tr>
 					<tr>
 						<td>采购单状态:</td>
-						<td><input  ng-model="revise.purchaseStateName" class="form-control" disabled="disabled"></td>
+						<td>
+							<select ng-model="revise.purchaseState" class="form-control">
+								<option value="">请选择</option>
+								<option ng-repeat="audit in auditName" ng-selected="revise.purchaseState==audit.dicId" ng-value="audit.dicId">{{audit.dictionariesName}}</option>
+							</select>
+						</td>
 						<td>提交时间:</td>
 						<td><input  ng-model="revise.modifiedTime" class="form-control" disabled="disabled"></td>
 
@@ -313,7 +294,7 @@
 					</tr>
 					<tr>
 						<td>审核人:</td>
-						<td><input  ng-model="revise.userId" class="form-control" disabled="disabled"></td>
+						<td><input  ng-model="revise.userName" class="form-control" disabled="disabled"></td>
 						<td>审核时间:</td>
 						<td><input  ng-model="revise.auditTime" class="form-control" disabled="disabled"></td>
 
@@ -325,7 +306,7 @@
 				</table>
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-success" data-dismiss="modal" ng-click="reviseSave()">保存</button>
+				<button class="btn btn-success" data-dismiss="modal" ng-click="reviseSave()">审核</button>
 				<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
 			</div>
 		</div>
@@ -383,7 +364,7 @@
 					</tr>
 					<tr>
 						<td>审核人:</td>
-						<td><input  ng-model="examine.userId" class="form-control" disabled="disabled"></td>
+						<td><input  ng-model="examine.userName" class="form-control" disabled="disabled"></td>
 						<td>审核时间:</td>
 						<td><input  ng-model="examine.auditTime" class="form-control" disabled="disabled"></td>
 
@@ -401,28 +382,5 @@
 	</div>
 </div>
 
-<!--审核-->
-<div class="modal fade" id="audit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog" style="width:80%;">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button id="bt2" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-				<h3 id="myModalLabe2">采购单审核</h3>
-			</div>
-			<div class="modal-body">
-				<table class="table table-bordered table-striped">
-					<tr>
-						<td>医院编号:</td>
-						<td><input  ng-model="examine.hospitalNumber"  class="form-control" disabled="disabled"></td>
-
-					</tr>
-				</table>
-			</div>
-			<div class="modal-footer">
-				<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
-			</div>
-		</div>
-	</div>
-</div>
 </body>
 </html>
