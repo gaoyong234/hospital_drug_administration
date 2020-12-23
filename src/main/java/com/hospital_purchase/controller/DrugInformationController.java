@@ -7,6 +7,7 @@ import com.hospital_purchase.pojo.DrugItems;
 import com.hospital_purchase.pojo.DrugMessage;
 import com.hospital_purchase.service.DrugInformationService;
 import com.hospital_purchase.util.ExcelUploadUtil;
+import com.hospital_purchase.vo.DrugInfoVO;
 import com.hospital_purchase.vo.DrugInformationVO;
 import com.hospital_purchase.vo.DrugMessageVO;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -43,12 +44,12 @@ public class DrugInformationController {
     }
 
     /**
-     * 跳转药品信息页面（drugInformation）
+     * 跳转药品信息页面（drugInfo）
      * @return
      */
-    @RequestMapping("/toDrugInformation")
-    public String toDrugInformation() {
-        return "druginfo/drugInformation";
+    @RequestMapping("/toDrugInfo")
+    public String toDrugInfo(){
+        return "druginfo/druginfo";
     }
 
     /**
@@ -105,8 +106,8 @@ public class DrugInformationController {
      */
     @ResponseBody
     @RequestMapping("/addDrugInformation")
-    public String addDrugInformation(DrugInformationDto drugInformationDto){
-        String msg="添加失败";
+    public Integer addDrugInformation(DrugInformationDto drugInformationDto){
+        int msg=0;
         DrugItems drugItems = new DrugItems();
         DrugMessage drugMessage = new DrugMessage();
 
@@ -139,11 +140,22 @@ public class DrugInformationController {
         drugMessage.setDrugItemsId(drugItems.getDiId());
         int y = drugInformationService.addDrugMessageInfo(drugMessage);
         if (i>0 && y>0){
-            msg = "添加成功";
+            msg = 1;
         }else {
-            msg = "添加失败";
+            msg = 0;
         }
         return msg;
+    }
+
+    /**
+     * 修改根据主键id查询数据
+     * @param diId
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/queryDrugInfoById")
+    public DrugInfoVO queryDrugInfoById(Integer diId){
+        return drugInformationService.queryDrugInfoById(diId);
     }
 
     /**
@@ -153,8 +165,8 @@ public class DrugInformationController {
      */
     @ResponseBody
     @RequestMapping("/updateDrugInformation")
-    public String updateDrugInformation(DrugInformationDto drugInformationDto){
-        String msg = "修改失败";
+    public Integer updateDrugInformation(DrugInformationDto drugInformationDto){
+        Integer msg = 0;
         DrugItems drugItems = new DrugItems();
         DrugMessage drugMessage = new DrugMessage();
 
@@ -185,9 +197,9 @@ public class DrugInformationController {
         int i = drugInformationService.updateDrugInformation(drugItems);
         int y = drugInformationService.updateDrugMessageInformation(drugMessage);
         if (i>0 || y>0){
-            msg = "修改成功";
+            msg = 1;
         }else {
-            msg = "修改失败";
+            msg = 0;
         }
         return msg;
     }
@@ -199,13 +211,13 @@ public class DrugInformationController {
      */
     @ResponseBody
     @RequestMapping("/delDrugInformation")
-    public String delDrugInformation(Integer id){
-        String msg = "删除失败";
+    public Integer delDrugInformation(Integer id){
+        Integer msg = 0;
         int i = drugInformationService.delDrugInformation(id);
         if(i>0){
-            msg = "删除成功";
+            msg = 1;
         }else {
-            msg = "删除失败";
+            msg = 0;
         }
         return msg;
     }

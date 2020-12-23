@@ -42,6 +42,7 @@ public class DrugInfoVO {
 
     private Dictionaries company;
     private Dictionaries qualityLevel;
+    private Dictionaries qualityLevelExplain;
     private Dictionaries drugCategorys;
     private DrugMessage approvalNumber;
     private DrugMessage approvalTime;
@@ -277,5 +278,13 @@ public class DrugInfoVO {
 
     public void setDrugCategorys(Dictionaries drugCategorys) {
         this.drugCategorys = drugCategorys;
+    }
+
+    public Dictionaries getQualityLevelExplain() {
+        return qualityLevelExplain;
+    }
+
+    public void setQualityLevelExplain(Dictionaries qualityLevelExplain) {
+        this.qualityLevelExplain = qualityLevelExplain;
     }
 }
