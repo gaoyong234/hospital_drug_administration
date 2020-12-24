@@ -2,6 +2,7 @@ package com.hospital_purchase.service;
 
 import com.github.pagehelper.PageInfo;
 import com.hospital_purchase.pojo.LimitFunction;
+import com.hospital_purchase.vo.LimitFunctionVO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,4 +17,7 @@ public interface LimitFunctionService {
     PageInfo findAllLimitFunction(Integer pageNum,Integer pageSize);
 
     Integer removeLimitFunction(Integer id);
+
+    //查询所有功能
+    List<LimitFunctionVO> getAllLimitFunction();
 }

@@ -58,4 +58,15 @@ public class LimitFunctionServiceImpl implements LimitFunctionService {
     public Integer removeLimitFunction(Integer id) {
         return limitFunctionMapper.deleteByPrimaryKey(id);
     }
+
+    @Override
+    public List<LimitFunctionVO> getAllLimitFunction() {
+        List<LimitFunctionVO> list = limitFunctionDaoMapper.selectParentLimit();
+        for (int i = 0; i < list.size(); i++) {
+            List<LimitFunction> limitFunctionsChild =
+                    limitFunctionDaoMapper.selectChildLimitFunction(list.get(i).getLfId());
+            list.get(i).setLimitFunctionsChild(limitFunctionsChild);
+        }
+        return list;
+    }
 }

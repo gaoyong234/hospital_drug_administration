@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../../static/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <link rel="stylesheet" href="../../static/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../static/plugins/adminLTE/css/AdminLTE.css">
+    <link rel="stylesheet" href="../../static/plugins/adminLTE/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="../../static/css/style.css">
+    <link rel="stylesheet" href="../../static/plugins/angularjs/toaster.min.css">
+    <script src="../../static/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+    <script src="../../static/plugins/angularjs/angular.min.js"></script>
+    <link rel="stylesheet" href="../../static/plugins/angularjs/pagination.css">
+    <script type="text/javascript" src="../../static/plugins/angularjs/pagination.js"></script>
+    <script src="../../static/js/showLoading.js" type="text/javascript" charset="utf-8"></script>
+    <style>
+
+        .w200 {
+            width: 200px;
+        }
+        label {
+            float: left;
+            width: 10em;
+            margin-right: 1em;
+            text-align: right;
+        }
+    </style>
+    <script>
+        var app = angular.module("myApp", []);
+        app.controller("myController", function ($scope, $http) {
+
+            //获取全部信息
+            $http({
+                url: "/LimitFunctionController/getAllLimit",
+                method: "post"
+            }).success(function (response) {
+                console.log(response)
+                $scope.limitFunctionList = response;
+            })
+            //获取角色信息
+            $http({
+                url: "/Role/findOneRole",
+                method: "post",
+                params: {"roId":$("#roId").val()}
+            }).success(function (response) {
+                console.log(response)
+                $scope.role = response;
+            })
+            //返回结果提示
+            $scope.showModalButton1 = function (slogan) {
+                showModal({
+                    title: "温馨提示",  //提示的标题
+                    content: slogan,  //提示的内容
+                    showCancel: false,  //是否显示取消按钮，默认为 true
+                    cancelText: '取消',  //取消按钮的文字，默认为"取消"，最多 4 个字符
+                    cancelColor: "#fff",  //取消按钮的文字颜色，默认为"#000000"
+                    cancelBgColor: '#4c4c4c',  //取消按钮的背景颜色
+                    confirmText: '确定',
+                    confirmColor: '#fff',
+                    confirmBgColor: '#ff130a',
+                    success: function () {
+
+                    }
+                });
+            }
+            //删除提示
+            $scope.showModalButton2 = function () {
+                showModal({
+                    title: "温馨提示",  //提示的标题
+                    content: "确认要删除吗？",  //提示的内容
+                    showCancel: true,  //是否显示取消按钮，默认为 true
+                    cancelText: '取消',  //取消按钮的文字，默认为"取消"，最多 4 个字符
+                    cancelColor: "#fff",  //取消按钮的文字颜色，默认为"#000000"
+                    cancelBgColor: '#4c4c4c',  //取消按钮的背景颜色
+                    confirmText: '确定',
+                    confirmColor: '#fff',
+                    confirmBgColor: '#ff1d31',
+                    success: function (res) {
+                        if (res.confirm) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                });
+            }
+            //验证
+            $scope.toVerification = function (dictionaries) {
+                var judge = true;
+                var dictionariesName = dictionaries.dictionariesName;
+                if (dictionariesName == null || dictionariesName == '') {
+                    $scope.showModalButton1("请填写字典名称！");
+                    judge = false;
+                }
+
+                return judge;
+            }
+            //添加
+            $scope.submit = function () {
+                $scope.limitFunction=[];
+                var limitFunctionInput = document.getElementsByName("pitchOn");
+                for (var i = 0; i < limitFunctionInput.length; i++) {
+                    if (limitFunctionInput[i].checked) {
+                        if(limitFunctionInput[i].value==""){
+                            $scope.showModalButton1("请选择相应药品");
+                        }else {
+                            $scope.limitFunction.push(limitFunctionInput[i].value);
+                        }
+                    }
+                }
+                var roId = $("#roId").val();
+                $http({
+                    url: "/Dictionaries/addDictionaries",
+                    method: "post",
+                    params: {"limitFunction":limitFunction,"roId":roId}
+                }).success(function (response) {
+                    $scope.showModalButton1(response.slogan);
+                    $("#editModal").modal('hide');//此处为添加框，关闭添加框
+                    $scope.find($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
+                })
+
+            }
+
+
+
+        });
+
+    </script>
+</head>
+<body ng-app="myApp" ng-controller="myController">
+<div>
+    <h5 class="alert alert-infoalert alert-info">功能添加页</h5>
+    <table class="table table-bordered table-striped">
+        <tr>
+            <td class="introduce">角色id:</td>
+            <td class="contents">
+                <input type="hidden" th:value="${roId}"  id="roId">
+                <input ng-model="role.roId"  class="form-control" disabled="disabled"/></td>
+            <td class="introduce">角色名称:</td>
+            <td class="contents">
+                <input ng-model="role.roleName" class="form-control" disabled="disabled"/>
+            </td>
+        </tr>
+    </table>
+</div>
+<div>
+    <button type="button" class="btn btn-primary" style="margin-left: 35px"
+            ng-click="addClick()">添加
+    </button>
+</div>
+<div>
+    <table id="dataList" class="table">
+        <tbody id="tbody">
+        <tr>
+            <th><input type="checkbox" name="pitch" ></th>
+            <th>功能序号</th>
+            <th>功能名称</th>
+            <th class="w200">选择</th>
+            <th class="w200">功能序号</th>
+            <th class="w200">功能名称</th>
+        </tr>
+        <tr ng-repeat="limitFunction in limitFunctionList">
+            <td><input type="checkbox" name="pitchOn" value="{{limitFunction.lfId}}" ></td>
+            <td>{{limitFunction.lfId}}</td>
+            <td>{{limitFunction.limitName}}</td>
+            <td colspan="3">
+                <table class="table2">
+                    <tr ng-repeat="limit in limitFunction.limitFunctionsChild">
+                        <td class="w200">
+                            <input type="checkbox" name="pitchOn" value="{{limit.lfId}}" >
+                        </td>
+                        <td class="w200">{{limit.lfId}}</td>
+                        <td class="w200">{{limit.limitName}}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

@@ -81,7 +81,7 @@
     from role
     <where>
       <if test="roleName != null and roleName != ''">
-        and role_name like concat("%",#{roleName})
+        and role_name like concat("%",#{roleName},"%")
       </if>
       and del_id=0
     </where>
