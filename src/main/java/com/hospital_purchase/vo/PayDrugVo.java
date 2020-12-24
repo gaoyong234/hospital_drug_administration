@@ -23,6 +23,10 @@ public class PayDrugVo {
 
     private Integer soId;//结算单ID
 
+    private Integer drugId;//药品信息id
+
+    private Integer purchaseId;//采购单单与药品关联ID
+
     private String purchaseNumber;//采购单编码
 
     private String purchaseName;//采购单名称

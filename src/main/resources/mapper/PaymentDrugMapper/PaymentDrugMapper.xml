@@ -9,6 +9,7 @@
     <result column="po_id" jdbcType="INTEGER" property="poId" />
     <result column="dm_id" jdbcType="INTEGER" property="dmId" />
     <result column="so_id" jdbcType="INTEGER" property="soId" />
+    <result column="drug_id" jdbcType="INTEGER" property="drugId" />
     <result column="purchase_number" jdbcType="VARCHAR" property="purchaseNumber" />
     <result column="purchase_name" jdbcType="VARCHAR" property="purchaseName" />
     <result column="hospital_name" jdbcType="VARCHAR" property="hospitalName" />
@@ -38,15 +39,15 @@
     <result column="sales_return_quantity" jdbcType="INTEGER" property="salesReturnQuantity" />
     <result column="sales_return_money" jdbcType="DECIMAL" property="salesReturnMoney" />
     <result column="drug_category_name" jdbcType="DECIMAL" property="drugCategoryName" />
+    <result column=" purchase_id" jdbcType="INTEGER" property=" purchaseId" />
   </resultMap>
 <select id="findAll" resultMap="BaseMap">
-  SELECT po.po_id,dm.dm_id,padr.pd_id,po.purchase_number,po.purchase_name,h.hospital_name,di.serial_number,di.common_name,
+  SELECT po.po_id,dm.dm_id,pd.pd_id,pd.drug_id,po.purchase_number,po.purchase_name,h.hospital_name,di.serial_number,di.common_name,
   di.commodity_name,pd.bid_price,pd.deal_price,pd.purchase_quantity,pd.purchase_total_amount,
   s.storage_volume,s.invoice,s.drug_batch_number,s.effective_time,di.dosage_form,di.speciflcation,
   d.dictionaries_name as unit_id,di.coefficient,dic.dictionaries_name as quality_level,di.production_name,
   su.supplier_name,po.begin_time,po.end_time,pd.purchase_state ,sd.sales_return_quantity,sd.sales_return_money
   FROM purchase_orders po
-  LEFT JOIN payment_drug padr on padr.purchase_id=po.po_id
   LEFT JOIN hospital h on po.hospital_id=h.hp_id
   LEFT JOIN sales_drug sd on po.po_id=sd.purchase_drug_id
   LEFT JOIN purchase_drug pd on pd.purchase_id = po.po_id
@@ -135,5 +136,10 @@
  </where>
 </select>
 
+<insert id="addPaymentDrug" parameterType="com.hospital_purchase.vo.PayDrugVo">
+        insert into payment_drug (purchase_id, drug_id, settiement_orders_id )
+    values ( #{purchaseId,jdbcType=INTEGER}, #{drugId,jdbcType=INTEGER},
+      #{soId,jdbcType=INTEGER})
+</insert>
 
 </mapper>

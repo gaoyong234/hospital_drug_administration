@@ -135,6 +135,17 @@
 
             }
 
+            $scope.settle=function (soId) {
+                $http({
+                    url: "/payment/findAll",
+                    method: "post",
+                    params:{"soId": soId}
+                }).success(function (response) {
+                    $scope.paydrulists = response;
+                    console.log(response)
+                })
+            }
+
         })
     </script>
     <script type="text/javascript">
@@ -189,7 +200,7 @@
 </div>
 
 <div>
-    <button type="button" class="btn1" data-toggle="modal" data-target="#addition" ng-click="addClick()">添加
+    <button type="button" class="btn1" data-toggle="modal" data-target="#addition" ng-click="addClick()">添加结算单
     </button>
 </div>
 <div>
@@ -203,6 +214,7 @@
             <th>联系人</th>
             <th>联系电话</th>
             <th>结算单状态</th>
+            <th>提交结算</th>
             <th>添加药品</th>
             <th>修改</th>
             <th>删除</th>
@@ -218,6 +230,7 @@
             <td>{{x.paymentLinkman}}</td>
             <td>{{x.paymentPhone}}</td>
             <td>{{x.paymentState=='2' ? '已确认结算':'未确认结算'}}</td>
+            <td><button class="btn btn-success" data-toggle="modal" data-target="#settle" ng-click="settle(x.soId)" >结算采购单</button></td>
             <td><button class="btn btn-success" ng-click="chage(x.soId)" >添加药品</button></td>
             <td><button class="btn btn-warning" data-toggle="modal" data-target="#more" ng-click="amend(x.soId)">修改</button></td>
             <td><button class="btn btn-danger" data-toggle="modal" ng-click="expurgate(x.soId)">删除</button></td>
@@ -288,6 +301,87 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="settle" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:80%;">
+        <div class="modal-content" >
+            <div class="modal-header">
+                <button id="bt3" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="mySettle">结算药品信息</h3>
+            </div>
+            <div class="modal-body">
+                <form id="settlePaymentDrug">
+                    <div>
+                        <table id="dataList1" class="table">
+                            <thead>
+                            <tr>
+                                <th>采购医院</th>
+                                <th>流水号</th>
+                                <th>通用名</th>
+                                <th>商品名</th>
+                                <th>中标价</th>
+                                <th>交易价</th>
+                                <th>采购量</th>
+                                <th>采购金额</th>
+                                <th>入库量</th>
+                                <th>实际交易金额</th>
+                                <th>发票号或入库单号</th>
+                                <th>药品批号</th>
+                                <th>药品有效期</th>
+                                <th>退货量</th>
+                                <th>退货金额</th>
+                                <th>剂型</th>
+                                <th>规格</th>
+                                <th>单位</th>
+                                <th>转换系数</th>
+                                <th>质量层次</th>
+                                <th>生产企业</th>
+                                <th>供货企业</th>
+                                <th>详细</th>
+                            </tr>
+
+                            </thead>
+
+                            <tbody id="tbody1">
+                            <tr ng-repeat="x in paydrulists">
+                                <td>{{x.hospitalName}}</td>
+                                <td>{{x.serialNumber}}</td>
+                                <td>{{x.commonName}}</td>
+                                <td>{{x.commodityName}}</td>
+                                <td>{{x.bidPrice}}</td>
+                                <td>{{x.dealPrice}}</td>
+                                <td>{{x.purchaseQuantity}}</td>
+                                <td>{{x.purchaseTotalAmount}}</td>
+                                <td>{{x.storageVolume}}</td>
+                                <td>{{x.dealPrice*x.purchaseQuantity}}</td>
+                                <td>{{x.invoice}}</td>
+                                <td>{{x.drugBatchNumber}}</td>
+                                <td>{{x.effectiveTime}}</td>
+                                <td>{{x.salesReturnQuantity}}</td>
+                                <td>{{x.salesReturnMoney}}</td>
+                                <td>{{x.dosageForm}}</td>
+                                <td>{{x.speciflcation}}</td>
+                                <td>{{x.unitId}}</td>
+                                <td>{{x.coefficient}}</td>
+                                <td>{{x.qualityLevel}}</td>
+                                <td>{{x.productionName}}</td>
+                                <td>{{x.supplierName}}</td>
+                                <td><button ng-click="payDrug(x.)">结算</button></td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-toggle="modal" data-dismiss="modal" data-target="#status" onclick="save()">保存</button>
+                <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <div class="modal fade" id="status" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog" style="width:80%;">

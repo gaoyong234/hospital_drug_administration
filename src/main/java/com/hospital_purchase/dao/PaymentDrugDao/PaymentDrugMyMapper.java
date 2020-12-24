@@ -10,4 +10,5 @@ public interface PaymentDrugMyMapper {
 
     List<PayDrugVo> findAll(PayDrugVo payDrugVo);
 
+    Integer addPaymentDrug(PayDrugVo payDrugVo);
 }

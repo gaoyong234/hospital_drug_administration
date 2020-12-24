@@ -4,9 +4,11 @@ import com.github.pagehelper.PageInfo;
 import com.hospital_purchase.pojo.Payment;
 import com.hospital_purchase.pojo.Storage;
 import com.hospital_purchase.pojo.Supplier;
+import com.hospital_purchase.pojo.User;
 import com.hospital_purchase.service.PaymentMyService;
 import com.hospital_purchase.util.Identities;
 import com.hospital_purchase.vo.DrugItemsVO;
+import com.hospital_purchase.vo.PayDrugVo;
 import com.hospital_purchase.vo.PaymentVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
 import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping("payment")
@@ -81,5 +84,14 @@ public class PaymentMyController {
         modelAndView.addObject("soId",soId);
         modelAndView.setViewName("/payment/addDrug");
         return modelAndView;
+    }
+
+    @RequestMapping("findAll")
+    @ResponseBody
+    public List<PayDrugVo> findAllPayDrugVo(HttpSession httpSession,Integer soId){
+        User admin = (User) httpSession.getAttribute("admin");
+        Integer hospitalId = admin.getHospitalId();
+        List<PayDrugVo> payments = paymentMyService.fandAll(hospitalId,soId);
+        return payments;
     }
 }
