@@ -24,4 +24,10 @@ public class PaymentDrugServiceImpl implements PaymentDrugService {
         PageInfo<PayDrugVo> pageInfo = new PageInfo<PayDrugVo>(registraPayment);
         return pageInfo;
     }
+
+    @Override
+    public Integer addPaymentDrug(PayDrugVo payDrugVo) {
+       Integer integer= paymentDrugMyMapper.addPaymentDrug(payDrugVo);
+        return null;
+    }
 }

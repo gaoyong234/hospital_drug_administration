@@ -7,4 +7,6 @@ import org.springframework.stereotype.Service;
 @Service
 public interface PaymentDrugService {
     PageInfo<PayDrugVo> fandAll(Integer pageNum, Integer pageSize, PayDrugVo payDrugVo);
+
+    Integer addPaymentDrug(PayDrugVo payDrugVo);
 }

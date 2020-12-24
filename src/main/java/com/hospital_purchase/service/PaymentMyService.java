@@ -2,6 +2,7 @@ package com.hospital_purchase.service;
 
 import com.github.pagehelper.PageInfo;
 import com.hospital_purchase.pojo.Payment;
+import com.hospital_purchase.vo.PayDrugVo;
 import com.hospital_purchase.vo.PaymentVo;
 import org.springframework.stereotype.Service;
 
@@ -17,4 +18,6 @@ public interface PaymentMyService {
     Integer expurgate(Integer soId);
 
     PaymentVo findpayment(Integer soId);
+
+    List<PayDrugVo> fandAll(Integer hospitalId,Integer soId);
 }

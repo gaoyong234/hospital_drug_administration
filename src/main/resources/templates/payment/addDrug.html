@@ -84,6 +84,45 @@
                     $scope.choose2=false;
                 }
             }
+
+            $scope.addClick=function () {
+                $scope.pdIdList=[];
+                var checkBoxs=document.getElementsByName("checkbox");
+                for (var i = 0; i <checkBoxs.length ; i++) {
+                    if (checkBoxs[i].checked){
+                        $scope.pdIdList.push(checkBoxs[i].value);
+                    }
+                }
+                var pdIdList = $scope.pdIdList;
+                var addList=[];
+                addList.push("{}")
+                var demo=false;
+                if (pdIdList=='') {
+                    alert("请选择数据！")
+                }else {
+
+                    for (var i = 0; i < pdIdList.length; i++) {
+                        for (var j = 0; j < $scope.lists.length; j++) {
+                            if (pdIdList[i]==$scope.lists[j].pdId){
+                             addList.push($scope.lists[j])
+                            }
+                        }
+                    }
+
+                    demo=true;
+                }
+                var  soId=$("#soId").val();
+                if (demo){
+                    $http({
+                        url:"/paydrug/addPaymentDrug",
+                        method: "post",
+                        params: {addList:addList,soId:soId}
+                    }).success(function (response) {
+                        alert("添加成功"+response+"条数据")
+                        window.location.href="/payment/paymenthome"
+                    })
+                }
+            }
         })
 
     </script>
@@ -154,7 +193,7 @@
 </div>
 <div>
     <input type="hidden" th:value="${soId}" ng-model="soId" id="soId">
-    <button type="button" class="btn1" data-toggle="modal" data-target="#addition" ng-click="addClick()">添加至结算单
+    <button type="button" class="btn1"  ng-click="addClick()">添加至结算单
     </button>
 </div>
 <div>
@@ -196,7 +235,7 @@
 
         <tbody id="tbody">
         <tr ng-repeat="x in lists">
-            <td><input type="checkbox" ng-checked="choose2" value="{{x.dmId}}"></td>
+            <td><input type="checkbox" ng-checked="choose2" name="checkbox" ng-value="x.pdId"></td>
             <td>{{x.purchaseNumber}}</td>
             <td>{{x.purchaseName}}</td>
             <td>{{x.hospitalName}}</td>

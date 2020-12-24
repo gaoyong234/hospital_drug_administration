@@ -6,6 +6,7 @@ import com.hospital_purchase.dao.Payment.PaymentMyMapper;
 import com.hospital_purchase.pojo.Payment;
 import com.hospital_purchase.pojo.Supplier;
 import com.hospital_purchase.service.PaymentMyService;
+import com.hospital_purchase.vo.PayDrugVo;
 import com.hospital_purchase.vo.PaymentVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,5 +46,11 @@ public class PaymentMyServiceImpl implements PaymentMyService {
     @Override
     public PaymentVo findpayment(Integer soId) {
         return paymentMyMapper.findpayment(soId);
+    }
+
+    @Override
+    public List<PayDrugVo> fandAll(Integer hospitalId,Integer soId) {
+        List<PayDrugVo> registraPayment = paymentMyMapper.findAll(hospitalId,soId);
+        return registraPayment;
     }
 }
