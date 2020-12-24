@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hospital_purchase.dao.ReturnOrder.ReturnOrderMapper">
   <resultMap id="BaseResultMap" type="com.hospital_purchase.vo.ReturnOrderVO">
-    <id column="sr_id" jdbcType="INTEGER" property="srId" />
+    <id column="po_id" jdbcType="INTEGER" property="poId" />
     <result column="purchase_number" jdbcType="VARCHAR" property="purchaseNumber" />
     <result column="purchase_name" jdbcType="VARCHAR" property="purchaseName" />
     <result column="hospital_name" jdbcType="VARCHAR" property="hospitalName" />
@@ -27,6 +27,7 @@
     <result column="begin_time" jdbcType="TIMESTAMP" property="beginTime" />
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
     <result column="purchase_state" jdbcType="VARCHAR" property="purchaseState" />
+    <result column="sales_return_state" jdbcType="VARCHAR" property="salesReturnState" />
 
     <result column="hp_id" jdbcType="INTEGER" property="hpId" />
     <result column="hospital_number" jdbcType="VARCHAR" property="hospitalNumber" />
@@ -41,22 +42,23 @@
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
   </resultMap>
     <select id="findReturnOrderDrugInfo" resultMap="BaseResultMap">
-    SELECT qo.sr_id,po.purchase_number,po.purchase_name,h.hospital_name,di.serial_number,di.common_name,
-			di.commodity_name,dm.bidding_price,pd.deal_price,pd.purchase_quantity,pd.purchase_total_amount,
-			s.storage_volume,s.invoice,s.drug_batch_number,s.effective_time,di.dosage_form,di.speciflcation,
-			d.dictionaries_name as unit_id,di.coefficient,dic.dictionaries_name as quality_level,di.production_name,
-			su.supplier_name,po.begin_time,po.end_time,po.purchase_state
-    FROM quit_orders qo
-      LEFT JOIN sales_drug sd on qo.sr_id = sd.sales_return_id
-      LEFT JOIN hospital h on h.hp_id = qo.hospital_id
-      LEFT JOIN purchase_orders po on po.po_id = sd.purchase_drug_id
-      LEFT JOIN purchase_drug pd on pd.purchase_id = po.po_id
-      LEFT JOIN drug_items di on di.di_id = sd.drug_name_id
-      LEFT JOIN drug_message dm on di.di_id = dm.drug_items_id
-      LEFT JOIN storage s on s.purchase_order_id = qo.sr_id
-      LEFT JOIN dictionaries d on d.dic_id = di.unit_id
-      LEFT JOIN dictionaries dic on dic.dic_id = dm.quality_level
-      LEFT JOIN supplier su on su.sp_id = pd.supplier_id
-      WHERE po.purchase_state = 1 and sd.sales_return_state = 2
+    SELECT po.po_id,po.purchase_number,po.purchase_name,h.hospital_name,
+          di.serial_number,di.common_name,di.commodity_name,dm.bidding_price,
+          pd.deal_price,pd.purchase_quantity,pd.purchase_total_amount,s.storage_volume,
+          s.invoice,s.drug_batch_number,s.effective_time,di.dosage_form,di.speciflcation,
+          d.dictionaries_name as unit_id,di.coefficient,dic.dictionaries_name as quality_level,
+          di.production_name,su.supplier_name,po.begin_time,po.end_time,dict.dictionaries_name as purchase_state
+	FROM purchase_orders po
+	LEFT JOIN hospital h on po.hospital_id = h.hp_id
+	LEFT JOIN purchase_drug pd on pd.purchase_id = po.po_id
+	LEFT JOIN drug_items di on di.di_id = pd.drug_id
+	LEFT JOIN drug_message dm on dm.drug_items_id = di.di_id
+	LEFT JOIN storage s on s.purchase_order_id = po.po_id
+	LEFT JOIN dictionaries d on d.dic_id = di.unit_id
+	LEFT JOIN dictionaries dic on dic.dic_id = dm.quality_level
+	LEFT JOIN supplier su on su.sp_id = pd.supplier_id
+	LEFT JOIN dictionaries dict on dict.dic_id = po.purchase_state
+	LEFT JOIN sales_drug sd on sd.purchase_drug_id = po.po_id
+	WHERE po.purchase_state = 110 and sd.sales_return_state = 2
   </select>
 </mapper>

@@ -4,14 +4,19 @@ import com.github.pagehelper.PageInfo;
 import com.hospital_purchase.pojo.QuitOrders;
 import com.hospital_purchase.pojo.User;
 import com.hospital_purchase.service.ReturnOrderService;
+import com.hospital_purchase.vo.PurchaseStorageVO;
 import com.hospital_purchase.vo.ReturnOrderVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.thymeleaf.util.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Controller
 @RequestMapping("/returnOrder")
@@ -55,7 +60,13 @@ public class ReturnOrderController {
     }
 
     @ResponseBody
-    @RequestMapping("/addReturnOrder")
+    @RequestMapping("/addReturnOrderInfo")
+    public Integer addReturnOrderInfo(){
+        return null;
+    }
+
+    /*@ResponseBody
+    @RequestMapping("/addReturnOrder")*/
     public Integer addReturnOrder(QuitOrders quitOrders, HttpSession httpSession){
         User admin = (User) httpSession.getAttribute("admin");
         quitOrders.setHospitalId(admin.getHospitalId());

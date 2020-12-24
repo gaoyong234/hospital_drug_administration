@@ -55,6 +55,7 @@
                    method:"get",
                    params:dataList
                }).then(function successCallback(response) {
+                   console.log(response);
                    if (dataList.purchaseState==1){
                        $scope.findPages();
                    }
@@ -84,27 +85,27 @@
                            for (var i = 0; i <$scope.list.length ; i++) {
                                var sample = $scope.list[i];
                                strr += '<tr>\n' +
-                                   '<th>'+ sample.poId +'<input type="hidden" name="stId" value="'+sample.stId+'"></th>\n' +
-                                   '<th><input type="checkbox" name="c1" value="'+sample.poId+'"></th>\n' +
-                                   '<th>'+sample.purchaseNumber+'</th>\n' +
-                                   '<th>'+sample.purchaseName+'</th>\n' +
-                                   '<th>'+sample.serialNumber+'</th>\n' +
-                                   '<th>'+sample.commonName+'</th>\n' +
-                                   '<th>'+sample.commodityName+'</th>\n' +
-                                   '<th>'+sample.biddingPrice+'</th>\n' +
-                                   '<th>'+sample.dealPrice+'</th>\n' +
-                                   '<th>'+sample.purchaseQuantity+'</th>\n' +
-                                   '<th>'+sample.purchaseTotalAmount+'</th>\n' +
-                                   '<th><input type="text" name="storageVolume" style="background-color: #9d9d9d;width: 50px;"></th>\n' +
-                                   '<th></th>\n' +
-                                   '<th><input type="text" name="invoice" style="background-color: #9d9d9d;width: 50px"></th>\n' +
-                                   '<th><input type="text" name="drugBatchNumber" style="background-color: #9d9d9d;width: 50px;"></th>\n' +
-                                   '<th><input type="text" name="effectiveTime" style="background-color: #9d9d9d;width: 50px;"></th>\n' +
-                                   '<th>'+sample.dosageForm+'</th>\n' +
-                                   '<th>'+sample.speciflcation+'</th>\n' +
-                                   '<th>'+sample.unitId+'</th>\n' +
-                                   '<th>'+sample.coefficient+'</th>\n' +
-                                   '<th>'+sample.purchaseState+'</th>\n' +
+                                   '<td>'+ sample.poId +'<input type="hidden" name="stId" value="'+sample.stId+'"></td>\n' +
+                                   '<td><input type="checkbox" name="c1" value="'+sample.poId+'"></td>\n' +
+                                   '<td>'+sample.purchaseNumber+'</td>\n' +
+                                   '<td>'+sample.purchaseName+'</td>\n' +
+                                   '<td>'+sample.serialNumber+'</td>\n' +
+                                   '<td>'+sample.commonName+'</td>\n' +
+                                   '<td>'+sample.commodityName+'</td>\n' +
+                                   '<td>'+sample.biddingPrice+'</td>\n' +
+                                   '<td>'+sample.dealPrice+'</td>\n' +
+                                   '<td>'+sample.purchaseQuantity+'</td>\n' +
+                                   '<td>'+sample.purchaseTotalAmount+'</td>\n' +
+                                   '<td><input type="text" name="storageVolume" style="background-color: #9d9d9d;width: 50px;"></td>\n' +
+                                   '<td></td>\n' +
+                                   '<td><input type="text" name="invoice" style="background-color: #9d9d9d;width: 50px"></td>\n' +
+                                   '<td><input type="text" name="drugBatchNumber" style="background-color: #9d9d9d;width: 50px;"></td>\n' +
+                                   '<td><input type="text" name="effectiveTime" style="background-color: #9d9d9d;width: 50px;"></td>\n' +
+                                   '<td>'+sample.dosageForm+'</td>\n' +
+                                   '<td>'+sample.speciflcation+'</td>\n' +
+                                   '<td>'+sample.unitId+'</td>\n' +
+                                   '<td>'+sample.coefficient+'</td>\n' +
+                                   '<td>'+sample.purchaseState+'</td>\n' +
                                    '</tr>'
                            }
                            strr += '<tr style="background-color: #f89406">\n' +
@@ -195,27 +196,27 @@
                    for (var i = 0; i <$scope.list.length ; i++) {
                        var sample = $scope.list[i];
                         str += '<tr>\n' +
-                            '<th>' + sample.poId + '</th>\n' +
-                            '<th><input type="checkbox" name="c1" value="{{x.poId}}"></th>\n' +
-                            '<th>'+ sample.purchaseNumber +'</th>\n' +
-                            '<th>'+ sample.purchaseName +'</th>\n' +
-                            '<th>'+ sample.serialNumber +'</th>\n' +
-                            '<th>'+ sample.commonName +'</th>\n' +
-                            '<th>'+ sample.commodityName +'</th>\n' +
-                            '<th>'+ sample.biddingPrice +'</th>\n' +
-                            '<th>'+ sample.dealPrice +'</th>\n' +
-                            '<th>'+ sample.purchaseQuantity +'</th>\n' +
-                            '<th>'+ sample.purchaseTotalAmount +'</th>\n' +
-                            '<th>'+ sample.storageVolume +'</th>\n' +
-                            '<th></th>\n' +
-                            '<th>'+ sample.invoice +'</th>\n' +
-                            '<th>'+ sample.drugBatchNumber +'</th>\n' +
-                            '<th>'+ sample.effectiveTime +'</th>\n' +
-                            '<th>'+ sample.dosageForm +'</th>\n' +
-                            '<th>'+ sample.speciflcation +'</th>\n' +
-                            '<th>'+ sample.unitId +'</th>\n' +
-                            '<th>'+ sample.coefficient +'</th>\n' +
-                            '<th>'+ sample.purchaseState +'</th>\n' +
+                            '<td>' + sample.poId + '</td>\n' +
+                            '<td><input type="checkbox" name="c1" value="{{x.poId}}"></td>\n' +
+                            '<td>'+ sample.purchaseNumber +'</td>\n' +
+                            '<td>'+ sample.purchaseName +'</td>\n' +
+                            '<td>'+ sample.serialNumber +'</td>\n' +
+                            '<td>'+ sample.commonName +'</td>\n' +
+                            '<td>'+ sample.commodityName +'</td>\n' +
+                            '<td>'+ sample.biddingPrice +'</td>\n' +
+                            '<td>'+ sample.dealPrice +'</td>\n' +
+                            '<td>'+ sample.purchaseQuantity +'</td>\n' +
+                            '<td>'+ sample.purchaseTotalAmount +'</td>\n' +
+                            '<td>'+ sample.storageVolume +'</td>\n' +
+                            '<td></td>\n' +
+                            '<td>'+ sample.invoice +'</td>\n' +
+                            '<td>'+ sample.drugBatchNumber +'</td>\n' +
+                            '<td>'+ sample.effectiveTime +'</td>\n' +
+                            '<td>'+ sample.dosageForm +'</td>\n' +
+                            '<td>'+ sample.speciflcation +'</td>\n' +
+                            '<td>'+ sample.unitId +'</td>\n' +
+                            '<td>'+ sample.coefficient +'</td>\n' +
+                            '<td>'+ sample.purchaseState +'</td>\n' +
                             '</tr>'
                    }
                    str += '<tr style="background-color: #f89406">\n' +
@@ -452,13 +453,14 @@
                         <option ng-repeat="supplier in supplier" ng-value="supplier.spId">{{supplier.supplierName}}</option>
                     </select>
                 </td>
+                <td colspan="1">
+                    <button type="button" class="btn1" ng-click="findPage()">查询</button>
+                </td>
             </tr>
-            <tr>
-            <tr>
+           <!-- <tr>
                 <td colspan="1" align="right"> <button type="button" class="btn1" ng-click="findPage()">查询</button></td>
-                <!--<td> <button type="button" class="btn1" ng-click="loadAlllick()">导出</button></td>-->
-            </tr>
-            </tr>
+                &lt;!&ndash;<td> <button type="button" class="btn1" ng-click="loadAlllick()">导出</button></td>&ndash;&gt;
+            </tr>-->
         </table>
     </div>
     <div>

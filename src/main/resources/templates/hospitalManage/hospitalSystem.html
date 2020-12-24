@@ -95,7 +95,7 @@
             }).then(function successCallback(response) {
                 $scope.hospitalRank=[];
                 for (var i = 0; i <response.data.length ; i++) {
-                    if (response.data[i].dictionariesId==23){
+                    if (response.data[i].dictionariesId==6){
                         $scope.hospitalRank.push(response.data[i])
                     }
                 }
@@ -161,7 +161,6 @@
                 method:"get",
                 params:{"hpId": hpId}
             }).success(function (response) {
-                //console.log(response);
                 $scope.dritem=response;
                 if ($scope.dritem.isProfit == 1){
                     $scope.dritem.isProfit = "是"
@@ -174,8 +173,8 @@
         $scope.updateSave = function () {
             /*var updateList = $("#inserInto").serialize();*/
             var updateList=$scope.dritem;
-            console.log(updateList);
             var list = $scope.lists;
+            console.log(updateList);
             if (updateList.isProfit == "是"){
                 updateList.isProfit = 1
             }
@@ -353,7 +352,7 @@
     <div id="pages" class="page_div"></div>
     <!--添加-->
     <div class="modal fade" id="addition" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog" style="width:80%;">
+        <div class="modal-dialog" style="width:80%;">
         <div class="modal-content" >
             <div class="modal-header">
                 <button id="bt1" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -433,7 +432,7 @@
             </div>
         </div>
     </div>
-</div>
+    </div>
 
     <div class="modal fade" id="status" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog" style="width:80%;">
@@ -512,7 +511,7 @@
                                 <span></span></td>
                             <td>医院级别:</td>
                             <td><select name="hospitalRank" ng-model="dritem.hospitalRank" class="form-control">
-                                    <option ng-repeat="hospitalRs in hospitalRank" ng-selected="hospitalRs.dicId == dritem.hospitalRank" ng-value="hospitalRs.dicId">{{hospitalRs.dictionariesName}}</option>
+                                    <option ng-repeat="hospitalRs in hospitalRank" ng-selected="dritem.hospitalRank ==hospitalRs.dicId" ng-value="hospitalRs.dicId">{{hospitalRs.dictionariesName}}</option>
                                 </select>
                                 <span></span></td>
                         </tr>
