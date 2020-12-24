@@ -7,7 +7,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class ReturnOrderVO {
-    private Integer srId;
+
+    private Integer poId;
     private String purchaseNumber;//采购单编码
     private String purchaseName;//采购单名称
     private String hospitalName;//采购医院
@@ -39,14 +40,15 @@ public class ReturnOrderVO {
     @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     private Date endTime;//结束采购时间
     private String purchaseState;//采购状态(1.已入库 2.未入库)
+    private String salesReturnState;
 
 
-    public Integer getSrId() {
-        return srId;
+    public Integer getPoId() {
+        return poId;
     }
 
-    public void setSrId(Integer srId) {
-        this.srId = srId;
+    public void setPoId(Integer poId) {
+        this.poId = poId;
     }
 
     public String getPurchaseNumber() {
@@ -239,5 +241,13 @@ public class ReturnOrderVO {
 
     public void setPurchaseState(String purchaseState) {
         this.purchaseState = purchaseState;
+    }
+
+    public String getSalesReturnState() {
+        return salesReturnState;
+    }
+
+    public void setSalesReturnState(String salesReturnState) {
+        this.salesReturnState = salesReturnState;
     }
 }

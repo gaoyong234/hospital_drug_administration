@@ -270,23 +270,79 @@
     <script>
         var app = angular.module("myApp",[]);
         app.controller("myContr",function ($scope,$http) {
-            $http({
-                url:"/returnOrder/findReturnOrderDrugInfo",
-                method:"get"
-                /*params:dataList*/
-            }).then(function successCallback(response) {
-                $scope.list = response.data.list
-                for (var i = 0; i < $scope.list.length; i++) {
-                    if ($scope.list[i].purchaseState ==1){
-                        $scope.list[i].purchaseState = "已入库"
-                    }
-                    if ($scope.list[i].purchaseState ==2){
-                        $scope.list[i].purchaseState = "未入库"
-                    }
-                }
-            },function errorCallback(response) {
+            $(function () {
+                $scope.findReturnOrderDrugInfo();
+            })
+            //查询本医院已入库且未退货的药品信息
+            $scope.findReturnOrderDrugInfo = function(){
+                $http({
+                    url:"/returnOrder/findReturnOrderDrugInfo",
+                    method:"get"
+                    /*params:dataList*/
+                }).then(function successCallback(response) {
+                    $scope.list = response.data.list
+                },function errorCallback(response) {
 
-            });
+                });
+            }
+            //
+            $scope.addClick = function () {
+                var obj  = document.getElementsByName("c1");
+                var checkArr = [];
+                var poId = {poId:checkArr}
+                for (var i = 0; i < obj.length; i++) {
+                    if (obj[i].checked)
+                        checkArr.push(obj[i].value);
+                }
+                if (checkArr == 0){
+                    alert("请选择数据！")
+                }else {
+                    $http({
+                        url:"/purchaseStorage/findPurchaseDataById",
+                        method:"get",
+                        params:poId
+                    }).success(function (response) {
+                        var marketClues = new Array();
+                        $("[name=c1]:checked").each(function(num,e){ //循环bai遍历每一行的第一个被du选中的checkbox;
+                            marketClues.push({poId:response[num].poId,purchaseNumber:response[num].purchaseNumber,purchaseName:response[num].purchaseName,
+                                hospitalName:response[num].hospitalName,serialNumber:response[num].serialNumber,
+                                commonName:response[num].commonName,commodityName:response[num].commodityName,
+                                biddingPrice:response[num].biddingPrice,dealPrice:response[num].dealPrice,
+                                purchaseQuantity:response[num].purchaseQuantity,purchaseTotalAmount:response[num].purchaseTotalAmount,
+                                storageVolume:response[num].storageVolume,invoice:response[num].invoice,
+                                drugBatchNumber:response[num].drugBatchNumber,effectiveTime:response[num].effectiveTime,
+                                dosageForm:response[num].dosageForm,speciflcation:response[num].speciflcation,
+                                unitId:response[num].unitId,coefficient:response[num].coefficient,
+                                qualityLevel:response[num].qualityLevel,productionName:response[num].productionName,
+                                supplierName:response[num].supplierName,beginTime:response[num].beginTime,
+                                endTime:response[num].endTime,purchaseState:response[num].purchaseState}
+                            )
+                        });
+                        console.log(JSON.stringify(marketClues))
+                        if (response.length > 0){
+                            $http({
+                                url:"/returnOrder/addReturnOrderInfo",
+                                method:"post",
+                                params:JSON.stringify(marketClues),
+                                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                                transformRequest: function(obj) {
+                                    var str = [];
+                                    for (var s in obj) {
+                                        str.push(encodeURIComponent(s) + "=" + encodeURIComponent(obj[s]));
+                                    }
+                                    return str.join("&");
+                                }
+                            }).success(function (response) {
+                                console.log(response);
+                            }).error(function (response) {
+
+                            })
+                        }
+                    }).error(function (response) {
+                        
+                    })
+                }
+            }
         })
     </script>
     <script type="text/javascript">
@@ -400,10 +456,11 @@
     <div>
         <input type="checkbox" name="c0" id="all" value="全选" onclick="change()">全选
         <input type="checkbox" name="r0" id="revcheck" value="反选" onclick="revs()">反选
-        <button type="button" class="btn1" data-toggle="modal" data-target="#addition" ng-click="addClick()">添加
-        </button>
-        <button type="button" class="btn1" data-toggle="modal" data-target="#introduce" ng-click="loadlick()">导入
-        </button>
+        <button type="button" ng-click="addClick()">添加</button>
+<!--        <button type="button" class="btn1" data-toggle="modal" data-target="#addition" ng-click="addClick()">添加-->
+<!--        </button>-->
+<!--        <button type="button" class="btn1" data-toggle="modal" data-target="#introduce" ng-click="loadlick()">导入-->
+<!--        </button>-->
     </div>
     <div>
         <table id="dataList" class="table">
@@ -441,8 +498,8 @@
             </thead>
         <tbody id="tbody">
             <tr ng-repeat="x in list">
-                <td>{{x.srId}}</td>
-                <td><input type="checkbox" name="c1"></td>
+                <td>{{x.poId}}</td>
+                <td><input type="checkbox" name="c1" value="{{x.poId}}"></td>
                 <td>{{x.purchaseNumber}}</td>
                 <td>{{x.purchaseName}}</td>
                 <td>{{x.hospitalName}}</td>
