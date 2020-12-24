@@ -22,21 +22,31 @@
   <sql id="Base_Column_List">
     lf_id, limit_name, action_name, parent_id, creation_time, modification_time, del_id
   </sql>
-  <select id="selectParentLimit" resultMap="BaseResultMap">
+  <select id="selectParentLimit" resultMap="BaseMap">
     select
     <include refid="Base_Column_List" />
     from limit_function
     where parent_id is null
+    and del_id=0
   </select>
   <select id="selectAllLimitFunctionVO" resultMap="BaseMap">
     select
       lf.lf_id, lf.limit_name , lf.action_name, lim.limit_name parent_name, lf.creation_time, lf.modification_time,lf.parent_id
     from limit_function lf
 	left join limit_function lim on lim.lf_id=lf.parent_id
+	where del_id = 0
   </select>
   <select id="selectAllLimitFunction" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from limit_function
+    where del_id = 0
+  </select>
+  <select id="selectChildLimitFunction" resultMap="BaseResultMap" parameterType="integer">
+    select
+    <include refid="Base_Column_List" />
+    from limit_function
+    where parent_id=#{lfId}
+    and del_id = 0
   </select>
 </mapper>

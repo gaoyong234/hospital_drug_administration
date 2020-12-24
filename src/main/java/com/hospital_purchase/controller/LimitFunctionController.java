@@ -3,6 +3,7 @@ package com.hospital_purchase.controller;
 import com.github.pagehelper.PageInfo;
 import com.hospital_purchase.pojo.LimitFunction;
 import com.hospital_purchase.service.LimitFunctionService;
+import com.hospital_purchase.vo.LimitFunctionVO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
@@ -23,10 +25,16 @@ public class LimitFunctionController {
 
         return "/limitFunction/AllLimitFunction1";
     }
+    @RequestMapping("/toAddLimit")
+    public ModelAndView toAddLimit(Integer roId){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("/limitFunction/RoleAddLimit");
+        modelAndView.addObject("roId",roId);
+        return modelAndView;
+    }
     @RequestMapping("/addLimitFunction")
     @ResponseBody
     public int addLimit(LimitFunction limit){
-        System.out.println(limit.getLimitName());
 
         return limitFunctionService.addLimit(limit);
     }
@@ -43,7 +51,11 @@ public class LimitFunctionController {
         return "/limitFunction/changeLimit";
 
     }
-
+    @RequestMapping("/getAllLimit")
+    @ResponseBody
+    public List<LimitFunctionVO> getAllLimit(){
+        return limitFunctionService.getAllLimitFunction();
+    }
     @RequestMapping("/findAllLimit")
     @ResponseBody
     public PageInfo findAllLimit(@RequestParam(value = "pageNum",defaultValue = "1") Integer pageNum, @RequestParam(value = "pageSize",defaultValue = "5") Integer pageSize, Model model){

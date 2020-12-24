@@ -54,7 +54,7 @@
                 $scope.role.pageNum = pageNum;
                 $scope.role.pageSize = items;
                 var role = $scope.role;
-                console.log(role)
+                //console.log(role)
                 $http({
                     url: "/Role/findAllRole",
                     method: "post",
@@ -156,15 +156,9 @@
                     })
                 }
             }
-            //查看
+            //添加功能跳转页面
             $scope.detailedMassage=function(roId){
-                $http({
-                    url: "/Role/findOneRole",
-                    method: "post",
-                    params: {"roId": roId}
-                }).success(function (response) {
-                    $scope.information = response;
-                })
+               window.location.href="/LimitFunctionController/toAddLimit?roId="+roId;
             }
             //删除
             $scope.removeOne = function (roId) {
@@ -201,27 +195,18 @@
 </head>
 <body ng-app="myApp" ng-controller="myContr">
 <div>
-    <h5 class="alert alert-infoalert alert-info">字典详情页</h5>
+    <h5 class="alert alert-infoalert alert-info">角色详情页</h5>
     <table class="table table-bordered table-striped">
         <tr>
-            <td class="introduce">字典名称:</td>
-            <td class="contents"><input ng-model="role.dictionariesName"  class="form-control"/></td>
-            <td class="introduce">父级字典:</td>
-            <td class="contents">
-                <select ng-model="role.dictionariesId" class="form-control">
-                    <option value="">无</option>
-                    <option ng-repeat="ParentDictionaries in ParentDictionariesList"
-                            ng-value="ParentDictionaries.dicId">{{ParentDictionaries.dictionariesName}}
-                    </option>
-                </select>
-            </td>
+            <td class="introduce">角色名称:</td>
+            <td class="contents"><input ng-model="role.roleName"  class="form-control"/></td>
+
         </tr>
         <tr>
-            <td></td>
+
             <td colspan="1" align="right">
                 <button type="button" class="btn btn-info" ng-click="find()">查询</button>
             </td>
-            <td></td>
             <td></td>
         </tr>
     </table>
@@ -239,7 +224,7 @@
             <th>角色id</th>
             <th>角色名称</th>
             <th>创建时间</th>
-            <th>查看</th>
+            <th>为角色添加功能</th>
             <th>修改</th>
             <th>删除</th>
         </tr>
@@ -252,7 +237,7 @@
             <td>{{role.roleName}}</td>
             <td>{{role.creationTime}}</td>
             <td>
-                <button class="btn btn-success" data-toggle="modal" data-target="#detailed" ng-click="detailedMassage(role.roId)">详细</button>
+                <button class="btn btn-success"  ng-click="detailedMassage(role.roId)">添加功能</button>
             </td>
             <td>
                 <button class="btn btn-warning" data-toggle="modal" data-target="#modification"
@@ -297,7 +282,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button id="bt" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="myModalLabe">字典修改</h3>
+                <h3 id="myModalLabe">角色修改</h3>
             </div>
             <div class="modal-body">
                 <table class="table table-bordered table-striped">
@@ -316,43 +301,6 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-success" data-dismiss="modal" ng-click="reviseSave()">保存</button>
-                <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="detailed" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog" style="width:80%;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button id="btn" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="myModalLabe2">角色详细数据</h3>
-            </div>
-            <div class="modal-body">
-                <table class="table table-bordered table-striped">
-                    <tr>
-                        <td>角色名称:</td>
-                        <td>
-                            <input name="roleName" ng-model="information.roleName" class="form-control" disabled="disabled"></td>
-                    </tr>
-                    <tr>
-                        <td>创建时间:</td>
-                        <td>
-                            <input name="creationTime" ng-model="information.creationTime" class="form-control" disabled="disabled">
-                        </td>
-
-                    </tr>
-                    <tr>
-                        <td>修改时间:</td>
-                        <td>
-                            <input name="modificationTime" ng-model="information.modificationTime" class="form-control" disabled="disabled">
-                        </td>
-
-                    </tr>
-
-                </table>
-            </div>
-            <div class="modal-footer">
                 <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
             </div>
         </div>
